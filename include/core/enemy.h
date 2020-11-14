@@ -1,8 +1,16 @@
-//
-// Created by David on 11/14/2020.
-//
+#pragma once
 
-#ifndef SHOOTER_ENEMY_H
-#define SHOOTER_ENEMY_H
+#include "cinder/gl/gl.h"
+#include "entity.h"
 
-#endif //SHOOTER_ENEMY_H
+namespace shooter{
+
+    class Enemy : public Entity {
+    public:
+        Enemy(glm::vec2 position, float radius, int hit_points);
+        void Enemy::Accelerate(glm::vec2 player_pos);
+
+    private:
+
+    };
+}
