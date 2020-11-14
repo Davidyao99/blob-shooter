@@ -69,15 +69,15 @@ ci_make_app(
         SOURCES         main.cpp ${SOURCE_FILES}
         INCLUDES        include
 )
-#
-#ci_make_app(
-#        APP_NAME        shooter-test
-#        CINDER_PATH     ${CINDER_PATH}
-#        SOURCES         tests/test_main.cpp ${SOURCE_FILES} ${TEST_FILES}
-#        INCLUDES        include
-#        LIBRARIES       catch2
-#)
-#
-#if(MSVC)
-#    set_property(TARGET ideal-gas-test APPEND_STRING PROPERTY LINK_FLAGS " /SUBSYSTEM:CONSOLE")
-#endif()
+
+ci_make_app(
+        APP_NAME        ideal-gas-test
+        CINDER_PATH     ${CINDER_PATH}
+        SOURCES         tests/test_main.cpp ${SOURCE_FILES} ${TEST_FILES}
+        INCLUDES        include
+        LIBRARIES       catch2
+)
+
+if(MSVC)
+    set_property(TARGET ideal-gas-test APPEND_STRING PROPERTY LINK_FLAGS " /SUBSYSTEM:CONSOLE")
+endif()

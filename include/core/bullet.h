@@ -1,8 +1,14 @@
-//
-// Created by David on 11/14/2020.
-//
+#pragma once
 
-#ifndef SHOOTER_BULLET_H
-#define SHOOTER_BULLET_H
+#include "cinder/gl/gl.h"
+#include "entity.h"
 
-#endif //SHOOTER_BULLET_H
+namespace shooter {
+
+    class Bullet : public Entity{
+    public:
+        Bullet(glm::vec2 position, float radius, int hit_points, glm::vec2 cursor);
+        void Collide(Entity& entity);
+    private:
+    };
+}
