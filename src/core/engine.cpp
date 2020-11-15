@@ -1,20 +1,32 @@
 #include "core/engine.h"
+#include <cstdlib>
 
 namespace shooter {
 
     Engine::Engine(float length, float height) :
             player_(glm::vec2 (0,0), 10.0f, 10),
-          board_dimensions_(length, height){
-        Enemy enemy1(glm::vec2 (50,50),10.0f, 10, 0.2f);
-        Enemy enemy2(glm::vec2 (200,200), 10.0f, 10, 0.3f);
-        Enemy enemy3(glm::vec2 (300,300), 10.0f, 10, 1.0f);
-        enemies_.push_back(enemy1);
-        enemies_.push_back(enemy2);
-        enemies_.push_back(enemy3);
+          board_dimensions_(length, height), enemy_spawns_(),
+          begin_time_(std::chrono::system_clock::now()),
+          last_enemy_wave_(std::chrono::system_clock::now()){
+        CreateEnemySpawn();
     }
 
     const glm::vec2 Engine::GetPlayerPosition() const {
         return player_.get_position_();
+    }
+
+    void Engine::CreateEnemySpawn() {
+      int x_unit = static_cast<int>(board_dimensions_.x) / 20;
+      int y_unit = static_cast<int>(board_dimensions_.y) / 20;
+      for (size_t x_coord = 0; x_coord != board_dimensions_.x + x_unit;
+           x_coord += x_unit) {
+        enemy_spawns_.emplace_back(x_coord, 0);
+        enemy_spawns_.emplace_back(x_coord, board_dimensions_.y);
+      }
+      for (size_t y_coord = y_unit; y_coord != board_dimensions_.y; y_coord += y_unit ) {
+        enemy_spawns_.emplace_back(0, y_coord);
+        enemy_spawns_.emplace_back(board_dimensions_.x, y_coord);
+      }
     }
 
     void Engine::update(std::set<Direction> moves) {
@@ -32,13 +44,35 @@ namespace shooter {
             enemy.Move();
         }
         CheckCollisions();
+        SpawnEnemy();
     }
 
     void Engine::HandleShoot(glm::vec2 cursor) {
         if (player_.Shoot()) {
-            shooter::Bullet bullet(player_.get_position_(), 10.0f, 1, cursor);
+            shooter::Bullet bullet(player_.get_position_(), 10.0f,
+                                 1, cursor);
             bullets_.push_back(bullet);
         }
+    }
+
+    void Engine::SpawnEnemy() {
+      std::chrono::milliseconds duration =
+          std::chrono::duration_cast<std::chrono::milliseconds>(
+              std::chrono::system_clock::now() - begin_time_);
+      std::chrono::milliseconds time_since_last_wave =
+          std::chrono::duration_cast<std::chrono::milliseconds>(
+              std::chrono::system_clock::now() - last_enemy_wave_);
+      if (time_since_last_wave.count() > 10000) {
+        size_t num_enemy_spawn = static_cast<size_t>(duration.count()) / 10000;
+        std::cout<<num_enemy_spawn<<std::endl;
+        for (num_enemy_spawn; num_enemy_spawn != 0; num_enemy_spawn--) {
+          size_t index = (rand()%enemy_spawns_.size());
+          enemies_.push_back(Enemy(enemy_spawns_[index], 10.0f,
+                                   10, 0.3f));
+        }
+        last_enemy_wave_ = std::chrono::system_clock::now();
+      }
+
     }
 
     const std::vector<Bullet> Engine::get_bullets_() const {
@@ -71,6 +105,7 @@ namespace shooter {
             for (auto enemies_iter = enemies_.begin(); enemies_iter != enemies_.end();) {
                 float dist = glm::length(bullet_iter->get_position_() - enemies_iter->get_position_());
                 if (dist <= bullet_iter->get_radius_() + enemies_iter->get_radius_()) {
+                    std::cout<<bullet_iter->get_hit_points_()<<std::endl;
                     enemies_iter->Collide(*bullet_iter);
                     if (bullet_iter->isDead()) {
                         bullet_iter = bullets_.erase(bullet_iter);

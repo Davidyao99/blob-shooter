@@ -7,13 +7,13 @@ namespace shooter {
     namespace visualizer {
 
         ShooterApp::ShooterApp()
-                : engine_(static_cast<float>(kScreenLength * 4),
-                          static_cast<float>(kScreenHeight * 4)),
+                : engine_(static_cast<float>(kScreenLength),
+                          static_cast<float>(kScreenHeight)),
                   moves_(),
-                  screen_(glm::ivec2(kMargin, kMargin), kScreenLength, kScreenHeight) {
+                  screen_(glm::ivec2(kMargin, kMargin), kScreenLength,
+                  kScreenHeight) {
 
             ci::app::setWindowSize( kWindowLength, kWindowHeight);
-
         }
 
         void ShooterApp::draw() {
@@ -66,8 +66,9 @@ namespace shooter {
             }
         }
         void ShooterApp::mouseDown(ci::app::MouseEvent event) {
-            glm::vec2 cursor = event.getPos();
-            engine_.HandleShoot(cursor);
+          // gets cursor relative pos to player
+          glm::vec2 cursor_relative_pos = event.getPos() - screen_.get_kTopLeft();
+          engine_.HandleShoot(cursor_relative_pos);
         }
     }
 }

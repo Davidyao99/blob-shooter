@@ -19,11 +19,17 @@ namespace shooter {
         void CheckCollisions();
         void HandleShoot(glm::vec2 cursor);
         void HandlePlayerAtBoundary();
+        void SpawnEnemy();
+        void CreateEnemySpawn();
 
     private:
         Player player_;
         std::vector<Bullet> bullets_;
         std::vector<Enemy> enemies_;
+        std::vector<glm::vec2> enemy_spawns_;
         glm::ivec2 board_dimensions_;
+
+        std::chrono::system_clock::time_point begin_time_;
+        std::chrono::system_clock::time_point last_enemy_wave_;
     };
 }

@@ -22,16 +22,19 @@ namespace shooter {
                      std::vector<Enemy> enemies,
                      std::vector<Bullet> bullets);
 
-          bool PositionInBound(const glm::ivec2 position) const;
+            bool PositionInBound(const glm::ivec2 position) const;
+
+            const glm::ivec2 Screen::GetCenter() const;
 
             glm::ivec2 GetEntityScreenPosition(const Entity& entity,
                                                   const glm::vec2 player) const;
+            const glm::ivec2 get_kTopLeft() const;
 
 
           private:
 
            const glm::ivec2 kTopLeft;
-           const glm::ivec2 kPlayerLocation; // always center of screen
+           const glm::ivec2 kCenter; // always center of screen
            const int kLength;
            const int kHeight;
 
