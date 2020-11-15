@@ -57,7 +57,8 @@ list(APPEND CORE_SOURCE_FILES
         src/core/entity.cpp)
 
 list(APPEND SOURCE_FILES    ${CORE_SOURCE_FILES}
-        src/visualizer/shooter_app.cpp)
+        src/visualizer/shooter_app.cpp
+        src/visualizer/screen.cpp)
 #
 #list(APPEND TEST_FILES tests/particle_test.cpp
 #        tests/engine_test.cpp)

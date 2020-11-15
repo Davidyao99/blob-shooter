@@ -7,26 +7,24 @@ namespace shooter {
     namespace visualizer {
 
         ShooterApp::ShooterApp()
-                : engine_(),
+                : engine_(static_cast<float>(kScreenLength * 4),
+                          static_cast<float>(kScreenHeight * 4)),
                   moves_(),
-                  screen_(glm::ivec2(kMargin, kMargin), kWindowLength, kWindowHeight) {
+                  screen_(glm::ivec2(kMargin, kMargin), kScreenLength, kScreenHeight) {
 
-            ci::app::setWindowSize((int) kWindowLength, (int) kWindowHeight);
+            ci::app::setWindowSize( kWindowLength, kWindowHeight);
 
         }
 
         void ShooterApp::draw() {
-            ci::gl::clear( Color( 0.0f, 0.0f, 0.0f ) );
-            ci::gl::color(Color( "white"));
-            ci::gl::drawSolidCircle(engine_.GetPlayerPosition(),10);
-            ci::gl::color(Color( "red"));
-            for (const Bullet& bullet : engine_.get_bullets_()) {
-                ci::gl::drawSolidCircle(bullet.get_position_(), bullet.get_radius_());
-            }
-            ci::gl::color(Color("blue"));
-            for (const Enemy& enemy : engine_.get_enemies_()) {
-                ci::gl::drawSolidCircle(enemy.get_position_(), enemy.get_radius_());
-            }
+
+          ci::Color8u background_color(255, 246, 148);  // light yellow
+          ci::gl::clear(background_color);
+
+          screen_.Draw(engine_.GetPlayerPosition(),
+                         engine_.get_enemies_(),
+                         engine_.get_bullets_());
+
         }
         void ShooterApp::update() {
             engine_.update(moves_);

@@ -7,7 +7,7 @@ namespace shooter {
     {}
 
     Entity::Entity(glm::vec2 position, float radius, int hit_points) :
-            position_(position), radius_(radius), hit_points_(hit_points)
+            Entity(position, radius, hit_points, glm::vec2(0.0f, 0.0f))
     {}
 
     const float Entity::get_radius_() const {
@@ -31,7 +31,7 @@ namespace shooter {
         entity.hit_points_ -= hit_points_;
         hit_points_ -= entity_hit_points;
         glm::vec2 rebound = position_ - entity.get_position_();
-        velocity_ = (rebound / glm::length(rebound)) * (float)entity_hit_points;
+        velocity_ = (rebound / glm::length(rebound)) * static_cast<float>(entity_hit_points);
     }
 
     bool Entity::isDead() const{

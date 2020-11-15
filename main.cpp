@@ -1,11 +1,11 @@
-#include <string>
-#include <iostream>
+#include <visualizer/shooter_app.h>
 
-namespace test {
+using shooter::visualizer::ShooterApp;
 
-    int main() {
-        std::cout << "hello" << std::endl;
-        return 0;
-    }
-
+void prepareSettings(ShooterApp::Settings* settings) {
+  settings->setResizable(false);
+  settings->setConsoleWindowEnabled(true);
 }
+
+// This line is a macro that expands into an "int main()" function.
+CINDER_APP(ShooterApp, ci::app::RendererGl, prepareSettings);

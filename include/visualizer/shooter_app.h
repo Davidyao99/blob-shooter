@@ -5,6 +5,7 @@
 #include "cinder/gl/gl.h"
 #include "core/engine.h"
 #include "cinder/gl/Texture.h"
+#include "visualizer/screen.h"
 
 namespace shooter {
     using namespace ci;
@@ -32,6 +33,7 @@ namespace shooter {
 
             std::set<Direction> moves_;
             Engine engine_;
+            Screen screen_;
         };
 
     }  // namespace visualizer

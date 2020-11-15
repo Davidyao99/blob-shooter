@@ -2,11 +2,12 @@
 
 namespace shooter {
 
-    Engine::Engine() :
-            player_(glm::vec2 (0,0), 10.0f, 10) {
-        Enemy enemy1(glm::vec2 (50,50),10.0f, 10);
-        Enemy enemy2(glm::vec2 (200,200), 10.0f, 10);
-        Enemy enemy3(glm::vec2 (300,300), 10.0f, 10);
+    Engine::Engine(float length, float height) :
+            player_(glm::vec2 (0,0), 10.0f, 10),
+          board_dimensions_(length, height){
+        Enemy enemy1(glm::vec2 (50,50),10.0f, 10, 0.2f);
+        Enemy enemy2(glm::vec2 (200,200), 10.0f, 10, 0.3f);
+        Enemy enemy3(glm::vec2 (300,300), 10.0f, 10, 1.0f);
         enemies_.push_back(enemy1);
         enemies_.push_back(enemy2);
         enemies_.push_back(enemy3);
@@ -19,8 +20,9 @@ namespace shooter {
     void Engine::update(std::set<Direction> moves) {
         glm::vec2 player_pos = player_.get_position_();
         for (Direction direction: moves) {
-            player_.Accelerate(direction);
+          player_.Accelerate(direction);
         }
+        HandlePlayerAtBoundary();
         player_.Move();
         for (Bullet& bullet : bullets_) {
             bullet.Move();
@@ -45,6 +47,21 @@ namespace shooter {
 
     const std::vector<Enemy> Engine::get_enemies_() const {
         return enemies_;
+    }
+
+    void Engine::HandlePlayerAtBoundary() {
+      const glm::vec2& position = player_.get_position_();
+      const glm::vec2& velocity = player_.get_velocity();
+      float radius = player_.get_radius_();
+      if ((position.y - radius <= 0 && velocity.y < 0) ||
+          (position.y + radius >= board_dimensions_.y && velocity.y > 0)) {
+        player_.ZeroY();
+      }
+
+      if ((position.x - radius <= 0 && velocity.x < 0) ||
+          (position.x + radius >= board_dimensions_.x && velocity.x > 0)) {
+        player_.ZeroX();
+      }
     }
 
     void Engine::CheckCollisions() {
