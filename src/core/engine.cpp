@@ -4,15 +4,15 @@
 namespace shooter {
 
     Engine::Engine(float length, float height) :
-            player_(glm::vec2 (0,0), 10.0f, 20),
-          board_dimensions_(length, height), enemy_spawns_(),
-          begin_time_(std::chrono::system_clock::now()),
-          last_enemy_wave_(std::chrono::system_clock::now()){
-        CreateEnemySpawn();
+            Engine(length, height, glm::vec2(length/2, height/2)){
     }
 
-    const glm::vec2 Engine::GetPlayerPosition() const {
-        return player_.get_position_();
+    Engine::Engine(float length, float height, glm::vec2 player_position) :
+        player_(player_position, 10.0f, 20),
+        board_dimensions_(length, height), enemy_spawns_(),
+        begin_time_(std::chrono::system_clock::now()),
+        last_enemy_wave_(std::chrono::system_clock::now()){
+      CreateEnemySpawn();
     }
 
     void Engine::CreateEnemySpawn() {
@@ -55,6 +55,12 @@ namespace shooter {
         }
     }
 
+    void Engine::AddEnemy(glm::vec2 position, float radius,
+                          int hit_points, float level) {
+      enemies_.push_back(Enemy(position,radius,hit_points,level));
+      std::cout<<"here"<<std::endl;
+    }
+
     void Engine::SpawnEnemy() {
       std::chrono::milliseconds duration =
           std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -64,11 +70,10 @@ namespace shooter {
               std::chrono::system_clock::now() - last_enemy_wave_);
       if (time_since_last_wave.count() > 10000) {
         size_t num_enemy_spawn = static_cast<size_t>(duration.count()) / 10000;
-        std::cout<<num_enemy_spawn<<std::endl;
         for (num_enemy_spawn; num_enemy_spawn != 0; num_enemy_spawn--) {
           size_t index = (rand()%enemy_spawns_.size());
-          enemies_.push_back(Enemy(enemy_spawns_[index], 10.0f,
-                                   10, 0.3f));
+          AddEnemy(enemy_spawns_[index], 10.0f,
+                   10, 0.3f);
         }
         last_enemy_wave_ = std::chrono::system_clock::now();
       }
@@ -89,12 +94,12 @@ namespace shooter {
       float radius = player_.get_radius_();
       if ((position.y - radius < 0 && velocity.y < 0) ||
           (position.y + radius > board_dimensions_.y && velocity.y > 0)) {
-        player_.ZeroY();
+        player_.ZeroYVelocity();
       }
 
       if ((position.x - radius < 0 && velocity.x < 0) ||
           (position.x + radius > board_dimensions_.x && velocity.x > 0)) {
-        player_.ZeroX();
+        player_.ZeroXVelocity();
       }
     }
 
@@ -130,12 +135,8 @@ namespace shooter {
     }
   }
 
-  const Player Engine::get_player_() const {
+  const Player& Engine::get_player_() const {
     return player_;
-  }
-
-  float Engine::GetPlayerReload() const {
-    return player_.GetReloadStatus();
   }
 
   void Engine::HandleEnemyPlayerCollision() {

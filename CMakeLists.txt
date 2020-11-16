@@ -60,7 +60,10 @@ list(APPEND SOURCE_FILES    ${CORE_SOURCE_FILES}
         src/visualizer/shooter_app.cpp
         src/visualizer/screen.cpp)
 
-list(APPEND TEST_FILES tests/entity_test.cpp)
+list(APPEND TEST_FILES tests/entity_test.cpp
+        tests/enemy_test.cpp
+        tests/player_test.cpp
+        tests/engine_test.cpp)
 
 
 ci_make_app(

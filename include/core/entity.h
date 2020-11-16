@@ -12,8 +12,9 @@ namespace shooter{
       const float get_radius_() const;
       void Move();
       const glm::vec2 get_position_() const;
+      const glm::vec2 get_velocity_() const;
       const int get_hit_points_() const;
-//        virtual void Collide(Entity& entity) = 0;
+      void Collide(Entity& entity);
       bool IsDead() const;
 
       int hit_points_;

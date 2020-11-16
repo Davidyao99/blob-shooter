@@ -20,9 +20,8 @@ namespace shooter {
       void Move();
       void Accelerate(Direction direction);
       bool Shoot();
-      void ZeroX();
-      void ZeroY();
-      void Collide(Entity& entity);
+      void ZeroXVelocity();
+      void ZeroYVelocity();
       float GetReloadStatus() const;
 
     private:

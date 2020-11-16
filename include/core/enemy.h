@@ -11,7 +11,6 @@ namespace shooter{
 
         Enemy(glm::vec2 position, float radius, int hit_points, float level);
         void Accelerate(glm::vec2 player_pos);
-        void Collide(Entity& entity);
 
     private:
 
