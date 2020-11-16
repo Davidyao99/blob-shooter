@@ -26,14 +26,6 @@ namespace shooter {
         return hit_points_;
     }
 
-    void Entity::Collide( Entity& entity) {
-        int entity_hit_points = entity.get_hit_points_();
-        entity.hit_points_ -= hit_points_;
-        hit_points_ -= entity_hit_points;
-        glm::vec2 rebound = position_ - entity.get_position_();
-        velocity_ = (rebound / glm::length(rebound)) * static_cast<float>(entity_hit_points);
-    }
-
     bool Entity::isDead() const{
         return hit_points_ <= 0;
     }

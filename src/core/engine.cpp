@@ -4,7 +4,7 @@
 namespace shooter {
 
     Engine::Engine(float length, float height) :
-            player_(glm::vec2 (0,0), 10.0f, 10),
+            player_(glm::vec2 (0,0), 10.0f, 20),
           board_dimensions_(length, height), enemy_spawns_(),
           begin_time_(std::chrono::system_clock::now()),
           last_enemy_wave_(std::chrono::system_clock::now()){
@@ -99,30 +99,56 @@ namespace shooter {
     }
 
     void Engine::CheckCollisions() {
+      HandleEnemyBulletCollision();
+      HandleEnemyPlayerCollision();
 
-        for (auto bullet_iter = bullets_.begin(); bullet_iter != bullets_.end();) {
-            bool b = true;
-            for (auto enemies_iter = enemies_.begin(); enemies_iter != enemies_.end();) {
-                float dist = glm::length(bullet_iter->get_position_() - enemies_iter->get_position_());
-                if (dist <= bullet_iter->get_radius_() + enemies_iter->get_radius_()) {
-                    std::cout<<bullet_iter->get_hit_points_()<<std::endl;
-                    enemies_iter->Collide(*bullet_iter);
-                    if (bullet_iter->isDead()) {
-                        bullet_iter = bullets_.erase(bullet_iter);
-                        b = false;
-                        break;
-                    }
-                    if (enemies_iter->isDead()) {
-                        enemies_iter = enemies_.erase(enemies_iter);
-                    }
-                } else {
-                    ++enemies_iter;
-                }
-            }
-            if (b) {
-                ++bullet_iter;
-            }
-
-        }
     }
+
+  void Engine::HandleEnemyBulletCollision() {
+    for (auto bullet_iter = bullets_.begin(); bullet_iter != bullets_.end();) {
+      bool iterate_bullet = true;
+      for (auto enemies_iter = enemies_.begin(); enemies_iter != enemies_.end();) {
+        float dist = glm::length(bullet_iter->get_position_() - enemies_iter->get_position_());
+        if (dist <= bullet_iter->get_radius_() + enemies_iter->get_radius_()) {
+          enemies_iter->Collide(*bullet_iter);
+          if (bullet_iter->isDead()) {
+            bullet_iter = bullets_.erase(bullet_iter); // automatically iterates to next bullet
+            iterate_bullet = false;
+            break;
+          }
+          if (enemies_iter->isDead()) {
+            enemies_iter = enemies_.erase(enemies_iter);
+          }
+        } else {
+          ++enemies_iter;
+        }
+      }
+      if (iterate_bullet) {
+        ++bullet_iter;
+      }
+
+    }
+  }
+
+  void Engine::HandleEnemyPlayerCollision() {
+    for (auto enemies_iter = enemies_.begin(); enemies_iter != enemies_.end();) {
+      bool iterate_enemy = true;
+      float dist = glm::length(player_.get_position_() -
+                               enemies_iter->get_position_());
+      if (dist <= player_.get_radius_() + enemies_iter->get_radius_()) {
+        player_.Collide(*enemies_iter);
+        if (enemies_iter->get_hit_points_() <= 0) {
+          enemies_iter = enemies_.erase(enemies_iter);
+          iterate_enemy = false;
+        }
+      }
+      if (iterate_enemy) {
+        ++enemies_iter;
+      }
+      std::cout<<player_.hit_points_<<std::endl;
+      if (player_.get_hit_points_() <= 0) {
+        exit(1);
+      }
+    }
+  }
 }

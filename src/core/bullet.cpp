@@ -9,7 +9,7 @@ namespace shooter {
         velocity_ = ((cursor - position) / glm::length(cursor - position)) * 10.0f;
     }
 
-    void Bullet::Collide(Entity& entity) {
-
-    }
+//    void Bullet::Collide(Entity& entity) {
+//
+//    }
 }
