@@ -20,9 +20,10 @@ namespace shooter {
       void Move();
       void Accelerate(Direction direction);
       bool Shoot();
-      void Player::ZeroX();
-      void Player::ZeroY();
-      void Player::Collide(Entity& entity);
+      void ZeroX();
+      void ZeroY();
+      void Collide(Entity& entity);
+      float GetReloadStatus() const;
 
     private:
         std::chrono::system_clock::time_point last_fire_;

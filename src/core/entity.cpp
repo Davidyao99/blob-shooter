@@ -26,7 +26,7 @@ namespace shooter {
         return hit_points_;
     }
 
-    bool Entity::isDead() const{
+    bool Entity::IsDead() const{
         return hit_points_ <= 0;
     }
 }

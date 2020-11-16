@@ -75,11 +75,11 @@ namespace shooter {
 
     }
 
-    const std::vector<Bullet> Engine::get_bullets_() const {
+    const std::vector<Bullet>& Engine::get_bullets_() const {
         return bullets_;
     }
 
-    const std::vector<Enemy> Engine::get_enemies_() const {
+    const std::vector<Enemy>& Engine::get_enemies_() const {
         return enemies_;
     }
 
@@ -87,13 +87,13 @@ namespace shooter {
       const glm::vec2& position = player_.get_position_();
       const glm::vec2& velocity = player_.get_velocity();
       float radius = player_.get_radius_();
-      if ((position.y - radius <= 0 && velocity.y < 0) ||
-          (position.y + radius >= board_dimensions_.y && velocity.y > 0)) {
+      if ((position.y - radius < 0 && velocity.y < 0) ||
+          (position.y + radius > board_dimensions_.y && velocity.y > 0)) {
         player_.ZeroY();
       }
 
-      if ((position.x - radius <= 0 && velocity.x < 0) ||
-          (position.x + radius >= board_dimensions_.x && velocity.x > 0)) {
+      if ((position.x - radius < 0 && velocity.x < 0) ||
+          (position.x + radius > board_dimensions_.x && velocity.x > 0)) {
         player_.ZeroX();
       }
     }
@@ -111,12 +111,12 @@ namespace shooter {
         float dist = glm::length(bullet_iter->get_position_() - enemies_iter->get_position_());
         if (dist <= bullet_iter->get_radius_() + enemies_iter->get_radius_()) {
           enemies_iter->Collide(*bullet_iter);
-          if (bullet_iter->isDead()) {
+          if (bullet_iter->IsDead()) {
             bullet_iter = bullets_.erase(bullet_iter); // automatically iterates to next bullet
             iterate_bullet = false;
             break;
           }
-          if (enemies_iter->isDead()) {
+          if (enemies_iter->IsDead()) {
             enemies_iter = enemies_.erase(enemies_iter);
           }
         } else {
@@ -128,6 +128,14 @@ namespace shooter {
       }
 
     }
+  }
+
+  const Player Engine::get_player_() const {
+    return player_;
+  }
+
+  float Engine::GetPlayerReload() const {
+    return player_.GetReloadStatus();
   }
 
   void Engine::HandleEnemyPlayerCollision() {

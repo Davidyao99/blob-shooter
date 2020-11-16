@@ -59,9 +59,8 @@ list(APPEND CORE_SOURCE_FILES
 list(APPEND SOURCE_FILES    ${CORE_SOURCE_FILES}
         src/visualizer/shooter_app.cpp
         src/visualizer/screen.cpp)
-#
-#list(APPEND TEST_FILES tests/particle_test.cpp
-#        tests/engine_test.cpp)
+
+list(APPEND TEST_FILES tests/entity_test.cpp)
 
 
 ci_make_app(
@@ -72,7 +71,7 @@ ci_make_app(
 )
 
 ci_make_app(
-        APP_NAME        ideal-gas-test
+        APP_NAME        shooter-test
         CINDER_PATH     ${CINDER_PATH}
         SOURCES         tests/test_main.cpp ${SOURCE_FILES} ${TEST_FILES}
         INCLUDES        include
@@ -80,5 +79,5 @@ ci_make_app(
 )
 
 if(MSVC)
-    set_property(TARGET ideal-gas-test APPEND_STRING PROPERTY LINK_FLAGS " /SUBSYSTEM:CONSOLE")
+    set_property(TARGET shooter-test APPEND_STRING PROPERTY LINK_FLAGS " /SUBSYSTEM:CONSOLE")
 endif()

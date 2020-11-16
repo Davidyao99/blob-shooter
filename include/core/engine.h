@@ -14,13 +14,15 @@ namespace shooter {
         void update(std::set<Direction> moves);
         const glm::vec2 GetPlayerPosition() const;
         void spawnBullet(glm::vec2 cursor);
-        const std::vector<Bullet> get_bullets_() const;
-        const std::vector<Enemy> get_enemies_() const;
+        const std::vector<Bullet>& get_bullets_() const;
+        const std::vector<Enemy>& get_enemies_() const;
+        const Player get_player_() const;
         void CheckCollisions();
         void HandleShoot(glm::vec2 cursor);
         void HandlePlayerAtBoundary();
         void SpawnEnemy();
         void CreateEnemySpawn();
+        float GetPlayerReload() const;
 
     private:
 

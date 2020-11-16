@@ -21,7 +21,7 @@ namespace shooter {
           ci::Color8u background_color(255, 246, 148);  // light yellow
           ci::gl::clear(background_color);
 
-          screen_.Draw(engine_.GetPlayerPosition(),
+          screen_.Draw(engine_.get_player_(),
                          engine_.get_enemies_(),
                          engine_.get_bullets_());
 

@@ -36,9 +36,22 @@ namespace shooter {
         }
     }
 
+    float Player::GetReloadStatus() const {
+      std::chrono::milliseconds duration =
+          std::chrono::duration_cast<std::chrono::milliseconds>(
+              std::chrono::system_clock::now() - last_fire_);
+      float status = duration.count() / 1000.0f;
+      if (status >= 1.0f) {
+        status = 1.0f;
+      }
+      return status;
+    }
+
     bool Player::Shoot() {
-        std::chrono::milliseconds duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - last_fire_);
-        if ( duration.count() > 100) {
+        std::chrono::milliseconds duration =
+          std::chrono::duration_cast<std::chrono::milliseconds>(
+              std::chrono::system_clock::now() - last_fire_);
+        if ( duration.count() > 1000) {
             last_fire_ = std::chrono::system_clock::now();
             return true;
         }

@@ -11,8 +11,8 @@ namespace shooter {
     kTopLeft(top_left), kLength(screen_length), kHeight(screen_height),
     kCenter(screen_length / 2, screen_height / 2){}
 
-    void Screen::Draw(glm::vec2 player, std::vector<Enemy> enemies,
-                      std::vector<Bullet> bullets) {
+    void Screen::Draw(const Player& player, const std::vector<Enemy> &enemies,
+                      const std::vector<Bullet> &bullets) {
       ci::gl::color(ci::Color("black"));
       vec2 bottom_right = kTopLeft + glm::ivec2(kLength, kHeight);
       ci::Rectf pixel_bounding_box(kTopLeft, bottom_right);
@@ -21,10 +21,33 @@ namespace shooter {
       ci::gl::color(ci::Color("black"));
       ci::gl::drawStrokedRect(pixel_bounding_box);
 
+
+      float reload_status = player.GetReloadStatus();
+      std::cout<<reload_status<<std::endl;
+      glm::ivec2 player_position(player.get_position_());
+      glm::vec2 reload_bar_top_left(player_position.x - 20,
+                                    player_position.y - player.get_radius_() - 8);
+      glm::vec2 reload_bar_bottom_right = reload_bar_top_left + glm::vec2(
+                                                                    40.0f * reload_status,
+                                                                    4
+                                                                    );
+      ci::Rectf reload_bar(static_cast<glm::ivec2>(reload_bar_top_left) + kTopLeft,
+                           static_cast<glm::ivec2>(reload_bar_bottom_right) + kTopLeft);
       ci::gl::color(Color( "white"));
-      ci::gl::drawSolidCircle(static_cast<glm::ivec2>(player) + kTopLeft,
-                              10);
+      ci::gl::drawSolidRect(reload_bar);
+      ci::gl::color(Color(0.0f,1.0f, 1.0f));
+      ci::gl::drawSolidCircle( player_position + kTopLeft,
+                              player.get_radius_());
       ci::gl::color(Color( "red"));
+
+
+
+
+
+
+
+
+
       for (const Bullet& bullet : bullets) {
 //        glm::ivec2 screen_position = GetEntityScreenPosition(bullet, player);
         glm::ivec2 bullet_position = bullet.get_position_();
@@ -65,9 +88,9 @@ namespace shooter {
       return kCenter + relative_position_with_player;
     }
 
-    const glm::ivec2 Screen::GetCenter() const {
-      return kCenter + kTopLeft;
-    }
+//    const glm::ivec2 Screen::GetCenter() const {
+//      return kCenter + kTopLeft;
+//    }
 
     const glm::ivec2 Screen::get_kTopLeft() const {
       return kTopLeft;

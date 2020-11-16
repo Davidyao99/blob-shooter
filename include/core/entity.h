@@ -14,7 +14,7 @@ namespace shooter{
       const glm::vec2 get_position_() const;
       const int get_hit_points_() const;
 //        virtual void Collide(Entity& entity) = 0;
-      bool isDead() const;
+      bool IsDead() const;
 
       int hit_points_;
 
