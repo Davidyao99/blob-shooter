@@ -29,6 +29,10 @@ namespace shooter {
       }
     }
 
+    const std::vector<glm::vec2>& Engine::get_enemy_spawns_() const {
+      return enemy_spawns_;
+    }
+
     void Engine::update(std::set<Direction> moves) {
         glm::vec2 player_pos = player_.get_position_();
         for (Direction direction: moves) {
@@ -49,16 +53,19 @@ namespace shooter {
 
     void Engine::HandleShoot(glm::vec2 cursor) {
         if (player_.Shoot()) {
-            shooter::Bullet bullet(player_.get_position_(), 10.0f,
-                                 1, cursor);
-            bullets_.push_back(bullet);
-        }
+        AddBullet(player_.get_position_(), 10.0f, 20, cursor);
+      }
+    }
+
+    void Engine::AddBullet(glm::vec2 player_position, float radius, int hitpoints,
+                           glm::vec2 cursor) {
+      bullets_.push_back(Bullet(player_position,
+                                radius, hitpoints, cursor));
     }
 
     void Engine::AddEnemy(glm::vec2 position, float radius,
                           int hit_points, float level) {
       enemies_.push_back(Enemy(position,radius,hit_points,level));
-      std::cout<<"here"<<std::endl;
     }
 
     void Engine::SpawnEnemy() {
@@ -106,7 +113,6 @@ namespace shooter {
     void Engine::CheckCollisions() {
       HandleEnemyBulletCollision();
       HandleEnemyPlayerCollision();
-
     }
 
   void Engine::HandleEnemyBulletCollision() {
@@ -116,13 +122,13 @@ namespace shooter {
         float dist = glm::length(bullet_iter->get_position_() - enemies_iter->get_position_());
         if (dist <= bullet_iter->get_radius_() + enemies_iter->get_radius_()) {
           enemies_iter->Collide(*bullet_iter);
+          if (enemies_iter->IsDead()) {
+            enemies_iter = enemies_.erase(enemies_iter);
+          }
           if (bullet_iter->IsDead()) {
             bullet_iter = bullets_.erase(bullet_iter); // automatically iterates to next bullet
             iterate_bullet = false;
             break;
-          }
-          if (enemies_iter->IsDead()) {
-            enemies_iter = enemies_.erase(enemies_iter);
           }
         } else {
           ++enemies_iter;
@@ -131,7 +137,6 @@ namespace shooter {
       if (iterate_bullet) {
         ++bullet_iter;
       }
-
     }
   }
 
@@ -154,7 +159,6 @@ namespace shooter {
       if (iterate_enemy) {
         ++enemies_iter;
       }
-      std::cout<<player_.hit_points_<<std::endl;
       if (player_.get_hit_points_() <= 0) {
         exit(1);
       }

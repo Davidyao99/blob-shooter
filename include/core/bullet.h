@@ -6,7 +6,7 @@
 namespace shooter {
 
     /**
-     * Bullet class
+     * Bullet class to represent bullets fired by player, extends from Entity
      */
 
     class Bullet : public Entity{

@@ -23,7 +23,6 @@ namespace shooter {
 
 
       float reload_status = player.GetReloadStatus();
-      std::cout<<reload_status<<std::endl;
       glm::ivec2 player_position(player.get_position_());
       glm::vec2 reload_bar_top_left(player_position.x - 20,
                                     player_position.y - player.get_radius_() - 8);
@@ -40,14 +39,6 @@ namespace shooter {
                               player.get_radius_());
       ci::gl::color(Color( "red"));
 
-
-
-
-
-
-
-
-
       for (const Bullet& bullet : bullets) {
 //        glm::ivec2 screen_position = GetEntityScreenPosition(bullet, player);
         glm::ivec2 bullet_position = bullet.get_position_();
@@ -62,7 +53,7 @@ namespace shooter {
         glm::ivec2 enemy_position = enemy.get_position_();
         if (PositionInBound(enemy_position)) {
           int hit_points = enemy.get_hit_points_();
-          std::cout<<hit_points<<std::endl;
+          std::cout<<hit_points;
           float bluishness = static_cast<float>(hit_points) / 10;
           ci::gl::color(Color(1.0f-bluishness,1.0f-bluishness,1.0f));
           ci::gl::drawSolidCircle(

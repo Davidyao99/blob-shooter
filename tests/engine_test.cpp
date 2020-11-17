@@ -11,6 +11,15 @@ using shooter::Bullet;
 using shooter::Direction;
 using shooter::Enemy;
 
+TEST_CASE("Engine constructor creates enemy spawns on boundaries") {
+  Engine engine(40,40);
+  std::vector<glm::vec2> spawns = engine.get_enemy_spawns_();
+  for (auto &spawn: spawns) {
+    std::cout<<"("<<spawn.x<<","<<spawn.y<<")"<<std::endl; // check visually
+  }
+  REQUIRE(engine.get_enemy_spawns_().size() == 80);
+}
+
 TEST_CASE("Engine Update works accordingly") {
 
   SECTION("Update moves player accordingly to moves") {
@@ -101,4 +110,74 @@ TEST_CASE("Engine Update works accordingly") {
     REQUIRE(engine.get_enemies_().size() == 3);
   }
 }
+
+TEST_CASE("Check Collision works accordingly") {
+
+  Engine engine(50,50, glm::vec2(0,0));
+
+  SECTION("Check Collision checks for Bullet and Enemy Collision") {
+
+    SECTION("Check Collision works when bullet hitpoints < enemy hitpoints"){
+      engine.AddBullet(glm::vec2(25,25),
+                       1.0f, 10, glm::vec2(26,25));
+      engine.AddEnemy(glm::vec2(26,25),
+                      1.0f, 20, 0.3f);
+      engine.CheckCollisions();
+      REQUIRE(engine.get_enemies_().size() == 1);
+      REQUIRE(engine.get_bullets_().size() == 0);
+      REQUIRE(engine.get_enemies_().at(0).get_hit_points_() == 10);
+      // enemy gets knocked back
+      REQUIRE(engine.get_enemies_().at(0).get_velocity_() == glm::vec2(10,0));
+    }
+
+    SECTION("Check Collision works when bullet hitpoints > enemy hitpoints"){
+      engine.AddBullet(glm::vec2(25,25),
+                       1.0f, 20, glm::vec2(26,25));
+      engine.AddEnemy(glm::vec2(26,25),
+                      1.0f, 10, 0.3f);
+      engine.CheckCollisions();
+      REQUIRE(engine.get_enemies_().size() == 0);
+      REQUIRE(engine.get_bullets_().size() == 1);
+      REQUIRE(engine.get_bullets_().at(0).get_hit_points_() == 10);
+      // enemy gets knocked back
+      REQUIRE(engine.get_bullets_().at(0).get_velocity_() == glm::vec2(10,0));
+    }
+
+    SECTION("Check Collision works when bullet hitpoints == enemy hitpoints") {
+      engine.AddBullet(glm::vec2(25,25),
+                       1.0f, 10, glm::vec2(26,25));
+      engine.AddEnemy(glm::vec2(26,25),
+                      1.0f, 10, 0.3f);
+      engine.CheckCollisions();
+      REQUIRE(engine.get_enemies_().size() == 0);
+      REQUIRE(engine.get_bullets_().size() == 0);
+    }
+  }
+}
+
+TEST_CASE("Handle Shoot works accordingly") {
+
+  Engine engine(50,50, glm::vec2(25,25));
+
+  SECTION("Handle Shoot spawns bullet heading towards cursor") {
+    std::chrono::seconds dura(1);
+    std::this_thread::sleep_for(dura); // pause code for 1 second to load
+    engine.HandleShoot(glm::vec2(27,25));
+    REQUIRE(engine.get_bullets_().size() == 1);
+    REQUIRE(engine.get_bullets_().at(0).get_velocity_() == glm::vec2 (10,0));
+  }
+
+  SECTION("Handle Shoot does not spawn bullet when duration from last shot < 1sec") {
+    std::chrono::milliseconds dura(250);
+    std::this_thread::sleep_for(dura); // pause code for 0.25 seconds
+    engine.HandleShoot(glm::vec2(27,25));
+    REQUIRE(engine.get_bullets_().size() == 0);
+    std::this_thread::sleep_for(dura); // pause code for 0.25 seconds
+    std::this_thread::sleep_for(dura); // pause code for 0.25 seconds
+    engine.HandleShoot(glm::vec2(27,25));
+    REQUIRE(engine.get_bullets_().size() == 0);
+  }
+}
+
+
 
