@@ -53,19 +53,19 @@ namespace shooter {
 
     void Engine::HandleShoot(glm::vec2 cursor) {
         if (player_.Shoot()) {
-        AddBullet(player_.get_position_(), 10.0f, 20, cursor);
+        AddBullet(player_.get_position_(), 10.0f, 15, cursor);
       }
     }
 
     void Engine::AddBullet(glm::vec2 player_position, float radius, int hitpoints,
                            glm::vec2 cursor) {
-      bullets_.push_back(Bullet(player_position,
-                                radius, hitpoints, cursor));
+      bullets_.emplace_back(player_position,
+                                radius, hitpoints, cursor);
     }
 
     void Engine::AddEnemy(glm::vec2 position, float radius,
                           int hit_points, float level) {
-      enemies_.push_back(Enemy(position,radius,hit_points,level));
+      enemies_.emplace_back(position,radius,hit_points,level);
     }
 
     void Engine::SpawnEnemy() {
@@ -97,7 +97,7 @@ namespace shooter {
 
     void Engine::HandlePlayerAtBoundary() {
       const glm::vec2& position = player_.get_position_();
-      const glm::vec2& velocity = player_.get_velocity();
+      const glm::vec2& velocity = player_.get_velocity_();
       float radius = player_.get_radius_();
       if ((position.y - radius < 0 && velocity.y < 0) ||
           (position.y + radius > board_dimensions_.y && velocity.y > 0)) {

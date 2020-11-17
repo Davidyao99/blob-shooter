@@ -24,10 +24,6 @@ namespace shooter {
       }
     }
 
-    const glm::vec2 Player::get_velocity() const {
-      return velocity_;
-    }
-
     void Player::Move() {
       position_ += velocity_;
       velocity_ *= 0.9;
