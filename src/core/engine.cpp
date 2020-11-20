@@ -84,7 +84,6 @@ namespace shooter {
         }
         last_enemy_wave_ = std::chrono::system_clock::now();
       }
-
     }
 
     const std::vector<Bullet>& Engine::get_bullets_() const {
@@ -93,6 +92,10 @@ namespace shooter {
 
     const std::vector<Enemy>& Engine::get_enemies_() const {
         return enemies_;
+    }
+
+    const glm::ivec2& Engine::get_board_dimensions_() const {
+      return board_dimensions_;
     }
 
     void Engine::HandlePlayerAtBoundary() {

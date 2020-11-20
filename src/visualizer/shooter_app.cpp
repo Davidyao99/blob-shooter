@@ -11,7 +11,7 @@ namespace shooter {
                           static_cast<float>(kScreenHeight)),
                   moves_(),
                   screen_(glm::ivec2(kMargin, kMargin), kScreenLength,
-                  kScreenHeight) {
+                  kScreenHeight, engine_.get_board_dimensions_()) {
 
             ci::app::setWindowSize( kWindowLength, kWindowHeight);
         }
@@ -67,9 +67,8 @@ namespace shooter {
         }
         void ShooterApp::mouseDown(ci::app::MouseEvent event) {
           // gets cursor relative pos to player
-          glm::vec2 cursor_relative_pos = event.getPos() - screen_.get_kTopLeft();
+          glm::vec2 cursor_relative_pos = event.getPos() - screen_.GetCenter();
           engine_.HandleShoot(cursor_relative_pos);
         }
     }
 }
-

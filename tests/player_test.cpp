@@ -11,22 +11,22 @@ TEST_CASE("Player Accelerate works accordingly") {
 
   SECTION("Accelerate works for left") {
     player.Accelerate(Direction::left);
-    REQUIRE(player.get_velocity() == glm::vec2(-1,0));
+    REQUIRE(player.get_velocity_() == glm::vec2(-1,0));
   }
 
   SECTION("Accelerate works for right") {
     player.Accelerate(Direction::right);
-    REQUIRE(player.get_velocity() == glm::vec2(1,0));
+    REQUIRE(player.get_velocity_() == glm::vec2(1,0));
   }
 
   SECTION("Accelerate works for up") {
     player.Accelerate(Direction::up);
-    REQUIRE(player.get_velocity() == glm::vec2(0,-1));
+    REQUIRE(player.get_velocity_() == glm::vec2(0,-1));
   }
 
   SECTION("Accelerate works for down") {
     player.Accelerate(Direction::down);
-    REQUIRE(player.get_velocity() == glm::vec2(0,1));
+    REQUIRE(player.get_velocity_() == glm::vec2(0,1));
   }
 }
 
@@ -41,14 +41,14 @@ TEST_CASE("Player Move works accordingly") {
 
   SECTION("Player Move gradually reduces velocity") {
     player.Move();
-    REQUIRE(player.get_velocity() == glm::vec2(0.9,0));
+    REQUIRE(player.get_velocity_() == glm::vec2(0.9,0));
   }
 
   SECTION("Player Move rounds to zero after reptitive calls without accelerating") {
     for (size_t iter = 30; iter != 0; iter --) {
       player.Move();
     }
-    REQUIRE(player.get_velocity() == glm::vec2(0,0));
+    REQUIRE(player.get_velocity_() == glm::vec2(0,0));
   }
 
 }
@@ -102,7 +102,7 @@ TEST_CASE("ZeroXVelocity works accordingly and zeros x velocity") {
   player.Accelerate(Direction::right);
   player.Accelerate(Direction::down);
   player.ZeroXVelocity();
-  REQUIRE(glm::vec2(0,1) == player.get_velocity());
+  REQUIRE(glm::vec2(0,1) == player.get_velocity_());
 }
 
 TEST_CASE("ZeroYVelocity works accordingly and zeros x velocity") {
@@ -110,5 +110,5 @@ TEST_CASE("ZeroYVelocity works accordingly and zeros x velocity") {
   player.Accelerate(Direction::right);
   player.Accelerate(Direction::down);
   player.ZeroYVelocity();
-  REQUIRE(glm::vec2(1,0) == player.get_velocity());
+  REQUIRE(glm::vec2(1,0) == player.get_velocity_());
 }

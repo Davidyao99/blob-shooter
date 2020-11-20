@@ -27,7 +27,7 @@ TEST_CASE("Engine Update works accordingly") {
     const Player &player = engine.get_player_();
     std::set<Direction> directions{Direction::right, Direction::down};
     engine.update(directions);
-    REQUIRE(player.get_velocity() == glm::vec2(0.9,0.9));
+    REQUIRE(player.get_velocity_() == glm::vec2(0.9,0.9));
     REQUIRE(player.get_position_() == glm::vec2(26,26));
   }
 
@@ -36,7 +36,7 @@ TEST_CASE("Engine Update works accordingly") {
     const Player &player = engine.get_player_();
     std::set<Direction> directions{Direction::right, Direction::up};
     engine.update(directions);
-    REQUIRE(player.get_velocity() == glm::vec2(0.9,0));
+    REQUIRE(player.get_velocity_() == glm::vec2(0.9,0));
     REQUIRE(player.get_position_() == glm::vec2(26,0));
   }
 
@@ -45,7 +45,7 @@ TEST_CASE("Engine Update works accordingly") {
     const Player &player = engine.get_player_();
     std::set<Direction> directions{Direction::right, Direction::down};
     engine.update(directions);
-    REQUIRE(player.get_velocity() == glm::vec2(0.9,0));
+    REQUIRE(player.get_velocity_() == glm::vec2(0.9,0));
     REQUIRE(player.get_position_() == glm::vec2(26,50));
   }
 
@@ -54,7 +54,7 @@ TEST_CASE("Engine Update works accordingly") {
     const Player &player = engine.get_player_();
     std::set<Direction> directions{Direction::right, Direction::down};
     engine.update(directions);
-    REQUIRE(player.get_velocity() == glm::vec2(0,0.9));
+    REQUIRE(player.get_velocity_() == glm::vec2(0,0.9));
     REQUIRE(player.get_position_() == glm::vec2(50,26));
   }
 
@@ -63,7 +63,7 @@ TEST_CASE("Engine Update works accordingly") {
     const Player &player = engine.get_player_();
     std::set<Direction> directions{Direction::left, Direction::down};
     engine.update(directions);
-    REQUIRE(player.get_velocity() == glm::vec2(0,0.9));
+    REQUIRE(player.get_velocity_() == glm::vec2(0,0.9));
     REQUIRE(player.get_position_() == glm::vec2(0,26));
   }
 

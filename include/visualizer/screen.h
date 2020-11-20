@@ -16,7 +16,8 @@ namespace shooter {
 
           public:
 
-           Screen(glm::ivec2 top_left, int screen_length, int screen_height);
+           Screen(glm::ivec2 top_left, int screen_length,
+                  int screen_height, const glm::ivec2 board_dimensions);
 
            void Draw(const Player& player,
                      const std::vector<Enemy> &enemies,
@@ -28,16 +29,13 @@ namespace shooter {
              */
             bool PositionInBound(const glm::ivec2 position) const;
 
-            //Todo to be used for camera scrolling
+            const glm::ivec2 GetCenter() const;
 
-//            const glm::ivec2 Screen::GetCenter() const;
-//
-//            glm::ivec2 GetEntityScreenPosition(const Entity& entity,
-//                                                  const glm::vec2 player) const;
+            glm::ivec2 GetScreenPosition(const glm::vec2 target_position,
+                                                  const glm::vec2 player) const;
+
             // getters
             const glm::ivec2 get_kTopLeft() const;
-
-
 
 
           private:
@@ -45,6 +43,7 @@ namespace shooter {
 
            const glm::ivec2 kTopLeft;
            const glm::ivec2 kCenter; // always center of screen
+           const glm::ivec2 kEngineDimensions;
            const int kLength;
            const int kHeight;
 
@@ -58,13 +57,24 @@ namespace shooter {
             * Draw enemies
             * @param enemies
             */
-           void DrawEnemies(const std::vector<Enemy> &enemies) const;
+           void DrawEnemies(const std::vector<Enemy> &enemies,
+                            const glm::vec2 player) const;
 
            /**
             * Draws bullets
             * @param bullets
             */
-           void DrawBullets(const std::vector<Bullet> &bullets) const;
+           void DrawBullets(const std::vector<Bullet> &bullets,
+                            const glm::vec2 player) const;
+
+           /**
+            * Draw boundary lines
+            * @param player
+            */
+           void DrawBoundaries(const Player& player) const;
+
+           void ScreenProcessBoundary(glm::ivec2 &screen_position) const;
+
 
         };
 

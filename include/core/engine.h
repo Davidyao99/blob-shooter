@@ -43,6 +43,7 @@ namespace shooter {
       const std::vector<Enemy>& get_enemies_() const;
       const Player& get_player_() const;
       const std::vector<glm::vec2>& get_enemy_spawns_() const;
+      const glm::ivec2& get_board_dimensions_() const;
 
       /**
        * Handles collision interaction by calling HandleEnemyBulletCollision
