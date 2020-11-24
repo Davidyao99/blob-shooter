@@ -21,7 +21,7 @@ namespace shooter {
 
     public:
       Player(glm::vec2 position, float radius,
-             int hit_points);
+             int hit_points, Weapon weapon);
 
       /**
        * Override Move method from Entity to simulate friction by
@@ -35,13 +35,15 @@ namespace shooter {
        */
       void Accelerate(Direction direction);
 
-      const Weapon& Player::get_curr_weopon_() const;
+      const Weapon& Player::get_curr_weapon_() const;
 
       /**
        * Zero X component of Velocity, to be called when player at right
        * or left boundary
        */
       void ZeroXVelocity();
+
+      void ReloadWeapon();
 
       /**
        * Zero Y component of velocity, to be called when player at top or
@@ -54,7 +56,7 @@ namespace shooter {
        * 1 sec ago, return 1
        * @return
        */
-      float GetReloadStatus() const;
+      float GetWeaponReloadStatus() const;
 
       /**
        * Change weapon
@@ -68,9 +70,14 @@ namespace shooter {
        */
       void AddWeapon(Weapon weapon);
 
+      void ChangeNextWeapon();
+
+      void ChangePrevWeapon();
+
     private:
         std::chrono::system_clock::time_point last_fire_;
-        Weapon &curr_weapon_;
         std::vector<Weapon> weapons_;
+        int curr_weapon_index_;
+
     };
 }

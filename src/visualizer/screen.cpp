@@ -31,7 +31,7 @@ namespace shooter {
     }
 
   void Screen::DrawPlayer(const Player& player) const {
-    float reload_status = player.GetReloadStatus();
+    float reload_status = player.GetWeaponReloadStatus();
     glm::ivec2 player_screen_position(kCenter + kTopLeft);
     glm::vec2 reload_bar_top_left(player_screen_position.x - 20,
                                   player_screen_position.y - player.get_radius_() - 8);

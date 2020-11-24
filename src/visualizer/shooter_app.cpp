@@ -46,6 +46,12 @@ namespace shooter {
                 case ci::app::KeyEvent::KEY_a:
                     moves_.insert(left);
                     break;
+                case ci::app::KeyEvent::KEY_q:
+                  engine_.ChangeWeapon(true);
+                  break;
+                case ci::app::KeyEvent::KEY_e:
+                  engine_.ChangeWeapon(false);
+                  break;
             }
         }
 
@@ -68,7 +74,9 @@ namespace shooter {
         void ShooterApp::mouseDown(ci::app::MouseEvent event) {
           // gets cursor relative pos to player
           glm::vec2 cursor_relative_pos = event.getPos() - screen_.GetCenter();
-          engine_.HandleShoot(cursor_relative_pos);
+          if (engine_.Reloaded()) {
+            engine_.HandleShoot(cursor_relative_pos);
+          }
         }
     }
 }

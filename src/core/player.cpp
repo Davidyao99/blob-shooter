@@ -3,9 +3,11 @@
 namespace shooter {
 
     Player::Player(glm::vec2 position, float radius,
-    int hit_points) :
+    int hit_points, Weapon weapon) :
             Entity(position, radius, hit_points),
-            curr_weapon_(weapons_.at(0)) {
+            weapons_(),
+            curr_weapon_index_(0) {
+      weapons_.push_back(weapon);
     }
 
     void Player::Accelerate(Direction direction) {
@@ -33,45 +35,97 @@ namespace shooter {
       }
     }
 
-    const Weapon& Player::get_curr_weopon_() const{
-      return curr_weapon_;
+    void Player::ReloadWeapon() {
+      weapons_.at(curr_weapon_index_).Reload();
     }
 
-    void Player::ChangeWeapon(bool is_next) {
-      auto curr_iter = std::find(weapons_.begin(),
-                                 weapons_.end(), curr_weapon_);
-      while (curr_iter != weapons_.end()) {
-        if (curr_iter->get_unlocked_()) {
-          curr_weapon_ = *curr_iter;
+    float Player::GetWeaponReloadStatus() const {
+      return weapons_.at(curr_weapon_index_).GetReloadStatus();
+    }
+
+    const Weapon& Player::get_curr_weapon_() const{
+      return weapons_.at(curr_weapon_index_);
+    }
+
+    void Player::ChangeNextWeapon() {
+      size_t curr_idx = curr_weapon_index_ + 1;
+      while (curr_idx < weapons_.size()) {
+        if (weapons_.at(curr_idx).get_unlocked_()) {
+          curr_weapon_index_ = curr_idx;
+          std::cout << curr_weapon_index_ << std::endl;
           return;
         }
-        if (is_next) {
-          curr_iter++;
-        } else {
-          curr_iter--;
-        }
+        curr_idx++;
       }
-      auto curr_iter_2 = curr_iter;
-      if (is_next) {
-        curr_iter_2 = weapons_.begin();
-      } else {
-        curr_iter_2 = weapons_.end();
-      }
-      while (curr_iter_2 != curr_iter) {
-        if (curr_iter->get_unlocked_()) {
-          curr_weapon_ = *curr_iter;
+      curr_idx = 0;
+      while (curr_idx != curr_weapon_index_) {
+        if (weapons_.at(curr_idx).get_unlocked_()) {
+          curr_weapon_index_ = curr_idx;
+          std::cout<<curr_weapon_index_<<std::endl;
           return;
         }
-        if (is_next) {
-          curr_iter++;
-        } else {
-          curr_iter--;
-        }
+        curr_idx++;
       }
     }
+
+    void Player::ChangePrevWeapon() {
+      size_t curr_idx = curr_weapon_index_ - 1;
+      while (curr_idx < weapons_.size()) {
+        if (weapons_.at(curr_idx).get_unlocked_()) {
+          curr_weapon_index_ = curr_idx;
+          std::cout << curr_weapon_index_ << std::endl;
+          return;
+        }
+        curr_idx--;
+      }
+      curr_idx = weapons_.size() - 1;
+      while (curr_idx != curr_weapon_index_) {
+        if (weapons_.at(curr_idx).get_unlocked_()) {
+          curr_weapon_index_ = curr_idx;
+          std::cout<<curr_weapon_index_<<std::endl;
+          return;
+        }
+        curr_idx--;
+      }
+    }
+
+//    void Player::ChangeWeapon(bool is_next) {
+//      std::cout<<curr_weapon_index_<<std::endl;
+//      size_t curr_idx = curr_weapon_index_;
+//      while (curr_idx < weapons_.size()) {
+//        if (weapons_.at(curr_idx).get_unlocked_()) {
+//          curr_weapon_index_ = curr_idx;
+//          std::cout<<curr_weapon_index_<<std::endl;
+//          return;
+//        }
+//        if (is_next) {
+//          curr_idx++;
+//        } else {
+//          curr_idx--;
+//        }
+//      }
+//      if (is_next) {
+//        curr_idx = 0;
+//      } else {
+//        curr_idx = weapons_.size()-1;
+//      }
+//      while (curr_idx != curr_weapon_index_) {
+//        if (weapons_.at(curr_idx).get_unlocked_()) {
+//          curr_weapon_index_ = curr_idx;
+//          std::cout<<curr_weapon_index_<<std::endl;
+//          return;
+//        }
+//        if (is_next) {
+//          curr_idx++;
+//        } else {
+//          curr_idx--;
+//        }
+//      }
+//      std::cout<<curr_weapon_index_<<std::endl;
+//    }
 
     void Player::AddWeapon(Weapon weapon) {
-      weapons_.push_back(weapon)
+      weapons_.push_back(weapon);
     }
 
     void Player::ZeroXVelocity() {

@@ -8,12 +8,19 @@ namespace shooter {
     }
 
     Engine::Engine(float length, float height, glm::vec2 player_position) :
-        player_(player_position, 10.0f, 20),
+        player_(player_position, 10.0f, 20,
+                  Weapon(std::string("pistol"), bullet,
+                         0.2f, 1000)),
         board_dimensions_(length, height), enemy_spawns_(),
         begin_time_(std::chrono::system_clock::now()),
         last_enemy_wave_(std::chrono::system_clock::now()){
+      CreateWeapons();
       CreateEnemySpawn();
+    }
 
+    void Engine::CreateWeapons() {
+      player_.AddWeapon(Weapon("Rifle", bullet,
+                               0.3f, 200));
     }
 
     void Engine::CreateEnemySpawn() {
@@ -53,18 +60,21 @@ namespace shooter {
     }
 
     ProjectileType Engine::HandleShoot(glm::vec2 cursor) {
-      ProjectileType type = player_.get_curr_weopon_().get_projectile_type_();
+      ProjectileType type = player_.get_curr_weapon_().get_projectile_type_();
       if (type != beam) {
         AddBullet(player_.get_position_(), 10.0f,
                   15, cursor, type == explosive);
       } else {
-        ShootBeam(cursor)
+        ShootBeam(cursor);
       }
+      player_.ReloadWeapon(); // reset reload timing
       return type;
     }
 
+    void Engine::ShootBeam(glm::vec2 cursor){};
+
     bool Engine::Reloaded() const {
-      return player_.GetReloadStatus() == 1.0f;
+      return player_.GetWeaponReloadStatus() == 1.0f;
     }
 
     void Engine::AddBullet(glm::vec2 player_position, float radius, int hitpoints,
@@ -76,6 +86,15 @@ namespace shooter {
     void Engine::AddEnemy(glm::vec2 position, float radius,
                           int hit_points, float level) {
       enemies_.emplace_back(position,radius,hit_points,level);
+    }
+
+    void Engine::ChangeWeapon(bool next) {
+      std::cout<<"hello"<<std::endl;
+      if (next) {
+        player_.ChangeNextWeapon();
+      } else {
+        player_.ChangePrevWeapon();
+      }
     }
 
     void Engine::SpawnEnemy() {

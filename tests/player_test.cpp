@@ -72,7 +72,7 @@ TEST_CASE("Player Shoot works accordingly") {
   }
 }
 
-TEST_CASE("Player GetReloadStatus works accordingly") {
+TEST_CASE("Player GetWeaponReloadStatus works accordingly") {
 
   Player player(glm::vec2(0,5), 1.0f,2);
 
@@ -80,10 +80,10 @@ TEST_CASE("Player GetReloadStatus works accordingly") {
     player.Shoot();
     std::chrono::milliseconds dura1(500);
     std::this_thread::sleep_for(dura1); // pause code for 0.5 second
-    float reload_status1 = player.GetReloadStatus();
+    float reload_status1 = player.GetWeaponReloadStatus();
     std::chrono::milliseconds dura2(250);
     std::this_thread::sleep_for(dura2); // pause code for 0.25 second
-    float reload_status2 = player.GetReloadStatus();
+    float reload_status2 = player.GetWeaponReloadStatus();
     REQUIRE(0.5f == Approx(reload_status1).epsilon(1e-2));
     REQUIRE(0.75f == Approx(reload_status2).epsilon(1e-2));
   }
@@ -92,7 +92,7 @@ TEST_CASE("Player GetReloadStatus works accordingly") {
     player.Shoot();
     std::chrono::milliseconds dura(1200);
     std::this_thread::sleep_for(dura); // pause code for 1.2 second
-    float reload_status = player.GetReloadStatus();
+    float reload_status = player.GetWeaponReloadStatus();
     REQUIRE(1.0f == Approx(reload_status).epsilon(1e-2));
   }
 }

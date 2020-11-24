@@ -51,12 +51,16 @@ namespace shooter {
        */
       void CheckCollisions();
 
+      void CreateWeapons();
+
       /**
        * Handle shooting
        * @param cursor takes in position of cursor so that bullet is spawn
        * with velocity heading towards cursor
        */
       ProjectileType Engine::HandleShoot(glm::vec2 cursor);
+
+      void ShootBeam(glm::vec2 cursor);
 
       /**
        * Instantiates Enemy object and adds it to enemies_. Made public for
@@ -80,6 +84,8 @@ namespace shooter {
                              glm::vec2 cursor, bool is_explosive);
 
       bool Reloaded() const;
+
+      void ChangeWeapon(bool next);
 
      private:
 
