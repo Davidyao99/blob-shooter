@@ -14,14 +14,15 @@ namespace shooter{
 
     public:
 
-      Entity(glm::vec2 position, float radius, int hit_points, glm::vec2 velocity);
-      Entity(glm::vec2 position, float radius, int hit_points);
+      Entity(glm::vec2 position, float radius, int health, int damage, glm::vec2 velocity);
+      Entity(glm::vec2 position, float radius, int health, int damage);
 
       // getters
       const float get_radius_() const;
       const glm::vec2 get_position_() const;
       const glm::vec2 get_velocity_() const;
-      const int get_hit_points_() const;
+      const int get_health_() const;
+      const int get_damage_() const;
 
       /**
        * Move method that adds velocity to position to move entity
@@ -41,8 +42,11 @@ namespace shooter{
        */
       bool IsDead() const;
 
-      int hit_points_;
+      void Hit(int hit_point);
 
+      int health_;
+
+      int damage_;
 
     protected:
       glm::vec2 position_;

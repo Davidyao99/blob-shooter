@@ -11,7 +11,9 @@ namespace shooter {
                           static_cast<float>(kScreenHeight*4)),
                   moves_(),
                   screen_(glm::ivec2(kMargin, kMargin), kScreenLength,
-                  kScreenHeight, engine_.get_board_dimensions_()) {
+                  kScreenHeight, engine_.get_board_dimensions_()),
+                  firing_(false),
+                  is_beam_(false){
 
             ci::app::setWindowSize( kWindowLength, kWindowHeight);
         }
@@ -25,9 +27,24 @@ namespace shooter {
                          engine_.get_enemies_(),
                          engine_.get_bullets_());
 
+          if (is_beam_) {
+            screen_.DrawBeam(getMousePos()-getWindowPos(),
+                engine_.get_player_().GetCurrentWeapon().get_projectile_blueprint_().radius_);
+            is_beam_ = false;
+          }
         }
+
         void ShooterApp::update() {
-            engine_.update(moves_);
+          engine_.update(moves_);
+          if (firing_) {
+            // gets cursor relative pos to player
+            glm::vec2 cursor_relative_pos =
+                getMousePos() - getWindowPos() - screen_.GetCenter();
+            if (engine_.Reloaded()) {
+              ProjectileType type = engine_.HandleShoot(cursor_relative_pos);
+              is_beam_ = type == beam;
+            }
+          }
         }
 
         void ShooterApp::setup(){};
@@ -72,11 +89,11 @@ namespace shooter {
             }
         }
         void ShooterApp::mouseDown(ci::app::MouseEvent event) {
-          // gets cursor relative pos to player
-          glm::vec2 cursor_relative_pos = event.getPos() - screen_.GetCenter();
-          if (engine_.Reloaded()) {
-            engine_.HandleShoot(cursor_relative_pos);
-          }
+          firing_ = true;
+        }
+
+        void ShooterApp::mouseUp(ci::app::MouseEvent event) {
+          firing_ = false;
         }
     }
 }

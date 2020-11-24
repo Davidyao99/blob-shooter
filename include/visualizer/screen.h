@@ -22,6 +22,8 @@ namespace shooter {
            void Draw(const Player& player,
                      const std::vector<Enemy> &enemies,
                      const std::vector<Bullet>& bullets);
+
+           void DrawBeam(glm::vec2 cursor_position, float radius);
             /**
              * Checks if position within bound, if outside, stop drawing item
              * @param position position to be examined

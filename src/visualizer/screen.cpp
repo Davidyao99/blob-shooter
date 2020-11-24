@@ -48,6 +48,15 @@ namespace shooter {
                              player.get_radius_());
   }
 
+  void Screen::DrawBeam(glm::vec2 cursor_position, float radius) {
+    ci::gl::lineWidth(radius*2.0f);
+    ci::gl::color(Color( "red"));
+    glm::ivec2 cursor_relative_vec = static_cast<glm::ivec2>(cursor_position) - kCenter;
+    ci::gl::drawLine(kCenter+kTopLeft,
+                     static_cast<glm::ivec2>(cursor_position) + kTopLeft + cursor_relative_vec*100);
+  }
+
+
   void Screen::ScreenProcessBoundary(glm::ivec2 &screen_position) const {
     if (screen_position.x < 0) {
       screen_position.x = 0;
@@ -139,12 +148,15 @@ namespace shooter {
     for (const Enemy& enemy : enemies) {
       glm::ivec2 screen_position = GetScreenPosition(enemy.get_position_(), player);
       if (PositionInBound(screen_position)) {
-        int hit_points = enemy.get_hit_points_();
+        int hit_points = enemy.get_health_();
         float bluishness = static_cast<float>(hit_points) / 10;
         ci::gl::color(Color(1.0f-bluishness,1.0f-bluishness,1.0f));
         ci::gl::drawSolidCircle(
             screen_position + kTopLeft,
             enemy.get_radius_());
+        ci::gl::drawStringCentered(std::to_string(enemy.get_health_()), screen_position,
+                                   ci::Color("white"),
+                                   ci::Font("monospace", 20));
       }
     }
   }

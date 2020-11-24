@@ -1,5 +1,6 @@
 #pragma once
 
+#include "bullet.h"
 #include "cinder/gl/gl.h"
 #include "entity.h"
 #include "weapon.h"
@@ -35,7 +36,7 @@ namespace shooter {
        */
       void Accelerate(Direction direction);
 
-      const Weapon& Player::get_curr_weapon_() const;
+      const Weapon& GetCurrentWeapon() const;
 
       /**
        * Zero X component of Velocity, to be called when player at right
@@ -58,11 +59,7 @@ namespace shooter {
        */
       float GetWeaponReloadStatus() const;
 
-      /**
-       * Change weapon
-       * @param is_next true for next weapon, false for prev weapon
-       */
-      void ChangeWeapon(bool is_next);
+      Bullet FireBullet(glm::vec2 cursor);
 
 
       /**

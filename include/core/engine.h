@@ -60,7 +60,7 @@ namespace shooter {
        */
       ProjectileType Engine::HandleShoot(glm::vec2 cursor);
 
-      void ShootBeam(glm::vec2 cursor);
+      void ShootBeam(glm::vec2 cursor, ProjectileBlueprint projectile_blueprint);
 
       /**
        * Instantiates Enemy object and adds it to enemies_. Made public for
@@ -70,7 +70,8 @@ namespace shooter {
        * @param hit_points hit_points of enemy
        * @param level how fast enemy follows player
        */
-      void AddEnemy(glm::vec2 position, float radius, int hit_points, float level);
+      void AddEnemy(glm::vec2 position, float radius, int health,
+                    int damage, float level);
 
       /**
        * Instantiates Bullet object and adds it to bullets_. Made public for
@@ -80,8 +81,7 @@ namespace shooter {
        * @param hitpoints hitpoints of bullet
        * @param cursor cursor location for bullet to head to
        */
-      void AddBullet(glm::vec2 player_position, float radius, int hitpoints,
-                             glm::vec2 cursor, bool is_explosive);
+      void AddBullet(Bullet bullet);
 
       bool Reloaded() const;
 
@@ -118,6 +118,8 @@ namespace shooter {
        * construction of engine. 21 spawns on each side.
        */
       void CreateEnemySpawn();
+
+      void RemoveDeaths();
 
      Player player_;
      std::vector<Bullet> bullets_;

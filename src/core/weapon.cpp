@@ -5,13 +5,15 @@
 namespace shooter {
 
   Weapon::Weapon(std::string name, ProjectileType projectile_type,
-               float firing_angle, int reload_rate) :
+                 float firing_angle, int reload_rate,
+               ProjectileBlueprint projectile_blueprint) :
   last_fire_(std::chrono::system_clock::now()),
   reload_rate(reload_rate),
   name_(name),
   projectile_type_(projectile_type),
   firing_angle_(firing_angle),
-  unlocked_(true){
+  unlocked_(true),
+  projectile_blueprint_(projectile_blueprint){
   }
 
   float Weapon::GetReloadStatus() const {
@@ -43,6 +45,14 @@ namespace shooter {
     return last_fire_;
   }
 
+  ProjectileBlueprint Weapon::get_projectile_blueprint_() const {
+    return projectile_blueprint_;
+  }
+
+  float Weapon::get_firing_angle_() const {
+    return firing_angle_;
+  }
+
   const std::string Weapon::get_name_() const {
     return name_;
   }
@@ -51,7 +61,7 @@ namespace shooter {
     return projectile_type_;
   }
 
-  int Weapon::get_reload_rate() const {
+  int Weapon::get_reload_rate_() const {
     return reload_rate;
   }
 

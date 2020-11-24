@@ -4,12 +4,12 @@
 
 namespace shooter {
 
-    Bullet::Bullet(glm::vec2 position, float radius, int hit_points,
-               glm::vec2 cursor, bool is_explosive_) :
-      Entity(position, radius, hit_points),
-      is_explosive_(is_explosive_)
+    Bullet::Bullet(glm::vec2 position, ProjectileBlueprint blueprint,
+               glm::vec2 cursor) :
+      Entity(position, blueprint.radius_, 1, blueprint.damage_),
+      is_explosive_(blueprint.isExplosive_)
       {
-        velocity_ = ((cursor) / glm::length(cursor)) * 10.0f;
+        velocity_ = ((cursor) / glm::length(cursor)) * blueprint.speed_;
     }
 
     bool Bullet::get_is_explosive_() {

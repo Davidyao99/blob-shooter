@@ -3,10 +3,10 @@
 namespace shooter {
 
     Player::Player(glm::vec2 position, float radius,
-    int hit_points, Weapon weapon) :
-            Entity(position, radius, hit_points),
+    int health, Weapon weapon) :
+            Entity(position, radius, health, 0),
             weapons_(),
-            curr_weapon_index_(0) {
+            curr_weapon_index_(0) { // why this doesnt work with reference variable
       weapons_.push_back(weapon);
     }
 
@@ -43,8 +43,21 @@ namespace shooter {
       return weapons_.at(curr_weapon_index_).GetReloadStatus();
     }
 
-    const Weapon& Player::get_curr_weapon_() const{
+    const Weapon& Player::GetCurrentWeapon() const{
       return weapons_.at(curr_weapon_index_);
+    }
+
+    Bullet Player::FireBullet(glm::vec2 cursor) {
+      Weapon weapon = GetCurrentWeapon();
+      std::cout<<cursor.x<<","<<cursor.y<<std::endl;
+      float r = glm::length(cursor);
+      float tita = atan2(cursor.y,cursor.x); // change to polar coordinates
+      float firing_angle = weapon.get_firing_angle_();
+      float random_deviation = (static_cast<float>(rand())/RAND_MAX - 0.5f)*firing_angle;
+      glm::vec2 new_cursor(r*cos(tita+random_deviation),
+                           r*sin(tita+random_deviation));
+      std::cout<<new_cursor.x<<","<<new_cursor.y<<std::endl;
+      return Bullet(position_, weapon.get_projectile_blueprint_(), new_cursor);
     }
 
     void Player::ChangeNextWeapon() {
@@ -88,41 +101,6 @@ namespace shooter {
         curr_idx--;
       }
     }
-
-//    void Player::ChangeWeapon(bool is_next) {
-//      std::cout<<curr_weapon_index_<<std::endl;
-//      size_t curr_idx = curr_weapon_index_;
-//      while (curr_idx < weapons_.size()) {
-//        if (weapons_.at(curr_idx).get_unlocked_()) {
-//          curr_weapon_index_ = curr_idx;
-//          std::cout<<curr_weapon_index_<<std::endl;
-//          return;
-//        }
-//        if (is_next) {
-//          curr_idx++;
-//        } else {
-//          curr_idx--;
-//        }
-//      }
-//      if (is_next) {
-//        curr_idx = 0;
-//      } else {
-//        curr_idx = weapons_.size()-1;
-//      }
-//      while (curr_idx != curr_weapon_index_) {
-//        if (weapons_.at(curr_idx).get_unlocked_()) {
-//          curr_weapon_index_ = curr_idx;
-//          std::cout<<curr_weapon_index_<<std::endl;
-//          return;
-//        }
-//        if (is_next) {
-//          curr_idx++;
-//        } else {
-//          curr_idx--;
-//        }
-//      }
-//      std::cout<<curr_weapon_index_<<std::endl;
-//    }
 
     void Player::AddWeapon(Weapon weapon) {
       weapons_.push_back(weapon);

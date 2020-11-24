@@ -2,6 +2,7 @@
 
 #include "cinder/gl/gl.h"
 #include "entity.h"
+#include "projectile_blueprint.h"
 
 namespace shooter {
 
@@ -20,8 +21,8 @@ namespace shooter {
       * @param hit_points hit points of bullet
       * @param cursor cursor position so bullet will be spawned heading towards it
       */
-     Bullet(glm::vec2 position, float radius, int hit_points,
-            glm::vec2 cursor, bool isExplosive);
+     Bullet(glm::vec2 position, ProjectileBlueprint blueprint,
+            glm::vec2 cursor);
 
      bool get_is_explosive_();
 

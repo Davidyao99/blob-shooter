@@ -22,7 +22,7 @@ namespace shooter{
       * 1.0f being fastest
       */
 
-     Enemy(glm::vec2 position, float radius, int hit_points, float level);
+     Enemy(glm::vec2 position, float radius, int health, int damage, float level);
 
      /**
       * Changes the velocity of enemy so that it follows player. Speed of
