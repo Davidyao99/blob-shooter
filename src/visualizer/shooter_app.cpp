@@ -7,8 +7,8 @@ namespace shooter {
     namespace visualizer {
 
         ShooterApp::ShooterApp()
-                : engine_(static_cast<float>(kScreenLength),
-                          static_cast<float>(kScreenHeight)),
+                : engine_(static_cast<float>(kScreenLength*4),
+                          static_cast<float>(kScreenHeight*4)),
                   moves_(),
                   screen_(glm::ivec2(kMargin, kMargin), kScreenLength,
                   kScreenHeight, engine_.get_board_dimensions_()) {

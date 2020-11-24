@@ -75,6 +75,8 @@ namespace shooter {
 
            void ScreenProcessBoundary(glm::ivec2 &screen_position) const;
 
+           void DrawGrid(const glm::ivec2 player) const;
+
 
         };
 

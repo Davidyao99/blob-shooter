@@ -13,6 +13,7 @@ namespace shooter {
         begin_time_(std::chrono::system_clock::now()),
         last_enemy_wave_(std::chrono::system_clock::now()){
       CreateEnemySpawn();
+
     }
 
     void Engine::CreateEnemySpawn() {
@@ -51,16 +52,25 @@ namespace shooter {
         SpawnEnemy();
     }
 
-    void Engine::HandleShoot(glm::vec2 cursor) {
-        if (player_.Shoot()) {
-        AddBullet(player_.get_position_(), 10.0f, 15, cursor);
+    ProjectileType Engine::HandleShoot(glm::vec2 cursor) {
+      ProjectileType type = player_.get_curr_weopon_().get_projectile_type_();
+      if (type != beam) {
+        AddBullet(player_.get_position_(), 10.0f,
+                  15, cursor, type == explosive);
+      } else {
+        ShootBeam(cursor)
       }
+      return type;
+    }
+
+    bool Engine::Reloaded() const {
+      return player_.GetReloadStatus() == 1.0f;
     }
 
     void Engine::AddBullet(glm::vec2 player_position, float radius, int hitpoints,
-                           glm::vec2 cursor) {
+                           glm::vec2 cursor, bool is_explosive) {
       bullets_.emplace_back(player_position,
-                                radius, hitpoints, cursor);
+                                radius, hitpoints, cursor, is_explosive);
     }
 
     void Engine::AddEnemy(glm::vec2 position, float radius,
@@ -75,7 +85,7 @@ namespace shooter {
       std::chrono::milliseconds time_since_last_wave =
           std::chrono::duration_cast<std::chrono::milliseconds>(
               std::chrono::system_clock::now() - last_enemy_wave_);
-      if (time_since_last_wave.count() > 10000) {
+      if (time_since_last_wave.count() > 100000) {
         size_t num_enemy_spawn = static_cast<size_t>(duration.count()) / 10000;
         for (num_enemy_spawn; num_enemy_spawn != 0; num_enemy_spawn--) {
           size_t index = (rand()%enemy_spawns_.size());

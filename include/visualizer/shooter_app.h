@@ -24,12 +24,12 @@ namespace shooter {
             void mouseDown(ci::app::MouseEvent event) override;
 
         private:
-            const int kWindowLength = 875;
-            const int kWindowHeight = 875;
-            const int kMargin = 50;
+            const int kWindowLength = 1200;
+            const int kWindowHeight = 1000;
+            const int kMargin = 5;
 
-            const int kScreenLength = 700;
-            const int kScreenHeight = 700;
+            const int kScreenLength = 1195;
+            const int kScreenHeight = 995;
 
             std::set<Direction> moves_;
             Engine engine_;

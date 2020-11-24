@@ -2,6 +2,7 @@
 
 #include "cinder/gl/gl.h"
 #include "entity.h"
+#include "weapon.h"
 
 namespace shooter {
 
@@ -19,7 +20,8 @@ namespace shooter {
     class Player : public Entity {
 
     public:
-      Player(glm::vec2 position, float radius, int hit_points);
+      Player(glm::vec2 position, float radius,
+             int hit_points);
 
       /**
        * Override Move method from Entity to simulate friction by
@@ -33,11 +35,7 @@ namespace shooter {
        */
       void Accelerate(Direction direction);
 
-      /**
-       * Checks if last_fire_ is > 1 sec ago
-       * @return true if last_fire_ > 1 sec ago, false otherwise
-       */
-      bool Shoot();
+      const Weapon& Player::get_curr_weopon_() const;
 
       /**
        * Zero X component of Velocity, to be called when player at right
@@ -58,7 +56,21 @@ namespace shooter {
        */
       float GetReloadStatus() const;
 
+      /**
+       * Change weapon
+       * @param is_next true for next weapon, false for prev weapon
+       */
+      void ChangeWeapon(bool is_next);
+
+
+      /**
+       * Adds weapon to weapons
+       */
+      void AddWeapon(Weapon weapon);
+
     private:
         std::chrono::system_clock::time_point last_fire_;
+        Weapon &curr_weapon_;
+        std::vector<Weapon> weapons_;
     };
 }

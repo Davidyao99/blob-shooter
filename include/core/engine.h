@@ -15,8 +15,8 @@ namespace shooter {
      /**
       * Constructor, spawns player in middle of playing field. Creates
       * enemies spawns on the boundaries of the field.
-      * @param length length of field
-      * @param height height of field
+      * @param length length of field, best to set in multiples of 20
+      * @param height height of field, best to set in multiples of 20
       */
      Engine(float length, float height);
 
@@ -56,7 +56,7 @@ namespace shooter {
        * @param cursor takes in position of cursor so that bullet is spawn
        * with velocity heading towards cursor
        */
-      void HandleShoot(glm::vec2 cursor);
+      ProjectileType Engine::HandleShoot(glm::vec2 cursor);
 
       /**
        * Instantiates Enemy object and adds it to enemies_. Made public for
@@ -77,9 +77,11 @@ namespace shooter {
        * @param cursor cursor location for bullet to head to
        */
       void AddBullet(glm::vec2 player_position, float radius, int hitpoints,
-                             glm::vec2 cursor);
+                             glm::vec2 cursor, bool is_explosive);
 
-    private:
+      bool Reloaded() const;
+
+     private:
 
       /**
        * Handle Enemy and Bullet Collision. If enemy dies, bullet continues.

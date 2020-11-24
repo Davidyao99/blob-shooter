@@ -15,7 +15,7 @@ namespace shooter {
 
     void Screen::Draw(const Player& player, const std::vector<Enemy> &enemies,
                       const std::vector<Bullet> &bullets) {
-      ci::gl::color(ci::Color("black"));
+      ci::gl::color(ci::Color(0.1f,0.1f,0.1f));
       vec2 bottom_right = kTopLeft + glm::ivec2(kLength, kHeight);
       ci::Rectf pixel_bounding_box(kTopLeft, bottom_right);
 
@@ -23,6 +23,7 @@ namespace shooter {
       ci::gl::color(ci::Color("black"));
       ci::gl::drawStrokedRect(pixel_bounding_box);
 
+      DrawGrid(player.get_position_());
       DrawPlayer(player);
       DrawEnemies(enemies, player.get_position_());
       DrawBullets(bullets, player.get_position_());
@@ -106,52 +107,31 @@ namespace shooter {
                           glm::ivec2(0,5));
       ci::gl::drawSolidRect(boundary1);
     }
+  }
 
+  void Screen::DrawGrid(const glm::ivec2 player) const {
+    ci::gl::color(Color("black"));
+    glm::ivec2 screen_in_engine_top_left = player - kCenter; // coords of screen top left in engine
+    int x_division = kEngineDimensions.x / 20;
+    int y_division = kEngineDimensions.y / 20;
 
+    // prevent negatives when player at boundary
+    screen_in_engine_top_left += glm::vec2 (x_division*5, y_division*5);
 
-//    const glm::ivec2 &player_position = static_cast<glm::ivec2>(player.get_position_());
-//    glm::ivec2 top_left_engine = GetScreenPosition(glm::ivec2(0,0),
-//                                                        player.get_position_());
-//    glm::ivec2 bottom_right_engine = GetScreenPosition(kEngineDimensions,
-//                                                        player.get_position_());
-//    bool no_boundaries = true;
-//    if (PositionInBound(top_left_engine)) {
-//      ci::gl::color(Color("green"));
-//      ci::Rectf boundary1(top_left_engine + kTopLeft,
-//                         top_left_engine + kTopLeft +
-//                         glm::ivec2(kLength - top_left_engine.x,5));
-//      ci::gl::drawSolidRect(boundary1);
-//      ci::Rectf boundary2 (top_left_engine + kTopLeft,
-//                          top_left_engine + kTopLeft
-//                              + glm::ivec2(-5,
-//                                            kHeight - top_left_engine.y));
-//
-//      ci::gl::drawSolidRect(boundary2);
-//      no_boundaries = false;
-//    }
-//    if (PositionInBound(bottom_right_engine)) {
-//      ci::gl::color(Color("green"));
-//
-//      ci::Rectf boundary1(bottom_right_engine + kTopLeft,
-//                          bottom_right_engine + kTopLeft +
-//                                       glm::ivec2(-bottom_right_engine.x,5));
-//
-//      ci::gl::drawSolidRect(boundary1);
-//      ci::Rectf boundary2 (bottom_right_engine + kTopLeft,
-//                           bottom_right_engine + kTopLeft +
-//                           glm::ivec2(5, -bottom_right_engine.y));
-//      ci::gl::drawSolidRect(boundary2);
-//      no_boundaries = false;
-//    }
-//    if (no_boundaries) {
-//      if (player_position.x < kCenter.x) {
-//        ci::Rectf boundary1(glm::ivec2(player_position.x,0) + kTopLeft,
-//                            glm::ivec2(player_position.x, kHeight)+
-//                            glm::ivec2(-5,0) + kTopLeft);
-//        ci::gl::drawSolidRect(boundary1);
-//      }
-//    }
-
+    int x = x_division - (screen_in_engine_top_left.x % x_division); // x offset
+    int y = y_division - (screen_in_engine_top_left.y % y_division); // y offset
+    while (x <= kLength) {
+      ci::Rectf boundary(glm::ivec2(x,0) + kTopLeft,
+                          glm::ivec2(x+2,kHeight) + kTopLeft);
+      ci::gl::drawSolidRect(boundary);
+      x += x_division;
+    }
+    while (y <= kHeight) {
+      ci::Rectf boundary(glm::ivec2(0,y) + kTopLeft,
+                          glm::ivec2(kLength,y+2) + kTopLeft);
+      ci::gl::drawSolidRect(boundary);
+      y += y_division;
+    }
   }
 
   void Screen::DrawEnemies(const std::vector<Enemy> &enemies,
@@ -184,8 +164,8 @@ namespace shooter {
   }
 
     bool Screen::PositionInBound(const glm::ivec2 position) const{
-      return (position.y < kLength && position.y > 0 &&
-          position.x > 0 && position.x < kHeight);
+      return (position.y < kHeight && position.y > 0 &&
+          position.x > 0 && position.x < kLength);
     }
 
     glm::ivec2 Screen::GetScreenPosition(const glm::vec2 target_position,
@@ -203,9 +183,5 @@ namespace shooter {
     const glm::ivec2 Screen::get_kTopLeft() const {
       return kTopLeft;
     }
-
-
   }
-
-
 }

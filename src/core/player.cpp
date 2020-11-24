@@ -2,9 +2,10 @@
 
 namespace shooter {
 
-    Player::Player(glm::vec2 position, float radius, int hit_points) :
-            Entity(position, radius, hit_points), last_fire_(std::chrono::system_clock::now())
-    {
+    Player::Player(glm::vec2 position, float radius,
+    int hit_points) :
+            Entity(position, radius, hit_points),
+            curr_weapon_(weapons_.at(0)) {
     }
 
     void Player::Accelerate(Direction direction) {
@@ -32,26 +33,45 @@ namespace shooter {
       }
     }
 
-    float Player::GetReloadStatus() const {
-      std::chrono::milliseconds duration =
-          std::chrono::duration_cast<std::chrono::milliseconds>(
-              std::chrono::system_clock::now() - last_fire_);
-      float status = duration.count() / 1000.0f;
-      if (status >= 1.0f) {
-        status = 1.0f;
-      }
-      return status;
+    const Weapon& Player::get_curr_weopon_() const{
+      return curr_weapon_;
     }
 
-    bool Player::Shoot() {
-        std::chrono::milliseconds duration =
-          std::chrono::duration_cast<std::chrono::milliseconds>(
-              std::chrono::system_clock::now() - last_fire_);
-        if ( duration.count() >= 1000) {
-            last_fire_ = std::chrono::system_clock::now();
-            return true;
+    void Player::ChangeWeapon(bool is_next) {
+      auto curr_iter = std::find(weapons_.begin(),
+                                 weapons_.end(), curr_weapon_);
+      while (curr_iter != weapons_.end()) {
+        if (curr_iter->get_unlocked_()) {
+          curr_weapon_ = *curr_iter;
+          return;
         }
-        return false;
+        if (is_next) {
+          curr_iter++;
+        } else {
+          curr_iter--;
+        }
+      }
+      auto curr_iter_2 = curr_iter;
+      if (is_next) {
+        curr_iter_2 = weapons_.begin();
+      } else {
+        curr_iter_2 = weapons_.end();
+      }
+      while (curr_iter_2 != curr_iter) {
+        if (curr_iter->get_unlocked_()) {
+          curr_weapon_ = *curr_iter;
+          return;
+        }
+        if (is_next) {
+          curr_iter++;
+        } else {
+          curr_iter--;
+        }
+      }
+    }
+
+    void Player::AddWeapon(Weapon weapon) {
+      weapons_.push_back(weapon)
     }
 
     void Player::ZeroXVelocity() {
