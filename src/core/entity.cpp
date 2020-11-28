@@ -54,4 +54,20 @@ namespace shooter {
       entity.Hit(damage_, position_);
     }
 
+    bool Entity::operator==(const Entity& other) const {
+      if (&other == this) {
+        return true;
+      }
+      bool same_position = (glm::length(this->position_ - other.position_) <
+                            0.001f);
+      bool same_velocity = (glm::length(this->velocity_ - other.velocity_) <
+                            0.001f);
+      return (same_position &&
+              same_velocity &&
+              this->radius_ == other.radius_ &&
+              this->health_ == other.health_ &&
+              this->damage_ == other.damage_);
+
+    }
+
 }

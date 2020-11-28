@@ -38,7 +38,7 @@ namespace shooter {
        */
       void update(std::set<Direction> moves);
 
-      void ClearExplosives();
+      void ClearExplosions();
 
       // getters
       const std::vector<Bullet>& get_bullets_() const;
@@ -53,7 +53,7 @@ namespace shooter {
        * Handles collision interaction by calling HandleEnemyBulletCollision
        * and HandleEnemyPlayerCollision()
        */
-      void CheckCollisions();
+      void HandleCollisions();
 
       void CreateWeapons();
 
@@ -125,7 +125,7 @@ namespace shooter {
        */
       void CreateEnemySpawn();
 
-      void RemoveDeaths();
+      void HandleDeaths();
 
      Player player_;
      std::vector<Bullet> bullets_;

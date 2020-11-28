@@ -42,15 +42,22 @@ namespace shooter{
        */
       bool IsDead() const;
 
+      /**
+       * Minus hit_point from entity health and adds rebound velocity
+       * to entity velocity
+       * @param hit_point amount to deduct from entity health
+       * @param impact_position position of impact
+       */
+
       void Hit(int hit_point, glm::vec2 impact_position);
 
-      int health_;
-
-      int damage_;
+      bool operator==(const Entity& other) const;
 
     protected:
       glm::vec2 position_;
       glm::vec2 velocity_;
       float radius_;
+      int health_;
+      int damage_;
   };
 }

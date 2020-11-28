@@ -29,7 +29,7 @@ namespace shooter {
                        engine_.get_explosives_(),
                        engine_.get_score_());
 
-          engine_.ClearExplosives();
+          engine_.ClearExplosions();
 
           if (is_beam_) {
             screen_.DrawBeam(getMousePos()-getWindowPos(),

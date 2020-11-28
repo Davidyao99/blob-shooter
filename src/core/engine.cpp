@@ -70,15 +70,20 @@ namespace shooter {
       enemy.Accelerate(player_pos);
       enemy.Move();
     }
-    CheckCollisions();
+    HandleCollisions();
     SpawnEnemy();
-    RemoveDeaths();
+    HandleDeaths();
   }
 
-  void Engine::RemoveDeaths() {
+  void Engine::HandleDeaths() {
     for (size_t bullet_idx = bullets_.size() - 1; bullet_idx < bullets_.size();
          bullet_idx--) {
+
       if (bullets_.at(bullet_idx).IsDead()) {
+        if (bullets_.at(bullet_idx).get_is_explosive_()) { // explode upon death
+          Explode(bullets_.at(bullet_idx).get_position_());
+          explosives_.push_back(bullets_.at(bullet_idx).get_position_());
+        }
         bullets_.erase(bullets_.begin() + bullet_idx);
       }
     }
@@ -157,15 +162,15 @@ namespace shooter {
     if (time_since_last_wave.count() > 5000) { // spawns enemy every 5 secs
       // spawns an additional enemy per spawn every 30 seconds
       size_t num_enemy_spawn = 1 + static_cast<size_t>(duration.count()) / 30000;
-      // difficult increases every 15 seconds ( higher health, faster speed for enemy)
-      size_t difficulty = 1 + static_cast<size_t>(duration.count()) / 15000;
+      // difficult increases every 20 seconds ( higher health, faster speed for enemy)
+      size_t difficulty = 1 + static_cast<size_t>(duration.count()) / 20000;
       if (difficulty > 5) {
         difficulty = 5; // max difficulty at 5
       }
       for (num_enemy_spawn; num_enemy_spawn != 0; num_enemy_spawn--) {
         size_t index = (rand() % enemy_spawns_.size());
         size_t health = static_cast<int>(difficulty * (static_cast<float>(rand()) / RAND_MAX) * 20.0f);
-        float level = 0.5f + difficulty * (static_cast<float>(rand()) / RAND_MAX) * 0.1f;
+        float level = 0.1f + difficulty * (static_cast<float>(rand()) / RAND_MAX) * 0.18f;
         AddEnemy(enemy_spawns_[index], 10.0f,
                  health, 10, level);
         std::cout<<level<<"---------------"<<std::endl;
@@ -209,11 +214,11 @@ namespace shooter {
     return explosives_;
   }
 
-  void Engine::ClearExplosives() {
+  void Engine::ClearExplosions() {
     explosives_.clear();
   }
 
-  void Engine::CheckCollisions() {
+  void Engine::HandleCollisions() {
     HandleEnemyBulletCollision();
     HandleEnemyPlayerCollision();
   }
@@ -237,10 +242,6 @@ namespace shooter {
         float dist = glm::length(bullet.get_position_() - enemy.get_position_());
         if (dist <= bullet.get_radius_() + enemy.get_radius_()) {
           enemy.Collide(bullet);
-          if (bullet.get_is_explosive_()) {
-            Explode(bullet.get_position_());
-            explosives_.push_back(bullet.get_position_());
-          }
           break;
         }
       }

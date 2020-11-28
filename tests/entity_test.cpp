@@ -4,7 +4,7 @@
 using shooter::Entity;
 
 TEST_CASE("Move method works accordingly") {
-  Entity entity(glm::vec2 (10.0f, 10.0f), 10.0f, 10,
+  Entity entity(glm::vec2 (10.0f, 10.0f), 10.0f, 10, 2,
                 glm::vec2 (1.0f, 1.0f));
   REQUIRE(entity.get_position_() == glm::vec2(10.0f, 10.0f));
   entity.Move();
@@ -15,40 +15,54 @@ TEST_CASE("IsDead method works accordingly") {
 
   SECTION("IsDead method returns true when hit_points is 0") {
     Entity entity(glm::vec2(10.0f, 10.0f), 10.0f, 0,
-                  glm::vec2 (1.0f, 1.0f));
+                  2,glm::vec2 (1.0f, 1.0f));
     REQUIRE(entity.IsDead());
   }
 
   SECTION("IsDead method returns true when hit_points is negative") {
     Entity entity(glm::vec2(10.0f, 10.0f), 10.0f, -5,
-                  glm::vec2 (1.0f, 1.0f));
+                  2,glm::vec2 (1.0f, 1.0f));
     REQUIRE(entity.IsDead());
   }
 
-  SECTION("IsDead method returns false when hit_points it position") {
+  SECTION("IsDead method returns false when hit_points is positive") {
     Entity entity(glm::vec2(10.0f, 10.0f), 10.0f, 6,
-                  glm::vec2 (1.0f, 1.0f));
+                  2,glm::vec2 (1.0f, 1.0f));
     REQUIRE_FALSE(entity.IsDead());
   }
-
 }
 
 TEST_CASE("Collide works accordingly") {
 
-  Entity entity1(glm::vec2(0,5), 2.0f,10,glm::vec2(0,0));
-  Entity entity2(glm::vec2(0,2), 1.0f, 2,
-                glm::vec2(0,7));
+  Entity entity1(glm::vec2(0,5), 2.0f,10,
+                 3,glm::vec2(0,0));
+  Entity entity2(glm::vec2(0,2), 1.0f, 5,
+                2,glm::vec2(0,7));
   entity1.Collide(entity2);
 
-  SECTION("Collision with bullet reduces hit points on enemy") {
-    REQUIRE(entity1.get_hit_points_() == 8);
+  SECTION("Collision reduces hit points on both") {
+    REQUIRE(entity1.get_health_() == 8);
+    REQUIRE(entity2.get_health_() == 2);
   }
 
-  SECTION("Collision with bullet changes velocity of enemy") {
+  SECTION("Collision changes velocity based on damage received") {
     REQUIRE(entity1.get_velocity_() == glm::vec2(0,2));
+    REQUIRE(entity2.get_velocity_() == glm::vec2(0,4));
+  }
+}
+
+TEST_CASE("Hit works accordingly") {
+
+  Entity entity1(glm::vec2(0,5), 2.0f,10,
+                 3,glm::vec2(0,0));
+  entity1.Hit(4, glm::vec2(0,0));
+
+  SECTION("Hit reduces health accordingly") {
+    REQUIRE(entity1.get_health_() == 6);
   }
 
-  SECTION("Collision with bullet reduces hit points on bullet") {
-    REQUIRE(entity2.get_hit_points_() == -8);
+  SECTION("Rebound velocity added accordingly") {
+    REQUIRE(entity1.get_velocity_() == glm::vec2(0, 4));
   }
+
 }
