@@ -16,12 +16,14 @@ namespace shooter {
 
           public:
 
-           Screen(glm::ivec2 top_left, int screen_length,
+           Screen(int screen_length,
                   int screen_height, const glm::ivec2 board_dimensions);
 
            void Draw(const Player& player,
                      const std::vector<Enemy> &enemies,
-                     const std::vector<Bullet>& bullets);
+                     const std::vector<Bullet>& bullets,
+                     const std::vector<glm::vec2> &explosions,
+                     int score);
 
            void DrawBeam(glm::vec2 cursor_position, float radius);
             /**
@@ -75,7 +77,10 @@ namespace shooter {
             */
            void DrawBoundaries(const Player& player) const;
 
-           void ScreenProcessBoundary(glm::ivec2 &screen_position) const;
+          void DrawExplosions(const std::vector<glm::vec2> &explosions,
+                               const glm::vec2 player_position);
+
+          void ScreenProcessBoundary(glm::ivec2 &screen_position) const;
 
            void DrawGrid(const glm::ivec2 player) const;
 

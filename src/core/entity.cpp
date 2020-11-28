@@ -22,8 +22,11 @@ namespace shooter {
       return damage_;
     }
 
-    void Entity::Hit(int hit_point) {
+    void Entity::Hit(int hit_point, glm::vec2 impact_position) {
       health_ -= hit_point;
+      glm::vec2 rebound = position_ - impact_position;
+      velocity_ += (rebound / glm::length(rebound)) *
+                  static_cast<float>(hit_point);
     }
 
     void Entity::Move() {
@@ -47,11 +50,8 @@ namespace shooter {
     }
 
     void Entity::Collide(Entity& entity) {
-      Hit(entity.get_damage_());
-      entity.Hit(damage_);
-      glm::vec2 rebound = position_ - entity.get_position_();
-      velocity_ = (rebound / glm::length(rebound)) *
-                  static_cast<float>(entity.get_damage_());
+      Hit(entity.get_damage_(), entity.get_position_());
+      entity.Hit(damage_, position_);
     }
 
 }

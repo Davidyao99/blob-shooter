@@ -8,7 +8,7 @@
 namespace shooter {
 
   enum ProjectileType {
-    beam,
+    beam, // for beam projectile_blueprint, firing angle and speed is irrelevant
     bullet
   };
 

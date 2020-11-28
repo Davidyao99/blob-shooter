@@ -22,7 +22,7 @@ namespace shooter {
 
     public:
       Player(glm::vec2 position, float radius,
-             int hit_points, Weapon weapon);
+             int health, Weapon weapon);
 
       /**
        * Override Move method from Entity to simulate friction by
@@ -72,7 +72,6 @@ namespace shooter {
       void ChangePrevWeapon();
 
     private:
-        std::chrono::system_clock::time_point last_fire_;
         std::vector<Weapon> weapons_;
         int curr_weapon_index_;
 

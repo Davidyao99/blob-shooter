@@ -7,11 +7,11 @@ namespace shooter {
     namespace visualizer {
 
         ShooterApp::ShooterApp()
-                : engine_(static_cast<float>(kScreenLength*4),
-                          static_cast<float>(kScreenHeight*4)),
+                : engine_(static_cast<float>(kScreenLength*2),
+                          static_cast<float>(kScreenHeight*2)),
                   moves_(),
-                  screen_(glm::ivec2(kMargin, kMargin), kScreenLength,
-                  kScreenHeight, engine_.get_board_dimensions_()),
+                  screen_(kScreenLength,kScreenHeight,
+                  engine_.get_board_dimensions_()),
                   firing_(false),
                   is_beam_(false){
 
@@ -25,7 +25,11 @@ namespace shooter {
 
           screen_.Draw(engine_.get_player_(),
                          engine_.get_enemies_(),
-                         engine_.get_bullets_());
+                         engine_.get_bullets_(),
+                       engine_.get_explosives_(),
+                       engine_.get_score_());
+
+          engine_.ClearExplosives();
 
           if (is_beam_) {
             screen_.DrawBeam(getMousePos()-getWindowPos(),

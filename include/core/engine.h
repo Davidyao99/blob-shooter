@@ -38,12 +38,16 @@ namespace shooter {
        */
       void update(std::set<Direction> moves);
 
+      void ClearExplosives();
+
       // getters
       const std::vector<Bullet>& get_bullets_() const;
       const std::vector<Enemy>& get_enemies_() const;
       const Player& get_player_() const;
       const std::vector<glm::vec2>& get_enemy_spawns_() const;
       const glm::ivec2& get_board_dimensions_() const;
+      const std::vector<glm::vec2> get_explosives_() const;
+      int get_score_() const;
 
       /**
        * Handles collision interaction by calling HandleEnemyBulletCollision
@@ -52,6 +56,8 @@ namespace shooter {
       void CheckCollisions();
 
       void CreateWeapons();
+
+      void Explode(glm::vec2 explosion_position);
 
       /**
        * Handle shooting
@@ -124,8 +130,10 @@ namespace shooter {
      Player player_;
      std::vector<Bullet> bullets_;
      std::vector<Enemy> enemies_;
+     std::vector<glm::vec2> explosives_;
      std::vector<glm::vec2> enemy_spawns_;
      glm::ivec2 board_dimensions_;
+     size_t score_;
 
      std::chrono::system_clock::time_point begin_time_;
      std::chrono::system_clock::time_point last_enemy_wave_;

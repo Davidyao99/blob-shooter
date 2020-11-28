@@ -4,7 +4,7 @@ namespace shooter {
 
     Player::Player(glm::vec2 position, float radius,
     int health, Weapon weapon) :
-            Entity(position, radius, health, 0),
+            Entity(position, radius, health, 10),
             weapons_(),
             curr_weapon_index_(0) { // why this doesnt work with reference variable
       weapons_.push_back(weapon);
@@ -49,14 +49,12 @@ namespace shooter {
 
     Bullet Player::FireBullet(glm::vec2 cursor) {
       Weapon weapon = GetCurrentWeapon();
-      std::cout<<cursor.x<<","<<cursor.y<<std::endl;
       float r = glm::length(cursor);
       float tita = atan2(cursor.y,cursor.x); // change to polar coordinates
       float firing_angle = weapon.get_firing_angle_();
       float random_deviation = (static_cast<float>(rand())/RAND_MAX - 0.5f)*firing_angle;
       glm::vec2 new_cursor(r*cos(tita+random_deviation),
                            r*sin(tita+random_deviation));
-      std::cout<<new_cursor.x<<","<<new_cursor.y<<std::endl;
       return Bullet(position_, weapon.get_projectile_blueprint_(), new_cursor);
     }
 

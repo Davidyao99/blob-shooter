@@ -42,7 +42,7 @@ namespace shooter{
        */
       bool IsDead() const;
 
-      void Hit(int hit_point);
+      void Hit(int hit_point, glm::vec2 impact_position);
 
       int health_;
 
