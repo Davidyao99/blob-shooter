@@ -2,10 +2,12 @@
 
 namespace shooter {
 
-  ProjectileBlueprint::ProjectileBlueprint(float radius, int damage,
-                                         float speed, bool isExplosive) :
-  radius_(radius),
-      damage_(damage), speed_(speed), isExplosive_(isExplosive){
+  ProjectileBlueprint::ProjectileBlueprint(float projectile_radius, int damage,
+                                         float speed, bool isExplosive,
+                                         float explosion_radius) :
+  projectile_radius_(projectile_radius),
+      damage_(damage), speed_(speed), isExplosive_(isExplosive),
+  explosion_radius_(explosion_radius){
 
 }
 }

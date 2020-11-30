@@ -24,11 +24,13 @@ namespace shooter {
      Bullet(glm::vec2 position, ProjectileBlueprint blueprint,
             glm::vec2 cursor);
 
-     bool get_is_explosive_();
+     bool get_is_explosive_() const;
 
-    private:
-     bool is_explosive_;
+     float get_explosion_radius_() const;
 
+     private:
+      bool is_explosive_;
+      float explosive_radius_;
 
     };
 

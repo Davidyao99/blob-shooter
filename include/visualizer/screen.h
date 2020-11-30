@@ -22,7 +22,7 @@ namespace shooter {
            void Draw(const Player& player,
                      const std::vector<Enemy> &enemies,
                      const std::vector<Bullet>& bullets,
-                     const std::vector<glm::vec2> &explosions,
+                     const std::vector<std::pair<glm::vec2,float>> &explosions,
                      int score);
 
            void DrawBeam(glm::vec2 cursor_position, float radius);
@@ -77,7 +77,7 @@ namespace shooter {
             */
            void DrawBoundaries(const Player& player) const;
 
-          void DrawExplosions(const std::vector<glm::vec2> &explosions,
+          void DrawExplosions(const std::vector<std::pair<glm::vec2,float>> &explosions,
                                const glm::vec2 player_position);
 
           void ScreenProcessBoundary(glm::ivec2 &screen_position) const;

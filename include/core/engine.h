@@ -1,8 +1,9 @@
 #pragma once
 
-#include "core/player.h"
 #include "core/bullet.h"
 #include "core/enemy.h"
+#include "core/player.h"
+#include "enemy_spawner.h"
 
 namespace shooter {
 
@@ -44,9 +45,8 @@ namespace shooter {
       const std::vector<Bullet>& get_bullets_() const;
       const std::vector<Enemy>& get_enemies_() const;
       const Player& get_player_() const;
-      const std::vector<glm::vec2>& get_enemy_spawns_() const;
       const glm::ivec2& get_board_dimensions_() const;
-      const std::vector<glm::vec2> get_explosives_() const;
+      const std::vector<std::pair<glm::vec2,float>>& get_explosions_() const;
       int get_score_() const;
 
       /**
@@ -57,7 +57,9 @@ namespace shooter {
 
       void CreateWeapons();
 
-      void Explode(glm::vec2 explosion_position);
+      void Explode(glm::vec2 explosion_position, float explosion_radius, int damage);
+
+      const std::vector<glm::ivec2>& GetEnemySpawns() const;
 
       /**
        * Handle shooting
@@ -71,13 +73,9 @@ namespace shooter {
       /**
        * Instantiates Enemy object and adds it to enemies_. Made public for
        * easier testing
-       * @param position position of enemy spawned
-       * @param radius radius of enemy
-       * @param hit_points hit_points of enemy
-       * @param level how fast enemy follows player
+       * @param enemy Enemy to be added into enemies_
        */
-      void AddEnemy(glm::vec2 position, float radius, int health,
-                    int damage, float level);
+      void AddEnemy(Enemy enemy);
 
       /**
        * Instantiates Bullet object and adds it to bullets_. Made public for
@@ -119,20 +117,15 @@ namespace shooter {
        */
       void SpawnEnemy();
 
-      /**
-       * Creates enemy spawns on the boundaries of the map. Called during
-       * construction of engine. 21 spawns on each side.
-       */
-      void CreateEnemySpawn();
 
       void HandleDeaths();
 
      Player player_;
+     glm::ivec2 board_dimensions_;
+     EnemySpawner enemy_spawner_;
      std::vector<Bullet> bullets_;
      std::vector<Enemy> enemies_;
-     std::vector<glm::vec2> explosives_;
-     std::vector<glm::vec2> enemy_spawns_;
-     glm::ivec2 board_dimensions_;
+     std::vector<std::pair<glm::vec2,float>> explosions_;
      size_t score_;
 
      std::chrono::system_clock::time_point begin_time_;

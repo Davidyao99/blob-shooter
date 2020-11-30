@@ -26,14 +26,14 @@ namespace shooter {
           screen_.Draw(engine_.get_player_(),
                          engine_.get_enemies_(),
                          engine_.get_bullets_(),
-                       engine_.get_explosives_(),
+                       engine_.get_explosions_(),
                        engine_.get_score_());
 
           engine_.ClearExplosions();
 
           if (is_beam_) {
             screen_.DrawBeam(getMousePos()-getWindowPos(),
-                engine_.get_player_().GetCurrentWeapon().get_projectile_blueprint_().radius_);
+                engine_.get_player_().GetCurrentWeapon().get_projectile_blueprint_().projectile_radius_);
             is_beam_ = false;
           }
         }
@@ -42,12 +42,10 @@ namespace shooter {
           engine_.update(moves_);
           if (firing_) {
             // gets cursor relative pos to player
-            glm::vec2 cursor_relative_pos =
+            glm::vec2 cursor_relative_to_player_pos =
                 getMousePos() - getWindowPos() - screen_.GetCenter();
-            if (engine_.Reloaded()) {
-              ProjectileType type = engine_.HandleShoot(cursor_relative_pos);
-              is_beam_ = type == beam;
-            }
+            ProjectileType type = engine_.HandleShoot(cursor_relative_to_player_pos);
+            is_beam_ = type == beam;
           }
         }
 

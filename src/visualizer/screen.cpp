@@ -15,7 +15,7 @@ namespace shooter {
 
     void Screen::Draw(const Player& player, const std::vector<Enemy> &enemies,
                       const std::vector<Bullet> &bullets,
-                      const std::vector<glm::vec2> &explosions,
+                      const std::vector<std::pair<glm::vec2,float>> &explosions,
                       int score) {
       ci::gl::color(ci::Color(0.1f,0.1f,0.1f));
       vec2 bottom_right = glm::ivec2(kLength, kHeight);
@@ -39,12 +39,12 @@ namespace shooter {
                                  ci::Font("monospace", 64));
     }
 
-  void Screen::DrawExplosions(const std::vector<glm::vec2> &explosions,
+  void Screen::DrawExplosions(const std::vector<std::pair<glm::vec2,float>> &explosions,
                                 const glm::vec2 player_position) {
     for (auto explosion : explosions) {
       ci::gl::color(Color("Yellow"));
-      ci::gl::drawSolidCircle(GetScreenPosition(explosion,player_position)+kTopLeft,
-                               50);
+      ci::gl::drawSolidCircle(GetScreenPosition(explosion.first,player_position)+kTopLeft,
+                               explosion.second);
     }
   }
 

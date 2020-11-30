@@ -13,15 +13,7 @@ using shooter::Bullet;
 using shooter::Direction;
 using shooter::Enemy;
 using shooter::ProjectileBlueprint;
-
-TEST_CASE("Engine constructor creates enemy spawns on boundaries") {
-  Engine engine(40,40);
-  std::vector<glm::vec2> spawns = engine.get_enemy_spawns_();
-  for (auto &spawn: spawns) {
-    std::cout<<"("<<spawn.x<<","<<spawn.y<<")"<<std::endl; // check visually
-  }
-  REQUIRE(engine.get_enemy_spawns_().size() == 80);
-}
+using shooter::ProjectileType;
 
 TEST_CASE("Engine Update works accordingly") {
 
@@ -78,7 +70,7 @@ TEST_CASE("Engine Update works accordingly") {
   SECTION("Update moves all bullets") {
     std::set<Direction> directions;
     Engine engine(50,50, glm::vec2(25,25));
-    ProjectileBlueprint blueprint(1.0f, 10, 1.0f, false);
+    ProjectileBlueprint blueprint(1.0f, 10, 1.0f, false, 0.0f);
     engine.AddBullet(Bullet(glm::vec2(0,0), blueprint, glm::vec2(0,5)));
     engine.AddBullet(Bullet(glm::vec2(0,0), blueprint, glm::vec2(5,0)));
     engine.update(directions);
@@ -94,8 +86,8 @@ TEST_CASE("Engine Update works accordingly") {
   SECTION("Update moves all enemies") {
     std::set<Direction> directions;
     Engine engine(50,50, glm::vec2(25,25));
-    engine.AddEnemy(glm::vec2(5,25), 1.0f, 1, 1, 1.0f);
-    engine.AddEnemy(glm::vec2(45,25), 1.0f, 1, 1, 1.0f);
+    engine.AddEnemy(Enemy(glm::vec2(5,25), 1.0f, 1, 1, 1.0f));
+    engine.AddEnemy(Enemy(glm::vec2(45,25), 1.0f, 1, 1, 1.0f));
     engine.update(directions);
     const std::vector<Enemy> &enemies = engine.get_enemies_();
     Entity enemy_test1(glm::vec2(5.95,25), 1.0f, 1,
@@ -111,9 +103,9 @@ TEST_CASE("Engine Update works accordingly") {
   SECTION("Update removes dead enemies") {
     std::set<Direction> directions;
     Engine engine(50,50, glm::vec2(25,25));
-    engine.AddEnemy(glm::vec2(0,25), 1.0f, 0, 1, 0.01f);
-    engine.AddEnemy(glm::vec2(50,25), 1.0f, 0, 1, 0.01f);
-    engine.AddEnemy(glm::vec2(45,25), 1.0f, 2, 1, 1.0f);
+    engine.AddEnemy(Enemy(glm::vec2(0,25), 1.0f, 0, 1, 0.01f));
+    engine.AddEnemy(Enemy(glm::vec2(50,25), 1.0f, 0, 1, 0.01f));
+    engine.AddEnemy(Enemy(glm::vec2(45,25), 1.0f, 2, 1, 1.0f));
     REQUIRE(engine.get_enemies_().size() == 3);
     engine.update(directions);
     const std::vector<Enemy> &enemies = engine.get_enemies_();
@@ -130,13 +122,13 @@ TEST_CASE("Handle Collision works accordingly") {
 
   SECTION("Handle Collision checks for Bullet and Enemy Collision") {
 
-    ProjectileBlueprint blueprint(1.0f, 10, 1.0f, false);
+    ProjectileBlueprint blueprint(1.0f, 10, 1.0f, false, 0.0f);
 
     SECTION("Handle Collision works between enemies and bullets"){
       engine.AddBullet(Bullet(glm::vec2(25,25),
                        blueprint, glm::vec2(26,25)));
-      engine.AddEnemy(glm::vec2(26,25),
-                      1.0f, 20, 2, 0.3f);
+      engine.AddEnemy(Enemy(glm::vec2(26,25),
+                      1.0f, 20, 2, 0.3f));
       engine.HandleCollisions();
       REQUIRE(engine.get_enemies_().size() == 1);
       REQUIRE(engine.get_bullets_().size() == 1);
@@ -147,8 +139,8 @@ TEST_CASE("Handle Collision works accordingly") {
     }
 
     SECTION("Handle Collision works between enemies and player"){
-      engine.AddEnemy(glm::vec2(0,1),
-                      1.0f, 20, 2, 0.3f);
+      engine.AddEnemy(Enemy(glm::vec2(0,1),
+                      1.0f, 20, 2, 0.3f));
       engine.HandleCollisions();
       REQUIRE(engine.get_enemies_().size() == 1);
       REQUIRE(engine.get_enemies_().at(0).get_health_() == 10);
@@ -166,22 +158,42 @@ TEST_CASE("Handle Shoot works accordingly") {
   SECTION("Handle Shoot spawns bullet heading towards cursor") {
     std::chrono::seconds dura(1);
     std::this_thread::sleep_for(dura); // pause code for 1 second to load
-    engine.HandleShoot(glm::vec2(27,25));
+    engine.HandleShoot(glm::vec2(2,0));
     REQUIRE(engine.get_bullets_().size() == 1);
     REQUIRE(engine.get_bullets_().at(0).get_velocity_() == glm::vec2 (10,0));
   }
 
-  SECTION("Handle Shoot does not spawn bullet when duration from last shot < 1sec") {
+  SECTION("Handle Shoot does not spawn bullet when duration from last shot < "
+      "current weapon") {
     std::chrono::milliseconds dura(250);
     std::this_thread::sleep_for(dura); // pause code for 0.25 seconds
     engine.HandleShoot(glm::vec2(27,25));
     REQUIRE(engine.get_bullets_().size() == 0);
-    std::this_thread::sleep_for(dura); // pause code for 0.25 seconds
-    std::this_thread::sleep_for(dura); // pause code for 0.25 seconds
+    std::this_thread::sleep_for(dura); // pause code for another 0.25 seconds
+    std::this_thread::sleep_for(dura); // pause code for another 0.25 seconds
     engine.HandleShoot(glm::vec2(27,25));
     REQUIRE(engine.get_bullets_().size() == 0);
+    std::this_thread::sleep_for(dura); // pause code for another 0.25 seconds
+    engine.HandleShoot(glm::vec2(27,25));
+    REQUIRE(engine.get_bullets_().size() == 1);
+  }
+
+  SECTION("Handle Shoot returns the right projectile type when fired") {
+    std::chrono::seconds dura(1);
+    std::this_thread::sleep_for(dura); // pause code for 1 second to load
+    ProjectileType projectile_type_1 = engine.HandleShoot(glm::vec2(2,0));
+    engine.ChangeWeapon(false);
+    engine.ChangeWeapon(false); // change to laser
+    ProjectileType projectile_type_2 = engine.HandleShoot(glm::vec2(2,0));
+    engine.ChangeWeapon(false);
+    ProjectileType projectile_type_3 = engine.HandleShoot(glm::vec2(2,0));
+    REQUIRE(projectile_type_1 == shooter::bullet);
+    REQUIRE(projectile_type_2 == shooter::beam);
+    REQUIRE(projectile_type_3 == shooter::bullet);
   }
 }
+
+
 
 
 
