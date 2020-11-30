@@ -3,11 +3,10 @@
 namespace shooter {
 
     Player::Player(glm::vec2 position, float radius,
-    int health, Weapon weapon) :
+    int health) :
             Entity(position, radius, health, 10),
             weapons_(),
-            curr_weapon_index_(0) { // why this doesnt work with reference variable
-      weapons_.push_back(weapon);
+            curr_weapon_index_(0) {
     }
 
     void Player::Accelerate(Direction direction) {

@@ -191,9 +191,152 @@ TEST_CASE("Handle Shoot works accordingly") {
     REQUIRE(projectile_type_2 == shooter::beam);
     REQUIRE(projectile_type_3 == shooter::bullet);
   }
+
+  SECTION("Handle Shoot resets the weapon reload timing when fired") {
+    std::chrono::seconds dura(1);
+    std::this_thread::sleep_for(dura); // pause code for 1 second to load
+    REQUIRE(engine.get_player_().GetWeaponReloadStatus() == 1.0f);
+    engine.HandleShoot(glm::vec2(2,0));
+    REQUIRE(engine.get_player_().GetWeaponReloadStatus() == 0.0f);
+  }
 }
 
+TEST_CASE("ShootBeam works accordingly") {
 
+  Engine engine(200,50, glm::vec2(100,25));
 
+  SECTION("Hits multiple enemies that are in a straight line") {
+    engine.AddEnemy(Enemy(glm::vec2(50,25),
+                          1.0f, 20, 2, 0.3f));
+    engine.AddEnemy(Enemy(glm::vec2(80,25),
+                          1.0f, 30, 2, 0.3f));
+    engine.AddEnemy(Enemy(glm::vec2(20,40),
+                          1.0f, 40, 2, 0.3f));
+    engine.ShootBeam(glm::vec2(-1,0), 1.0f, 10);
+    REQUIRE(engine.get_enemies_().size() == 3);
+    REQUIRE(engine.get_enemies_().at(0).get_health_() == 10);
+    REQUIRE(engine.get_enemies_().at(1).get_health_() == 20);
+    REQUIRE(engine.get_enemies_().at(2).get_health_() == 40);
+  }
 
+  SECTION("Hits enemies that are touching the edges of the beam") {
+    engine.AddEnemy(Enemy(glm::vec2(150,26.9f),
+                          1.0f, 20, 2, 0.3f));
+    engine.AddEnemy(Enemy(glm::vec2(120,27.1f),
+                          1.0f, 20, 2, 0.3f));
+    engine.ShootBeam(glm::vec2(1,0), 1.0f, 10);
+    REQUIRE(engine.get_enemies_().size() == 2);
+    REQUIRE(engine.get_enemies_().at(0).get_health_() == 10);
+    REQUIRE(engine.get_enemies_().at(1).get_health_() == 20);
+  }
 
+  SECTION("Enemies behind the player will not be hit") {
+    engine.AddEnemy(Enemy(glm::vec2(50,25),
+                          1.0f, 20, 2, 0.3f));
+    engine.ShootBeam(glm::vec2(1,0), 1.0f, 10);
+    REQUIRE(engine.get_enemies_().size() == 1);
+    REQUIRE(engine.get_enemies_().at(0).get_health_() == 20);
+  }
+}
+
+TEST_CASE("AddEnemy adds enemy to vector of enemies") {
+
+  Engine engine(200,50, glm::vec2(100,25));
+
+  Enemy enemy(glm::vec2(150,26.9f),
+              1.0f, 20, 2, 0.3f);
+
+  engine.AddEnemy(enemy);
+
+  REQUIRE(engine.get_enemies_().size() == 1);
+  REQUIRE(engine.get_enemies_().at(0) == enemy);
+
+}
+
+TEST_CASE("AddBullet adds bullet to vector of bullets") {
+
+  Engine engine(200,50, glm::vec2(100,25));
+
+  ProjectileBlueprint blueprint(1.0f, 10, 1.0f, false, 0.0f);
+  Bullet bullet(glm::vec2(25,25),
+                blueprint, glm::vec2(26,25));
+  engine.AddBullet(bullet);
+
+  REQUIRE(engine.get_bullets_().size() == 1);
+  REQUIRE(engine.get_bullets_().at(0) == bullet);
+}
+
+TEST_CASE("ChangeWeapon works accordingly") {
+
+  Engine engine(200,50, glm::vec2(100,25));
+
+  SECTION("Changes weapon to next weapon when parameter set to true") {
+    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Pistol");
+    engine.ChangeWeapon(true);
+    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Sniper");
+    engine.ChangeWeapon(true);
+    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Rifle");
+  }
+
+  SECTION("Changes weapon to prev weapon when parameter set to false") {
+    engine.ChangeWeapon(true);
+    engine.ChangeWeapon(true);
+    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Rifle");
+    engine.ChangeWeapon(false);
+    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Sniper");
+    engine.ChangeWeapon(false);
+    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Pistol");
+  }
+
+  SECTION("Change weapon to next weapon works on last weapon") {
+    engine.ChangeWeapon(true);
+    engine.ChangeWeapon(true);
+    engine.ChangeWeapon(true);
+    engine.ChangeWeapon(true);
+    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Rocket");
+    engine.ChangeWeapon(true);
+    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Pistol");
+    engine.ChangeWeapon(true);
+    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Sniper");
+  }
+
+  SECTION("Change weapon to prev weapon works on first weapon") {
+    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Pistol");
+    engine.ChangeWeapon(false);
+    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Rocket");
+    engine.ChangeWeapon(false);
+    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Laser");
+  }
+}
+
+TEST_CASE("Explode works accordingly") {
+
+  Engine engine(200,50, glm::vec2(100,25));
+
+  SECTION("Explode damages all enemies within radius") {
+    engine.AddEnemy(
+        Enemy(glm::vec2(51,25),
+                    1.0f, 20, 2, 0.3f));
+    engine.AddEnemy(
+        Enemy(glm::vec2(50,35),
+              1.0f, 20, 2, 0.3f));
+    engine.AddEnemy(
+        Enemy(glm::vec2(50,15),
+              1.0f, 20, 2, 0.3f));
+    engine.AddEnemy(
+        Enemy(glm::vec2(50,10),
+              1.0f, 20, 2, 0.3f));
+    engine.Explode(glm::vec2(50,25), 10.0f, 5);
+    REQUIRE(engine.get_enemies_().at(0).get_health_() == 15);
+    REQUIRE(engine.get_enemies_().at(1).get_health_() == 15);
+    REQUIRE(engine.get_enemies_().at(2).get_health_() == 15);
+    REQUIRE(engine.get_enemies_().at(3).get_health_() == 20);
+  }
+
+  SECTION("Explode damages player for 1/4 of the damage") {
+    REQUIRE(engine.get_player_().get_health_() == 50.0f);
+    engine.Explode(glm::vec2(90,25), 10.0f, 40);
+    REQUIRE(engine.get_player_().get_health_() == 40.0f);
+  }
+
+}

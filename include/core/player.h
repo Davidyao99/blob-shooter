@@ -22,7 +22,7 @@ namespace shooter {
 
     public:
       Player(glm::vec2 position, float radius,
-             int health, Weapon weapon);
+             int health);
 
       /**
        * Override Move method from Entity to simulate friction by

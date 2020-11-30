@@ -9,9 +9,7 @@ namespace shooter {
   }
 
   Engine::Engine(float length, float height, glm::vec2 player_position)
-      : player_(player_position, 10.0f, 50,
-                Weapon(std::string("Pistol"), bullet, 0.0f, 1000,
-                       ProjectileBlueprint(10.0f, 1, 10.0f, false, 0.0f))),
+      : player_(player_position, 10.0f, 50),
         board_dimensions_(length, height),
         begin_time_(std::chrono::system_clock::now()),
         last_enemy_wave_(std::chrono::system_clock::now()),
@@ -22,6 +20,10 @@ namespace shooter {
   }
 
   void Engine::CreateWeapons() {
+    Weapon pistol (std::string("Pistol"), bullet, 0.0f, 1000,
+           ProjectileBlueprint(10.0f, 1, 10.0f,
+                                      false, 0.0f));
+    player_.AddWeapon(pistol);
     Weapon sniper("Sniper", bullet, 0.0f, 400,
                  ProjectileBlueprint(10.0f, 100,
                                       30.0f, false, 0.0f));
@@ -105,14 +107,17 @@ namespace shooter {
       Bullet bullet = player_.FireBullet(cursor_relative_to_player_pos);
       AddBullet(bullet);
     } else {
-      ShootBeam(cursor_relative_to_player_pos, weapon.get_projectile_blueprint_());
+      ShootBeam(cursor_relative_to_player_pos,
+                weapon.get_projectile_blueprint_().projectile_radius_,
+                weapon.get_projectile_blueprint_().damage_);
     }
     player_.ReloadWeapon();  // reset reload timing
     return type;
   }
 
   void Engine::ShootBeam(glm::vec2 cursor_relative_to_player_pos,
-                         ProjectileBlueprint projectile_blueprint) {
+                         float projectile_radius,
+                         int damage) {
     glm::vec2 laser_unit_vector = cursor_relative_to_player_pos /
                                   glm::length(cursor_relative_to_player_pos);
     for (auto& enemy : enemies_) {
@@ -123,9 +128,9 @@ namespace shooter {
         continue;
       }
       float perp_dist = sqrt(pow(player_to_enemy_dist, 2) - pow(dot_product, 2));
-      if (perp_dist <= enemy.get_radius_() + projectile_blueprint.projectile_radius_) {
+      if (perp_dist <= enemy.get_radius_() + projectile_radius) {
         // push enemy away from source of laser
-        enemy.Hit(projectile_blueprint.damage_,
+        enemy.Hit(damage,
                   enemy.get_position_() - laser_unit_vector);
       }
     }

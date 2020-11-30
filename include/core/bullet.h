@@ -19,7 +19,7 @@ namespace shooter {
       * @param position position of bullet to be spawned at
       * @param radius radius of bullet
       * @param hit_points hit points of bullet
-      * @param cursor cursor position so bullet will be spawned heading towards it
+      * @param cursor relative position of cursor to player
       */
      Bullet(glm::vec2 position, ProjectileBlueprint blueprint,
             glm::vec2 cursor);

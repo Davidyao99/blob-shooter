@@ -68,7 +68,7 @@ namespace shooter {
        */
       ProjectileType Engine::HandleShoot(glm::vec2 cursor);
 
-      void ShootBeam(glm::vec2 cursor, ProjectileBlueprint projectile_blueprint);
+      void ShootBeam(glm::vec2 cursor, float projectile_radius, int damage);
 
       /**
        * Instantiates Enemy object and adds it to enemies_. Made public for

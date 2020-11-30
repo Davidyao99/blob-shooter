@@ -61,8 +61,65 @@ TEST_CASE("Hit works accordingly") {
     REQUIRE(entity1.get_health_() == 6);
   }
 
+  SECTION("Hit reduces health to below 0") {
+    entity1.Hit(10, glm::vec2(0,0));
+    REQUIRE(entity1.get_health_() == -6);
+  }
+
   SECTION("Rebound velocity added accordingly") {
     REQUIRE(entity1.get_velocity_() == glm::vec2(0, 4));
+  }
+
+}
+
+TEST_CASE("== operator works accordingly") {
+
+  SECTION("== returns true when all member variables are the same") {
+    Entity entity1(glm::vec2(0,5), 2.0f,10,
+                   3,glm::vec2(0,0));
+    Entity entity2(glm::vec2(0,5), 2.0f,10,
+                   3,glm::vec2(0,0));
+    REQUIRE(entity1 == entity2);
+  }
+
+  SECTION("== false when position is different") {
+    Entity entity1(glm::vec2(0,5), 2.0f,10,
+                   3,glm::vec2(0,0));
+    Entity entity2(glm::vec2(0,4), 2.0f,10,
+                   3,glm::vec2(0,0));
+    REQUIRE_FALSE(entity1 == entity2);
+  }
+
+  SECTION("== false when radius is different") {
+    Entity entity1(glm::vec2(0,5), 2.0f,10,
+                   3,glm::vec2(0,0));
+    Entity entity2(glm::vec2(0,5), 1.9f,10,
+                   3,glm::vec2(0,0));
+    REQUIRE_FALSE(entity1 == entity2);
+  }
+
+  SECTION("== false when health is different") {
+    Entity entity1(glm::vec2(0,5), 2.0f,10,
+                   3,glm::vec2(0,0));
+    Entity entity2(glm::vec2(0,5), 2.0f,9,
+                   3,glm::vec2(0,0));
+    REQUIRE_FALSE(entity1 == entity2);
+  }
+
+  SECTION("== false when damage is different") {
+    Entity entity1(glm::vec2(0,5), 2.0f,10,
+                   2,glm::vec2(0,0));
+    Entity entity2(glm::vec2(0,5), 2.0f,10,
+                   3,glm::vec2(0,0));
+    REQUIRE_FALSE(entity1 == entity2);
+  }
+
+  SECTION("== false when velocity is different") {
+    Entity entity1(glm::vec2(0,5), 2.0f,10,
+                   3,glm::vec2(0.1,0));
+    Entity entity2(glm::vec2(0,5), 2.0f,10,
+                   3,glm::vec2(0,0));
+    REQUIRE_FALSE(entity1 == entity2);
   }
 
 }
