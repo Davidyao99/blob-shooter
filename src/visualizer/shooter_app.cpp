@@ -2,6 +2,7 @@
 #include "cinder/gl/gl.h"
 #include <cinder/app/App.h>
 
+
 namespace shooter {
 
     namespace visualizer {
@@ -40,16 +41,45 @@ namespace shooter {
 
         void ShooterApp::update() {
           engine_.update(moves_);
+          if (!engine_.Reloaded()) {
+            return;
+          }
           if (firing_) {
             // gets cursor relative pos to player
             glm::vec2 cursor_relative_to_player_pos =
                 getMousePos() - getWindowPos() - screen_.GetCenter();
-            ProjectileType type = engine_.HandleShoot(cursor_relative_to_player_pos);
-            is_beam_ = type == beam;
+              ProjectileType type =
+                  engine_.HandleShoot(cursor_relative_to_player_pos);
+              is_beam_ = type == beam;
+              if (!is_beam_) {
+                bullet_sound_->start();
+              } else {
+                laser_sound_->stop();
+                laser_sound_->start();
+              }
           }
+
         }
 
-        void ShooterApp::setup(){};
+        void ShooterApp::setup(){
+
+          try {
+//            ci::app::addAssetDirectory("../../../assets/");
+            ci::audio::SourceFileRef bulletsourceFile = audio::load(
+                loadAsset("audio/bullet_sound.wav"));
+            ci::audio::SourceFileRef lasersourceFile = audio::load(
+                loadAsset("audio/laser_sound.wav"));
+            bullet_sound_ = audio::Voice::create(bulletsourceFile);
+            laser_sound_ = audio::Voice::create(lasersourceFile);
+
+            // Start playing audio from the voice:
+            bullet_sound_->setVolume(1.0f);
+            laser_sound_->setVolume(1.0f);
+
+          } catch (Exception e) {
+            std::cout<<e.what()<<std::endl;
+          }
+        };
 
         void ShooterApp::keyDown(ci::app::KeyEvent event) {
             switch (event.getChar()) {

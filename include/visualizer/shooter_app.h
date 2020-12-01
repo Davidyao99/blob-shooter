@@ -6,6 +6,7 @@
 #include "core/engine.h"
 #include "cinder/gl/Texture.h"
 #include "visualizer/screen.h"
+#include <cinder/audio/audio.h>
 
 namespace shooter {
     using namespace ci;
@@ -36,6 +37,9 @@ namespace shooter {
             Screen screen_;
             bool firing_;
             bool is_beam_;
+
+            ci::audio::VoiceRef bullet_sound_;
+            ci::audio::VoiceRef laser_sound_;
         };
 
     }  // namespace visualizer
