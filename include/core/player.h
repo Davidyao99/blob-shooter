@@ -36,6 +36,11 @@ namespace shooter {
        */
       void Accelerate(Direction direction);
 
+      /**
+       * Returns a const reference to current weapon
+       * @return const reference of current weapon
+       */
+
       const Weapon& GetCurrentWeapon() const;
 
       /**
@@ -43,6 +48,10 @@ namespace shooter {
        * or left boundary
        */
       void ZeroXVelocity();
+
+      /**
+       * Reloads the weapon by resetting the last_fire variable
+       */
 
       void ReloadWeapon();
 
@@ -59,15 +68,28 @@ namespace shooter {
        */
       float GetWeaponReloadStatus() const;
 
-      Bullet FireBullet(glm::vec2 cursor);
+      /**
+       * Creates a bullet using current weapon towards cursor direction
+       * @param cursor relative position of cursor to player
+       * @return bullet
+       */
 
+      Bullet FireBullet(glm::vec2 cursor);
 
       /**
        * Adds weapon to weapons
        */
       void AddWeapon(Weapon weapon);
 
+      /**
+       * Switches to next weapon
+       */
+
       void ChangeNextWeapon();
+
+      /**
+       * Switches to prev weapon
+       */
 
       void ChangePrevWeapon();
 

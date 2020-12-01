@@ -108,7 +108,6 @@ namespace shooter {
       AddBullet(bullet);
     } else {
       ShootBeam(cursor_relative_to_player_pos,
-                weapon.get_projectile_blueprint_().projectile_radius_,
                 weapon.get_projectile_blueprint_().damage_);
     }
     player_.ReloadWeapon();  // reset reload timing
@@ -116,7 +115,6 @@ namespace shooter {
   }
 
   void Engine::ShootBeam(glm::vec2 cursor_relative_to_player_pos,
-                         float projectile_radius,
                          int damage) {
     glm::vec2 laser_unit_vector = cursor_relative_to_player_pos /
                                   glm::length(cursor_relative_to_player_pos);
@@ -128,7 +126,7 @@ namespace shooter {
         continue;
       }
       float perp_dist = sqrt(pow(player_to_enemy_dist, 2) - pow(dot_product, 2));
-      if (perp_dist <= enemy.get_radius_() + projectile_radius) {
+      if (perp_dist <= enemy.get_radius_()) {
         // push enemy away from source of laser
         enemy.Hit(damage,
                   enemy.get_position_() - laser_unit_vector);

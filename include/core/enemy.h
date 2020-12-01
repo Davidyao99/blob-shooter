@@ -18,6 +18,7 @@ namespace shooter{
       * @param position position of enemy
       * @param radius radius of enemy
       * @param hit_points life for enemy
+      * @param damage damage that enemy deals
       * @param level how fast the enemy follows the player, 0.0f to 1.0f with
       * 1.0f being fastest
       */

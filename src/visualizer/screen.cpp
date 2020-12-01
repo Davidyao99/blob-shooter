@@ -107,6 +107,8 @@ namespace shooter {
   void Screen::DrawBoundaries(const Player& player) const {
     const glm::ivec2 &player_position = static_cast<glm::ivec2>(player.get_position_());
 
+    //Gets relative position of the 4 corners of actual game to player
+
     glm::ivec2 top_left_engine = GetScreenPosition(glm::ivec2(0,0),
                                                         player.get_position_());
     ScreenProcessBoundary(top_left_engine);
@@ -121,28 +123,32 @@ namespace shooter {
     glm::ivec2 bottom_left_engine =
         GetScreenPosition(glm::ivec2(0, kEngineDimensions.y),
                                                        player.get_position_());
+
+    // Converts any coordinates that lie outside of the screen boundary to be
+    // within the boundaries
+
     ScreenProcessBoundary(bottom_left_engine);
 
     ci::gl::color(Color("green"));
-    if (top_left_engine.x != 0) {
+    if (top_left_engine.x != 0) { // means left border is visible
       ci::Rectf boundary1(top_left_engine,
                          bottom_left_engine +
                          glm::ivec2(-5,0));
       ci::gl::drawSolidRect(boundary1);
     }
-    if (top_left_engine.y != 0) {
+    if (top_left_engine.y != 0) { // means top border is visible
       ci::Rectf boundary1(top_left_engine,
                           top_right_engine +
                           glm::ivec2(0,-5));
       ci::gl::drawSolidRect(boundary1);
     }
-    if (bottom_right_engine.x != kLength) {
+    if (bottom_right_engine.x != kLength) { // means right border is visible
       ci::Rectf boundary1(bottom_right_engine,
                           top_right_engine +
                           glm::ivec2(5,0));
       ci::gl::drawSolidRect(boundary1);
     }
-    if (bottom_right_engine.y != kHeight) {
+    if (bottom_right_engine.y != kHeight) { // means bottom border is visible
       ci::Rectf boundary1(bottom_right_engine,
                           bottom_left_engine +
                           glm::ivec2(0,5));
@@ -220,7 +226,7 @@ namespace shooter {
       return kCenter + relative_position_with_player;
     }
 
-    const glm::ivec2 Screen::GetCenter() const {
+    const glm::ivec2 Screen::get_kCenter_() const {
       return kCenter;
     }
 

@@ -14,7 +14,17 @@ namespace shooter{
 
     public:
 
+     /**
+      * Constructors for Entity class
+      * @param position
+      * @param radius
+      * @param health
+      * @param damage
+      * @param velocity
+      */
+
       Entity(glm::vec2 position, float radius, int health, int damage, glm::vec2 velocity);
+
       Entity(glm::vec2 position, float radius, int health, int damage);
 
       // getters
@@ -51,9 +61,16 @@ namespace shooter{
 
       void Hit(int hit_point, glm::vec2 impact_position);
 
+      /**
+       * overloaded == operator to be used for testing
+       * @param other
+       * @return true if member variables of other and this are the same
+       */
+
       bool operator==(const Entity& other) const;
 
     protected:
+
       glm::vec2 position_;
       glm::vec2 velocity_;
       float radius_;

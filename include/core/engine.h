@@ -39,6 +39,10 @@ namespace shooter {
        */
       void update(std::set<Direction> moves);
 
+      /**
+       * Clear vector of explosions, to be called after drawing them
+       */
+
       void ClearExplosions();
 
       // getters
@@ -55,7 +59,12 @@ namespace shooter {
        */
       void HandleCollisions();
 
-      void CreateWeapons();
+      /**
+       * Creates an explosion at explosion_position
+       * @param explosion_position
+       * @param explosion_radius radius of explosion
+       * @param damage
+       */
 
       void Explode(glm::vec2 explosion_position, float explosion_radius, int damage);
 
@@ -68,7 +77,14 @@ namespace shooter {
        */
       ProjectileType Engine::HandleShoot(glm::vec2 cursor);
 
-      void ShootBeam(glm::vec2 cursor, float projectile_radius, int damage);
+      /**
+       * deals damage to all enemies in a line from player position to cursor
+       * @param cursor relative position of cursor from player
+       * @param projectile_radius
+       * @param damage
+       */
+
+      void ShootBeam(glm::vec2 cursor, int damage);
 
       /**
        * Instantiates Enemy object and adds it to enemies_. Made public for
@@ -87,11 +103,26 @@ namespace shooter {
        */
       void AddBullet(Bullet bullet);
 
+      /**
+       * Checks if current weapon is reloaded
+       * @return true if reloaded, false otherwise
+       */
       bool Reloaded() const;
+
+      /**
+       * Changes weapon for player
+       * @param next true to go to next weapon, false to go to previous
+       */
 
       void ChangeWeapon(bool next);
 
      private:
+
+      /**
+       * Create and loads in the weapons for the player
+       */
+
+      void CreateWeapons();
 
       /**
        * Handle Enemy and Bullet Collision. If enemy dies, bullet continues.
@@ -118,6 +149,10 @@ namespace shooter {
       void SpawnEnemy();
 
 
+      /**
+       * Handle the deaths of entities, including enemies, bullets and players.
+       * Explosive bullets that were hit will trigger explosion
+       */
       void HandleDeaths();
 
      Player player_;

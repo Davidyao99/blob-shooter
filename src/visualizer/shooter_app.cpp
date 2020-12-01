@@ -52,6 +52,7 @@ namespace shooter {
                   engine_.HandleShoot(cursor_relative_to_player_pos);
               is_beam_ = type == beam;
               if (!is_beam_) {
+                bullet_sound_->stop();
                 bullet_sound_->start();
               } else {
                 laser_sound_->stop();
