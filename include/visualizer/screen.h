@@ -41,7 +41,7 @@ namespace shooter {
             * @param radius 0.5 the width of beam
             */
 
-           void DrawBeam(glm::vec2 cursor_position, float radius);
+           void DrawBeam(glm::vec2 cursor_position);
 
             /**
              * Checks if position within bound, if outside, stop drawing item
@@ -49,7 +49,7 @@ namespace shooter {
              * @return true if in-bound, false otherwise
              */
 
-            bool PositionInBound(const glm::ivec2 position) const;
+            bool PositionInBound(const glm::ivec2 position, int radius) const;
 
             /**
              * converts corner positions from actual game to positions relative to player
@@ -60,6 +60,9 @@ namespace shooter {
              */
             glm::ivec2 GetScreenPosition(const glm::vec2 target_position,
                                                   const glm::vec2 player) const;
+
+
+            void DrawLoseScene() const;
 
             // getters
             const glm::ivec2 get_kTopLeft() const;
