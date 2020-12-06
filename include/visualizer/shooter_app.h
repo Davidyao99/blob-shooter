@@ -36,7 +36,13 @@ namespace shooter {
             Engine engine_;
             Screen screen_;
             bool firing_;
-            bool is_beam_;
+            bool running_;
+
+            bool get_new_explosions_;
+            std::vector<std::pair<glm::vec2,float>> explosions_;
+
+            int is_beam_;
+            glm::vec2 beam_cursor_location_;
 
             ci::audio::VoiceRef bullet_sound_;
             ci::audio::VoiceRef laser_sound_;

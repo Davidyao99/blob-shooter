@@ -14,32 +14,47 @@ namespace shooter {
                   screen_(kScreenLength,kScreenHeight,
                   engine_.get_board_dimensions_()),
                   firing_(false),
-                  is_beam_(false){
+                  is_beam_(0),
+                  running_(true),
+                  get_new_explosions_(true),
+                  explosions_(){
 
             ci::app::setWindowSize( kWindowLength, kWindowHeight);
         }
 
         void ShooterApp::draw() {
 
-          ci::Color8u background_color(255, 246, 148);  // light yellow
+          ci::Color8u background_color(0, 0, 0);
           ci::gl::clear(background_color);
+
+          if(get_new_explosions_) {
+            explosions_ = engine_.get_explosions_();
+          }
 
           screen_.Draw(engine_.get_player_(),
                          engine_.get_enemies_(),
                          engine_.get_bullets_(),
-                       engine_.get_explosions_(),
+                       explosions_,
                        engine_.get_score_());
 
-          engine_.ClearExplosions();
-
-          if (is_beam_) {
-            screen_.DrawBeam(getMousePos()-getWindowPos(),
-                engine_.get_player_().GetCurrentWeapon().get_projectile_blueprint_().projectile_radius_);
-            is_beam_ = false;
+          if (!running_) {
+            screen_.DrawLoseScene();
           }
+
+          if (is_beam_ != 0) {
+            screen_.DrawBeam(beam_cursor_location_);
+            is_beam_ --;
+          }
+
+          get_new_explosions_ = !get_new_explosions_; // flip to only retrieve every 2 frames
         }
 
         void ShooterApp::update() {
+          if (engine_.PlayerIsDead()) {
+            running_ = false;
+            return;
+          }
+          running_ = true;
           engine_.update(moves_);
           if (!engine_.Reloaded()) {
             return;
@@ -47,10 +62,13 @@ namespace shooter {
           if (firing_) {
             // gets cursor relative pos to player
             glm::vec2 cursor_relative_to_player_pos =
-                getMousePos() - getWindowPos() - screen_.GetCenter();
+                getMousePos() - getWindowPos() - screen_.get_kCenter_();
               ProjectileType type =
                   engine_.HandleShoot(cursor_relative_to_player_pos);
-              is_beam_ = type == beam;
+              if (type == beam) {
+                is_beam_ = 2;
+                beam_cursor_location_ = getMousePos()-getWindowPos();
+              }
               if (!is_beam_) {
                 bullet_sound_->stop();
                 bullet_sound_->start();
@@ -73,7 +91,6 @@ namespace shooter {
             bullet_sound_ = audio::Voice::create(bulletsourceFile);
             laser_sound_ = audio::Voice::create(lasersourceFile);
 
-            // Start playing audio from the voice:
             bullet_sound_->setVolume(1.0f);
             laser_sound_->setVolume(1.0f);
 
@@ -123,6 +140,9 @@ namespace shooter {
         }
         void ShooterApp::mouseDown(ci::app::MouseEvent event) {
           firing_ = true;
+          if (running_ == false){
+            engine_.Restart();
+          }
         }
 
         void ShooterApp::mouseUp(ci::app::MouseEvent event) {
