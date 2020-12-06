@@ -6,7 +6,7 @@ namespace shooter {
 
   extern const int kScreenLength = 1200;
   extern const int kScreenHeight = 1000;
-  extern const int kMapSize = 1; // size of map relative to screen
+  extern const int kMapSize = 2; // size of map relative to screen
   extern const int kSpawnDivision = 17; // how many divisions per side, for creating spawns and drawing grid
 
   extern const int kEnemyWaveSpawnDuration = 5000; // time interval between new wave
@@ -31,6 +31,6 @@ namespace shooter {
 
 
   extern const Weapon kRocket("Rocket", bullet, 0.01f, 1000,
-              ProjectileBlueprint(15.0f, 60,
+              ProjectileBlueprint(15.0f, 80,
                                   20.0f, true, 100.0f));
 }

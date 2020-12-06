@@ -26,30 +26,11 @@ namespace shooter {
   }
 
   void Engine::CreateWeapons() {
-    Weapon pistol (std::string("Pistol"), bullet, 0.0f, 1000,
-           ProjectileBlueprint(10.0f, 1, 10.0f,
-                                      false, 0.0f));
-    player_.AddWeapon(pistol);
-    Weapon sniper("Sniper", bullet, 0.0f, 1000,
-                 ProjectileBlueprint(10.0f, 120,
-                                      30.0f, false, 0.0f));
-    player_.AddWeapon(sniper);
-    Weapon rifle("Rifle", bullet, 0.1f, 200,
-                 ProjectileBlueprint(15.0f, 20,
-                                     25.0f, false, 0.0f));
-    player_.AddWeapon(rifle);
-    Weapon laser("Laser", beam, 0.0f, 300,
-                 ProjectileBlueprint(5.0f, 10,
-                                     0, false, 0.0f));
-    player_.AddWeapon(laser);
-    Weapon rocket("Rocket", bullet, 0.01f, 1000,
-                  ProjectileBlueprint(15.0f, 60,
-                                      20.0f, true, 100.0f));
-    player_.AddWeapon(rocket);
-  }
-
-  const std::vector<glm::ivec2>& Engine::GetEnemySpawns() const {
-    return enemy_spawner_.get_spawns_();
+    player_.AddWeapon(kSniper);
+    player_.AddWeapon(kMachineGun);
+    player_.AddWeapon(kRifle);
+    player_.AddWeapon(kLaser);
+    player_.AddWeapon(kRocket);
   }
 
   void Engine::update(std::set<Direction> moves) {

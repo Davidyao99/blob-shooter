@@ -2,8 +2,9 @@
 
 #include "core/bullet.h"
 #include "core/enemy.h"
+#include "core/enemy_spawner.h"
+#include "core/game_config_constants.h"
 #include "core/player.h"
-#include "enemy_spawner.h"
 
 namespace shooter {
 
@@ -23,6 +24,7 @@ namespace shooter {
      */
 
     class Engine {
+
     public:
      /**
       * Constructor, spawns player in middle of playing field. Creates
@@ -42,6 +44,29 @@ namespace shooter {
 
       Engine(float length, float height, glm::vec2 player_position);
 
+      // getters
+
+      const std::vector<Bullet>& get_bullets_() const;
+
+      const std::vector<Enemy>& get_enemies_() const;
+
+      const Player& get_player_() const;
+
+      const glm::ivec2& get_board_dimensions_() const;
+
+      int get_score_() const;
+
+      const std::chrono::system_clock::time_point get_begin_time_() const;
+
+      const std::chrono::system_clock::time_point get_last_enemy_wave_() const;
+
+      /**
+       * Gets a copy of explosions and deleted current vector of explosions
+       * @return copy vector of explosions
+       */
+
+      const std::vector<std::pair<glm::vec2,float>> get_explosions_();
+
       /**
        * method called iteratively by cinder draw(), does moving of player,
        * moving of bullets, moving of enemies, spawning of enemies, collision
@@ -58,28 +83,6 @@ namespace shooter {
 
       bool IsOutOfBounds(const glm::vec2& position) const;
 
-//      /**
-//       * Clear vector of explosions, to be called after drawing them
-//       */
-//
-//      void ClearExplosions();
-
-      // getters
-      const std::vector<Bullet>& get_bullets_() const;
-      const std::vector<Enemy>& get_enemies_() const;
-      const Player& get_player_() const;
-      const glm::ivec2& get_board_dimensions_() const;
-      int get_score_() const;
-      const std::chrono::system_clock::time_point get_begin_time_() const;
-      const std::chrono::system_clock::time_point get_last_enemy_wave_() const;
-
-      /**
-       * Gets a copy of explosions and deleted current vector of explosions
-       * @return copy vector of explosions
-       */
-
-      const std::vector<std::pair<glm::vec2,float>> get_explosions_();
-
       /**
        * Handles collision interaction by calling HandleEnemyBulletCollision
        * and HandleEnemyPlayerCollision()
@@ -94,8 +97,6 @@ namespace shooter {
        */
 
       void Explode(glm::vec2 explosion_position, float explosion_radius, int damage);
-
-      const std::vector<glm::ivec2>& GetEnemySpawns() const;
 
       /**
        * Handle shooting

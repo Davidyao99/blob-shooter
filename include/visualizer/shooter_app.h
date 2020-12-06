@@ -26,11 +26,8 @@ namespace shooter {
             void mouseUp(ci::app::MouseEvent event) override;
 
          private:
-            const int kWindowLength = 1200;
-            const int kWindowHeight = 1000;
-
-            const int kScreenLength = 1200;
-            const int kScreenHeight = 1000;
+            const int kWindowLength = kScreenLength;
+            const int kWindowHeight = kScreenHeight;
 
             std::set<Direction> moves_;
             Engine engine_;
@@ -46,6 +43,7 @@ namespace shooter {
 
             ci::audio::VoiceRef bullet_sound_;
             ci::audio::VoiceRef laser_sound_;
+            ci::audio::VoiceRef explosion_sound_;
         };
 
     }  // namespace visualizer

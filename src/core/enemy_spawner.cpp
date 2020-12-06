@@ -8,14 +8,14 @@ namespace shooter {
   }
 
   void EnemySpawner::CreateSpawns(glm::ivec2 board_dimensions) {
-    int x_unit = static_cast<int>(board_dimensions.x) / 20;
-    int y_unit = static_cast<int>(board_dimensions.y) / 20;
-    for (size_t x_coord = 0; x_coord != board_dimensions.x + x_unit;
+    int x_unit = static_cast<int>(board_dimensions.x) / kSpawnDivision;
+    int y_unit = static_cast<int>(board_dimensions.y) / kSpawnDivision;
+    for (int x_coord = 0; x_coord < board_dimensions.x + x_unit;
          x_coord += x_unit) {
       spawns_.emplace_back(x_coord, 0);
       spawns_.emplace_back(x_coord, board_dimensions.y);
     }
-    for (size_t y_coord = y_unit; y_coord != board_dimensions.y;
+    for (int y_coord = y_unit; y_coord < board_dimensions.y;
          y_coord += y_unit) {
       spawns_.emplace_back(0, y_coord);
       spawns_.emplace_back(board_dimensions.x, y_coord);
@@ -30,11 +30,11 @@ namespace shooter {
                                 long time_from_last_wave) const {
     std::vector<Enemy> enemies;
 
-    if (time_from_last_wave > 5000) { // spawns enemy every 5 secs
+    if (time_from_last_wave > kEnemyWaveSpawnDuration) { // spawns enemy every 5 secs
       // spawns an additional enemy per spawn every 60 seconds
-      size_t num_enemy_spawn = 1 + static_cast<size_t>(time_from_start) / 60000;
+      size_t num_enemy_spawn = 1 + static_cast<size_t>(time_from_start) / kAdditionalEnemyDuration;
       // difficulty increases every 20 seconds ( higher health, faster speed for enemy)
-      size_t difficulty = 1 + static_cast<size_t>(time_from_start) / 20000;
+      size_t difficulty = 1 + static_cast<size_t>(time_from_start) / kEnemyDifficultyDuration;
       if (difficulty > 5) {
         difficulty = 5; // max difficulty at 5
       }

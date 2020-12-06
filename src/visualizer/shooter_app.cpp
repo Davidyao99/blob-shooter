@@ -8,10 +8,10 @@ namespace shooter {
     namespace visualizer {
 
         ShooterApp::ShooterApp()
-                : engine_(static_cast<float>(kScreenLength*2),
-                          static_cast<float>(kScreenHeight*2)),
+                : engine_(static_cast<float>(kWindowLength*kMapSize),
+                          static_cast<float>(kWindowHeight*kMapSize)),
                   moves_(),
-                  screen_(kScreenLength,kScreenHeight,
+                  screen_(kWindowLength,kWindowHeight,
                   engine_.get_board_dimensions_()),
                   firing_(false),
                   is_beam_(0),
@@ -27,14 +27,10 @@ namespace shooter {
           ci::Color8u background_color(0, 0, 0);
           ci::gl::clear(background_color);
 
-          if(get_new_explosions_) {
-            explosions_ = engine_.get_explosions_();
-          }
-
           screen_.Draw(engine_.get_player_(),
                          engine_.get_enemies_(),
                          engine_.get_bullets_(),
-                       explosions_,
+                             explosions_,
                        engine_.get_score_());
 
           if (!running_) {
@@ -55,11 +51,8 @@ namespace shooter {
             return;
           }
           running_ = true;
-          engine_.update(moves_);
-          if (!engine_.Reloaded()) {
-            return;
-          }
-          if (firing_) {
+
+          if (engine_.Reloaded() && firing_) {
             // gets cursor relative pos to player
             glm::vec2 cursor_relative_to_player_pos =
                 getMousePos() - getWindowPos() - screen_.get_kCenter_();
@@ -78,20 +71,34 @@ namespace shooter {
               }
           }
 
+          if(get_new_explosions_) {
+            explosions_ = engine_.get_explosions_();
+            for (auto explosion : explosions_) {
+              explosion_sound_->stop();
+              explosion_sound_->start();
+            }
+          }
+
+          engine_.update(moves_);
+
         }
 
         void ShooterApp::setup(){
 
           try {
 //            ci::app::addAssetDirectory("../../../assets/");
-            ci::audio::SourceFileRef bulletsourceFile = audio::load(
+            ci::audio::SourceFileRef bullet_source_file = audio::load(
                 loadAsset("audio/bullet_sound.wav"));
-            ci::audio::SourceFileRef lasersourceFile = audio::load(
+            ci::audio::SourceFileRef laser_source_file = audio::load(
                 loadAsset("audio/laser_sound.wav"));
-            bullet_sound_ = audio::Voice::create(bulletsourceFile);
-            laser_sound_ = audio::Voice::create(lasersourceFile);
+            ci::audio::SourceFileRef explosion_source_file = audio::load(
+                loadAsset("audio/explosion_sound.wav"));
+            bullet_sound_ = audio::Voice::create(bullet_source_file);
+            laser_sound_ = audio::Voice::create(laser_source_file);
+            explosion_sound_ = audio::Voice::create(explosion_source_file);
 
             bullet_sound_->setVolume(1.0f);
+            explosion_sound_->setVolume(1.0f);
             laser_sound_->setVolume(1.0f);
 
           } catch (Exception e) {

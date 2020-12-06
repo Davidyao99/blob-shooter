@@ -2,6 +2,7 @@
 
 #include "cinder/gl/gl.h"
 #include "core/enemy.h"
+#include "core/game_config_constants.h"
 
 namespace shooter {
 
@@ -33,14 +34,6 @@ namespace shooter {
                                   long time_from_last_wave) const; //Todo is there a better way
 
     /**
-     * Create spawning locations on the parameter of the board using board dimensions
-     * 21 spawns on each side
-     * @param board_dimensions
-     */
-
-    void CreateSpawns(glm::ivec2 board_dimensions);
-
-    /**
      * get vector of enemy spawning locations
      * @return vector of positions
      */
@@ -50,6 +43,23 @@ namespace shooter {
    private:
 
     std::vector<glm::ivec2> spawns_;
+
+    /**
+     * Create spawning locations on the parameter of the board using board dimensions
+     * 21 spawns on each side
+     * @param board_dimensions
+     */
+
+    void CreateSpawns(glm::ivec2 board_dimensions);
+
+    /**
+     * Creates enemy with random attributes according
+     * @param difficulty how difficult this enemy will be to deal with ( increases with time)
+     * @param radius_scale how much radius will scale with difficulty
+     * @param health_scale how much health will scale by difficulty
+     * @param level_scale how much the acceleration will scale by difficulty
+     * @return
+     */
 
     Enemy CreateEnemy(size_t difficulty, float radius_scale, int health_scale,
                       float level_scale) const;

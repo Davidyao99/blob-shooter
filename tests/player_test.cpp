@@ -172,5 +172,20 @@ namespace shooter {
     REQUIRE(player.GetCurrentWeapon().get_name_() == "Sniper");
   }
 
+  TEST_CASE("Reset works accordingly") {
 
+    SECTION("Reset resets the position of player to argument position") {
+      Player player(glm::vec2(0, 5), 1.0f, 2);
+      player.Reset(glm::vec2(10,12), 3);
+      REQUIRE(player.get_position_() == glm::vec2(10,12));
+    }
+
+    SECTION("Reset resets the health of player to argument health") {
+    Player player(glm::vec2(0, 5), 1.0f, 2);
+    player.Reset(glm::vec2(10,12), 3);
+    REQUIRE(player.get_health_() == 3);
+    }
+  }
 }
+
+
