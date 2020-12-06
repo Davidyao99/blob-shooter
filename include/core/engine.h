@@ -158,6 +158,25 @@ namespace shooter {
 
       void Restart();
 
+      /**
+       * Handle the deaths of entities, including enemies, bullets and players.
+       * Explosive bullets that were hit will trigger explosion
+       */
+      void HandleDeaths();
+
+      /**
+       * Prevents player from moving out of boundary. Changes velocity in that
+       * axis to 0.
+       */
+
+      void HandlePlayerAtBoundary();
+
+      /**
+       * Moves all entities
+       * @param moves set of directions for player movement
+       */
+      void MoveAllEntities(std::set<Direction> moves);
+
      private:
 
       /**
@@ -181,22 +200,11 @@ namespace shooter {
       void HandleEnemyPlayerCollision();
 
       /**
-       * Prevents player from moving out of boundary. Changes velocity in that
-       * axis to 0.
-       */
-
-      void HandlePlayerAtBoundary();
-
-      /**
        * Spawns enemy randomly at one of the locations in enemy_spawns
        */
       void SpawnEnemy();
 
-      /**
-       * Handle the deaths of entities, including enemies, bullets and players.
-       * Explosive bullets that were hit will trigger explosion
-       */
-      void HandleDeaths();
+
 
       Player player_;
       glm::ivec2 board_dimensions_;

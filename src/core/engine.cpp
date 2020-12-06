@@ -34,12 +34,18 @@ namespace shooter {
   }
 
   void Engine::update(std::set<Direction> moves) {
+    MoveAllEntities(moves);
+    HandlePlayerAtBoundary();
+    HandleCollisions();
+    SpawnEnemy();
+    HandleDeaths();
+  }
 
+  void Engine::MoveAllEntities(std::set<Direction> moves) {
     glm::vec2 player_pos = player_.get_position_();
     for (Direction direction : moves) {
       player_.Accelerate(direction);
     }
-    HandlePlayerAtBoundary();
     player_.Move();
     for (Bullet& bullet : bullets_) {
       bullet.Move();
@@ -48,9 +54,6 @@ namespace shooter {
       enemy.Accelerate(player_pos);
       enemy.Move();
     }
-    HandleCollisions();
-    SpawnEnemy();
-    HandleDeaths();
   }
 
   bool Engine::PlayerIsDead() const {
