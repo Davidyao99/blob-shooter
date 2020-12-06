@@ -21,6 +21,7 @@ namespace shooter {
     class Player : public Entity {
 
     public:
+
       Player(glm::vec2 position, float radius,
              int health);
 
@@ -28,12 +29,14 @@ namespace shooter {
        * Override Move method from Entity to simulate friction by
        * multiplying 0.9 to velocity every call
        */
+
       void Move();
 
       /**
        * Accelerates in direction
        * @param direction direction to accelerate towards
        */
+
       void Accelerate(Direction direction);
 
       /**
@@ -47,6 +50,7 @@ namespace shooter {
        * Zero X component of Velocity, to be called when player at right
        * or left boundary
        */
+
       void ZeroXVelocity();
 
       /**
@@ -59,6 +63,7 @@ namespace shooter {
        * Zero Y component of velocity, to be called when player at top or
        * bottom boundary
        */
+
       void ZeroYVelocity();
 
       /**
@@ -66,6 +71,7 @@ namespace shooter {
        * 1 sec ago, return 1
        * @return
        */
+
       float GetWeaponReloadStatus() const;
 
       /**
@@ -79,6 +85,7 @@ namespace shooter {
       /**
        * Adds weapon to weapons
        */
+
       void AddWeapon(Weapon weapon);
 
       /**
@@ -93,9 +100,12 @@ namespace shooter {
 
       void ChangePrevWeapon();
 
+      void Reset(glm::vec2 position, int health);
+
     private:
-        std::vector<Weapon> weapons_;
-        int curr_weapon_index_;
+
+     std::vector<Weapon> weapons_;
+     int curr_weapon_index_;
 
     };
 }

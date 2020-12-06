@@ -22,7 +22,7 @@ namespace shooter {
             break;
           case down:
             velocity_ += glm::vec2(0,1);
-          break;
+            break;
       }
     }
 
@@ -32,6 +32,11 @@ namespace shooter {
       if (glm::length(velocity_) < 0.1) {
         velocity_ = glm::vec2(0,0);
       }
+    }
+
+    void Player::Reset(glm::vec2 position, int health) {
+      position_ = position;
+      health_ = health;
     }
 
     void Player::ReloadWeapon() {
@@ -83,7 +88,6 @@ namespace shooter {
       while (curr_idx < weapons_.size()) {
         if (weapons_.at(curr_idx).get_unlocked_()) {
           curr_weapon_index_ = curr_idx;
-          std::cout << curr_weapon_index_ << std::endl;
           return;
         }
         curr_idx--;
@@ -92,7 +96,6 @@ namespace shooter {
       while (curr_idx != curr_weapon_index_) {
         if (weapons_.at(curr_idx).get_unlocked_()) {
           curr_weapon_index_ = curr_idx;
-          std::cout<<curr_weapon_index_<<std::endl;
           return;
         }
         curr_idx--;

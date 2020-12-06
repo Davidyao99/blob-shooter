@@ -26,24 +26,38 @@ namespace shooter {
     return spawns_;
   }
 
-  std::vector<Enemy> EnemySpawner::SpawnEnemy(long time_from_start,
+  std::vector<Enemy> EnemySpawner::SpawnEnemies(long time_from_start,
                                 long time_from_last_wave) const {
     std::vector<Enemy> enemies;
+
     if (time_from_last_wave > 5000) { // spawns enemy every 5 secs
-    // spawns an additional enemy per spawn every 30 seconds
-    size_t num_enemy_spawn = 1 + static_cast<size_t>(time_from_start) / 30000;
-    // difficult increases every 20 seconds ( higher health, faster speed for enemy)
-    size_t difficulty = 1 + static_cast<size_t>(time_from_start) / 20000;
-    if (difficulty > 5) {
-      difficulty = 5; // max difficulty at 5
-    }
-    for (num_enemy_spawn; num_enemy_spawn != 0; num_enemy_spawn--) {
-      size_t index = (rand() % spawns_.size());
-      size_t health = static_cast<int>(difficulty * (static_cast<float>(rand()) / RAND_MAX) * 20.0f);
-      float level = 0.1f + difficulty * (static_cast<float>(rand()) / RAND_MAX) * 0.18f;
-      enemies.push_back(Enemy(spawns_[index], 10.0f, health, 10, level));
+      // spawns an additional enemy per spawn every 60 seconds
+      size_t num_enemy_spawn = 1 + static_cast<size_t>(time_from_start) / 60000;
+      // difficulty increases every 20 seconds ( higher health, faster speed for enemy)
+      size_t difficulty = 1 + static_cast<size_t>(time_from_start) / 20000;
+      if (difficulty > 5) {
+        difficulty = 5; // max difficulty at 5
+      }
+      for (num_enemy_spawn; num_enemy_spawn != 0; num_enemy_spawn--) {
+        enemies.push_back(CreateEnemy(difficulty, 20.0f, 50, 0.05f));
+        enemies.push_back(CreateEnemy(difficulty, 0.0f, 2, 0.1f));
       }
     }
     return enemies;
   }
+
+  Enemy EnemySpawner::CreateEnemy(size_t difficulty,
+                                             float radius_scale,
+                                             int health_scale,
+                                             float level_scale) const {
+    size_t index = (rand() % spawns_.size());
+    float radius = (10.0f + static_cast<float>(rand()) /
+                                RAND_MAX * difficulty * radius_scale);
+    size_t health = 1 + static_cast<int>(difficulty * (static_cast<float>(rand())
+                                                   / RAND_MAX) * health_scale);
+    float level = 0.2f + difficulty * (static_cast<float>(rand()) / RAND_MAX) *
+                             level_scale;
+    return Enemy(spawns_[index], radius, health, 10, level);
+  }
+
 }

@@ -3,6 +3,12 @@
 
 namespace shooter {
 
+  bool Collides(glm::vec2 position1, glm::vec2 position2,
+              float radius1, float radius2) {
+    float dist = glm::length(position1 - position2);
+    return dist <= radius1 + radius2;
+  }
+
 
   Engine::Engine(float length, float height)
       : Engine(length, height, glm::vec2(length / 2, height / 2)) {
@@ -24,12 +30,12 @@ namespace shooter {
            ProjectileBlueprint(10.0f, 1, 10.0f,
                                       false, 0.0f));
     player_.AddWeapon(pistol);
-    Weapon sniper("Sniper", bullet, 0.0f, 400,
-                 ProjectileBlueprint(10.0f, 100,
+    Weapon sniper("Sniper", bullet, 0.0f, 1000,
+                 ProjectileBlueprint(10.0f, 120,
                                       30.0f, false, 0.0f));
     player_.AddWeapon(sniper);
-    Weapon rifle("Rifle", bullet, 0.2f, 200,
-                 ProjectileBlueprint(15.0f, 30,
+    Weapon rifle("Rifle", bullet, 0.1f, 200,
+                 ProjectileBlueprint(15.0f, 20,
                                      25.0f, false, 0.0f));
     player_.AddWeapon(rifle);
     Weapon laser("Laser", beam, 0.0f, 300,
@@ -37,7 +43,7 @@ namespace shooter {
                                      0, false, 0.0f));
     player_.AddWeapon(laser);
     Weapon rocket("Rocket", bullet, 0.01f, 1000,
-                  ProjectileBlueprint(15.0f, 40,
+                  ProjectileBlueprint(15.0f, 60,
                                       20.0f, true, 100.0f));
     player_.AddWeapon(rocket);
   }
@@ -47,6 +53,7 @@ namespace shooter {
   }
 
   void Engine::update(std::set<Direction> moves) {
+
     glm::vec2 player_pos = player_.get_position_();
     for (Direction direction : moves) {
       player_.Accelerate(direction);
@@ -63,6 +70,27 @@ namespace shooter {
     HandleCollisions();
     SpawnEnemy();
     HandleDeaths();
+  }
+
+  bool Engine::PlayerIsDead() const {
+    return player_.get_health_() <= 0;
+  }
+
+  void Engine::Restart() {
+    enemies_.clear();
+    bullets_.clear();
+    score_ = 0;
+    explosions_.clear();
+    player_.Reset(glm::vec2(board_dimensions_.x / 2, board_dimensions_.y / 2),50);
+    begin_time_ = std::chrono::system_clock::now();
+    last_enemy_wave_ = std::chrono::system_clock::now();
+  }
+
+  const std::chrono::system_clock::time_point Engine::get_begin_time_() const {
+    return begin_time_;
+  }
+  const std::chrono::system_clock::time_point Engine::get_last_enemy_wave_() const {
+    return last_enemy_wave_;
   }
 
   void Engine::HandleDeaths() {
@@ -83,6 +111,8 @@ namespace shooter {
                                                             explosion_radius));
         }
         bullets_.erase(bullets_.begin() + bullet_idx);
+      } else if (IsOutOfBounds(bullets_.at(bullet_idx).get_position_())) {
+        bullets_.erase(bullets_.begin() + bullet_idx);
       }
     }
     for (size_t enemy_idx = enemies_.size() - 1; enemy_idx < enemies_.size();
@@ -92,9 +122,13 @@ namespace shooter {
         score_ += 10;
       }
     }
-    if (player_.IsDead()) {
-      exit(0);
-    }
+  }
+
+  bool Engine::IsOutOfBounds(const glm::vec2& position) const {
+    return position.x > board_dimensions_.x + 500 ||
+           position.x < - 500 ||
+           position.y > board_dimensions_.y +500 ||
+           position.y < -500;
   }
 
   ProjectileType Engine::HandleShoot(glm::vec2 cursor_relative_to_player_pos) {
@@ -161,8 +195,8 @@ namespace shooter {
     std::chrono::milliseconds time_since_last_wave =
         std::chrono::duration_cast<std::chrono::milliseconds>(
             std::chrono::system_clock::now() - last_enemy_wave_);
-    std::vector<Enemy> enemies = enemy_spawner_.SpawnEnemy(static_cast<long>(duration.count()),
-                                                           static_cast<long>(time_since_last_wave.count())); //ToDo how to add enemy without multiple copies
+    std::vector<Enemy> enemies = enemy_spawner_.SpawnEnemies(static_cast<long>(duration.count()),
+                                                           static_cast<long>(time_since_last_wave.count()));
     if (enemies.size() == 0) {
       return;
     }
@@ -203,13 +237,15 @@ namespace shooter {
     }
   }
 
-  const std::vector<std::pair<glm::vec2,float>>& Engine::get_explosions_() const {
-    return explosions_;
+  const std::vector<std::pair<glm::vec2,float>> Engine::get_explosions_() {
+    std::vector<std::pair<glm::vec2,float>> explosions = explosions_;
+    explosions_.clear();
+    return explosions;
   }
 
-  void Engine::ClearExplosions() {
-    explosions_.clear();
-  }
+//  void Engine::ClearExplosions() {
+//    explosions_.clear();
+//  }
 
   void Engine::HandleCollisions() {
     HandleEnemyBulletCollision();
@@ -219,28 +255,28 @@ namespace shooter {
   void Engine::Explode(glm::vec2 explosion_position, float explosion_radius,
                        int damage) {
     for (auto& enemy : enemies_) {
-      float dist = glm::length(enemy.get_position_() - explosion_position);
-      if (dist <= explosion_radius + enemy.get_radius_()) {
+      if(Collides(enemy.get_position_(),explosion_position,
+                   enemy.get_radius_(), explosion_radius)) {
         enemy.Hit(damage, explosion_position);
       }
     }
-    float dist = glm::length(player_.get_position_() - explosion_position);
-    if (dist <= explosion_radius + player_.get_radius_()) {
-      player_.Hit(damage / 4, explosion_position);
+    if (Collides(player_.get_position_(), explosion_position,
+                 player_.get_radius_(), explosion_radius)) {
+      player_.Hit(damage / 5, explosion_position);
     }
   }
 
   void Engine::HandleEnemyBulletCollision() {
     for (auto& bullet : bullets_) {
       for (auto& enemy : enemies_) {
-        float dist = glm::length(bullet.get_position_() - enemy.get_position_());
-        if (dist <= bullet.get_radius_() + enemy.get_radius_()) {
+        if (Collides(bullet.get_position_(), enemy.get_position_(),
+                     bullet.get_radius_(), enemy.get_radius_())) {
           if (bullet.get_is_explosive_()) {
             bullet.Hit(bullet.get_health_(),
                        enemy.get_position_()); // kills bullet so it can explode
-            break;
+          } else {
+            enemy.Collide(bullet);
           }
-          enemy.Collide(bullet);
           break;
         }
       }
@@ -253,8 +289,8 @@ namespace shooter {
 
   void Engine::HandleEnemyPlayerCollision() {
     for (auto& enemy : enemies_) {
-      float dist = glm::length(player_.get_position_() - enemy.get_position_());
-      if (dist <= player_.get_radius_() + enemy.get_radius_()) {
+      if (Collides(enemy.get_position_(), player_.get_position_(),
+                   enemy.get_radius_(), player_.get_radius_())) {
         player_.Collide(enemy);
       }
     }
