@@ -8,6 +8,17 @@
 namespace shooter {
 
     /**
+     * Checks if two circles collide
+     * @param position1 position of first circle
+     * @param position2 position of second circle
+     * @param radius1 radius of first circle
+     * @param radius2 radius of second circle
+     * @return true if collision, false otherwise
+     */
+
+    bool Collides(glm::vec2 position1, glm::vec2 position2, float radius1, float radius2);
+
+    /**
      * Engine class that controls logic of how the game runs
      */
 
@@ -40,18 +51,34 @@ namespace shooter {
       void update(std::set<Direction> moves);
 
       /**
-       * Clear vector of explosions, to be called after drawing them
+       * Checks if bullet is long out of bound
+       * @param bullet
+       * @return true if bullet is out of bounds more than 500 pixels
        */
 
-      void ClearExplosions();
+      bool IsOutOfBounds(const glm::vec2& position) const;
+
+//      /**
+//       * Clear vector of explosions, to be called after drawing them
+//       */
+//
+//      void ClearExplosions();
 
       // getters
       const std::vector<Bullet>& get_bullets_() const;
       const std::vector<Enemy>& get_enemies_() const;
       const Player& get_player_() const;
       const glm::ivec2& get_board_dimensions_() const;
-      const std::vector<std::pair<glm::vec2,float>>& get_explosions_() const;
       int get_score_() const;
+      const std::chrono::system_clock::time_point get_begin_time_() const;
+      const std::chrono::system_clock::time_point get_last_enemy_wave_() const;
+
+      /**
+       * Gets a copy of explosions and deleted current vector of explosions
+       * @return copy vector of explosions
+       */
+
+      const std::vector<std::pair<glm::vec2,float>> get_explosions_();
 
       /**
        * Handles collision interaction by calling HandleEnemyBulletCollision
@@ -116,6 +143,20 @@ namespace shooter {
 
       void ChangeWeapon(bool next);
 
+      /**
+       * Checks if player is dead
+       * @return true if player health <= 0, false otherwise
+       */
+
+      bool PlayerIsDead() const;
+
+      /**
+       * Restarts the engine by clearing all vectors, setting score to 0,
+       * resetting player health and position
+       */
+
+      void Restart();
+
      private:
 
       /**
@@ -131,16 +172,18 @@ namespace shooter {
       void HandleEnemyBulletCollision();
 
       /**
-       * Handle Enemy and Player collision. Enemy deals damager to player
+       * Handle Enemy and Player collision. Enemy deals damage to player
        * that is equivalent to health of enemy. Player gets knocked back on
        * impact.
        */
+
       void HandleEnemyPlayerCollision();
 
       /**
        * Prevents player from moving out of boundary. Changes velocity in that
        * axis to 0.
        */
+
       void HandlePlayerAtBoundary();
 
       /**
@@ -148,22 +191,21 @@ namespace shooter {
        */
       void SpawnEnemy();
 
-
       /**
        * Handle the deaths of entities, including enemies, bullets and players.
        * Explosive bullets that were hit will trigger explosion
        */
       void HandleDeaths();
 
-     Player player_;
-     glm::ivec2 board_dimensions_;
-     EnemySpawner enemy_spawner_;
-     std::vector<Bullet> bullets_;
-     std::vector<Enemy> enemies_;
-     std::vector<std::pair<glm::vec2,float>> explosions_;
-     size_t score_;
+      Player player_;
+      glm::ivec2 board_dimensions_;
+      EnemySpawner enemy_spawner_;
+      std::vector<Bullet> bullets_;
+      std::vector<Enemy> enemies_;
+      std::vector<std::pair<glm::vec2,float>> explosions_;
+      size_t score_;
 
-     std::chrono::system_clock::time_point begin_time_;
-     std::chrono::system_clock::time_point last_enemy_wave_;
+      std::chrono::system_clock::time_point begin_time_;
+      std::chrono::system_clock::time_point last_enemy_wave_;
     };
 }
