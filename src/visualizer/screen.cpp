@@ -17,7 +17,7 @@ namespace shooter {
                       const std::vector<Bullet> &bullets,
                       const std::vector<std::pair<glm::vec2,float>> &explosions,
                       int score) {
-      ci::gl::color(ci::Color(0.1f,0.1f,0.1f));
+      ci::gl::color(ci::Color(0.2f,0.2f,0.2f));
       vec2 bottom_right = glm::ivec2(kLength, kHeight);
       ci::Rectf pixel_bounding_box(glm::vec2(0,0), bottom_right);
 
@@ -39,11 +39,22 @@ namespace shooter {
                                  ci::Font("monospace", 64));
     }
 
+  void Screen::DrawLoseScene() const {
+    ci::gl::drawStringCentered("You lost!!! Click anywhere to restart!", kCenter,
+                               ci::Color(0.2f,1.0f,0.2f),
+                               ci::Font("monospace", 64));
+  }
+
   void Screen::DrawExplosions(const std::vector<std::pair<glm::vec2,float>> &explosions,
                                 const glm::vec2 player_position) {
+
     for (auto explosion : explosions) {
+      glm::vec2 screen_position = GetScreenPosition(explosion.first,player_position);
+      if (!PositionInBound(screen_position, static_cast<int>(explosion.second))) {
+        continue;
+      }
       ci::gl::color(Color("Yellow"));
-      ci::gl::drawSolidCircle(GetScreenPosition(explosion.first,player_position)+kTopLeft,
+      ci::gl::drawSolidCircle(screen_position,
                                explosion.second);
     }
   }
@@ -80,12 +91,14 @@ namespace shooter {
                                ci::Font("monospace", 20));
   }
 
-  void Screen::DrawBeam(glm::vec2 cursor_position, float radius) {
-    ci::gl::lineWidth(radius*2.0f);
+  void Screen::DrawBeam(glm::vec2 cursor_position) {
+    ci::gl::lineWidth(5.0f);
     ci::gl::color(Color( "red"));
     glm::ivec2 cursor_relative_vec = static_cast<glm::ivec2>(cursor_position) - kCenter;
     ci::gl::drawLine(kCenter,
                      static_cast<glm::ivec2>(cursor_position)+ cursor_relative_vec*100);
+    ci::gl::drawSolidCircle(kCenter, 50);
+    std::cout<<cursor_position.x<<","<<cursor_position.y<<std::endl;
   }
 
 
@@ -157,10 +170,10 @@ namespace shooter {
   }
 
   void Screen::DrawGrid(const glm::ivec2 player) const {
-    ci::gl::color(Color("black"));
+    ci::gl::color(Color(0.1f,0.1f,0.1f));
     glm::ivec2 screen_in_engine_top_left = player - kCenter; // coords of screen top left in engine
-    int x_division = kEngineDimensions.x / 20;
-    int y_division = kEngineDimensions.y / 20;
+    int x_division = kEngineDimensions.x / kSpawnDivision;
+    int y_division = kEngineDimensions.y / kSpawnDivision;
 
     // prevent negatives when player at boundary
     screen_in_engine_top_left += glm::vec2 (x_division*5, y_division*5);
@@ -185,15 +198,15 @@ namespace shooter {
                            const glm::vec2 player)  const {
     for (const Enemy& enemy : enemies) {
       glm::ivec2 screen_position = GetScreenPosition(enemy.get_position_(), player);
-      if (PositionInBound(screen_position)) {
+      if (PositionInBound(screen_position, static_cast<int>(enemy.get_radius_()))) {
         int hit_points = enemy.get_health_();
-        float bluishness = static_cast<float>(hit_points) / 10;
-        ci::gl::color(Color(1.0f-bluishness,1.0f-bluishness,1.0f));
+        float bluishness = static_cast<float>(hit_points) / 250.0f;
+        ci::gl::color(Color(0.0f,0.0f,1.0f-bluishness));
         ci::gl::drawSolidCircle(
             screen_position,
             enemy.get_radius_());
         ci::gl::drawStringCentered(std::to_string(enemy.get_health_()), screen_position,
-                                   ci::Color("white"),
+                                   ci::Color(1.0f,1.0f,1.0f),
                                    ci::Font("monospace", 20));
       }
     }
@@ -205,7 +218,7 @@ namespace shooter {
 
     for (const Bullet& bullet : bullets) {
       glm::ivec2 screen_position = GetScreenPosition(bullet.get_position_(), player);
-      if (PositionInBound(screen_position)) {
+      if (PositionInBound(screen_position, static_cast<int>(bullet.get_radius_()))) {
         ci::gl::drawSolidCircle(
             screen_position,
             bullet.get_radius_());
@@ -213,9 +226,9 @@ namespace shooter {
     }
   }
 
-    bool Screen::PositionInBound(const glm::ivec2 position) const{
-      return (position.y < kHeight && position.y > 0 &&
-          position.x > 0 && position.x < kLength);
+    bool Screen::PositionInBound(const glm::ivec2 position, int radius) const{
+      return (position.y < kHeight + radius && position.y > - radius &&
+          position.x > -radius && position.x < kLength + radius);
     }
 
     glm::ivec2 Screen::GetScreenPosition(const glm::vec2 target_position,
