@@ -29,7 +29,7 @@ namespace shooter {
      * @return vector of enemies
      */
 
-    std::vector<Enemy> SpawnEnemy(long time_from_start,
+    std::vector<Enemy> SpawnEnemies(long time_from_start,
                                   long time_from_last_wave) const; //Todo is there a better way
 
     /**
@@ -51,5 +51,9 @@ namespace shooter {
 
     std::vector<glm::ivec2> spawns_;
 
-   };
+    Enemy CreateEnemy(size_t difficulty, float radius_scale, int health_scale,
+                      float level_scale) const;
+
+
+  };
 }
