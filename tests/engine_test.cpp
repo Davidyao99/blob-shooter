@@ -14,6 +14,7 @@ using shooter::Direction;
 using shooter::Enemy;
 using shooter::ProjectileBlueprint;
 using shooter::ProjectileType;
+using shooter::Collides;
 
 TEST_CASE("Engine Update works accordingly") {
 
@@ -159,8 +160,10 @@ TEST_CASE("Handle Shoot works accordingly") {
     std::chrono::seconds dura(1);
     std::this_thread::sleep_for(dura); // pause code for 1 second to load
     engine.HandleShoot(glm::vec2(2,0));
+    Entity bullet_test(glm::vec2(25,25), 10.0f, 1,
+                        120, glm::vec2(30,0));
     REQUIRE(engine.get_bullets_().size() == 1);
-    REQUIRE(engine.get_bullets_().at(0).get_velocity_() == glm::vec2 (10,0));
+    REQUIRE(engine.get_bullets_().at(0) == bullet_test);
   }
 
   SECTION("Handle Shoot does not spawn bullet when duration from last shot < "
@@ -212,7 +215,7 @@ TEST_CASE("ShootBeam works accordingly") {
                           1.0f, 30, 2, 0.3f));
     engine.AddEnemy(Enemy(glm::vec2(20,40),
                           1.0f, 40, 2, 0.3f));
-    engine.ShootBeam(glm::vec2(-1,0), 1.0f, 10);
+    engine.ShootBeam(glm::vec2(-1,0), 10);
     REQUIRE(engine.get_enemies_().size() == 3);
     REQUIRE(engine.get_enemies_().at(0).get_health_() == 10);
     REQUIRE(engine.get_enemies_().at(1).get_health_() == 20);
@@ -220,11 +223,11 @@ TEST_CASE("ShootBeam works accordingly") {
   }
 
   SECTION("Hits enemies that are touching the edges of the beam") {
-    engine.AddEnemy(Enemy(glm::vec2(150,26.9f),
+    engine.AddEnemy(Enemy(glm::vec2(150,26.0f),
                           1.0f, 20, 2, 0.3f));
     engine.AddEnemy(Enemy(glm::vec2(120,27.1f),
                           1.0f, 20, 2, 0.3f));
-    engine.ShootBeam(glm::vec2(1,0), 1.0f, 10);
+    engine.ShootBeam(glm::vec2(1,0), 10);
     REQUIRE(engine.get_enemies_().size() == 2);
     REQUIRE(engine.get_enemies_().at(0).get_health_() == 10);
     REQUIRE(engine.get_enemies_().at(1).get_health_() == 20);
@@ -233,7 +236,7 @@ TEST_CASE("ShootBeam works accordingly") {
   SECTION("Enemies behind the player will not be hit") {
     engine.AddEnemy(Enemy(glm::vec2(50,25),
                           1.0f, 20, 2, 0.3f));
-    engine.ShootBeam(glm::vec2(1,0), 1.0f, 10);
+    engine.ShootBeam(glm::vec2(1,0), 10);
     REQUIRE(engine.get_enemies_().size() == 1);
     REQUIRE(engine.get_enemies_().at(0).get_health_() == 20);
   }
@@ -271,9 +274,9 @@ TEST_CASE("ChangeWeapon works accordingly") {
   Engine engine(200,50, glm::vec2(100,25));
 
   SECTION("Changes weapon to next weapon when parameter set to true") {
-    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Pistol");
-    engine.ChangeWeapon(true);
     REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Sniper");
+    engine.ChangeWeapon(true);
+    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Machine Gun");
     engine.ChangeWeapon(true);
     REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Rifle");
   }
@@ -283,9 +286,9 @@ TEST_CASE("ChangeWeapon works accordingly") {
     engine.ChangeWeapon(true);
     REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Rifle");
     engine.ChangeWeapon(false);
-    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Sniper");
+    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Machine Gun");
     engine.ChangeWeapon(false);
-    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Pistol");
+    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Sniper");
   }
 
   SECTION("Change weapon to next weapon works on last weapon") {
@@ -295,13 +298,13 @@ TEST_CASE("ChangeWeapon works accordingly") {
     engine.ChangeWeapon(true);
     REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Rocket");
     engine.ChangeWeapon(true);
-    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Pistol");
-    engine.ChangeWeapon(true);
     REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Sniper");
+    engine.ChangeWeapon(true);
+    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Machine Gun");
   }
 
   SECTION("Change weapon to prev weapon works on first weapon") {
-    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Pistol");
+    REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Sniper");
     engine.ChangeWeapon(false);
     REQUIRE(engine.get_player_().GetCurrentWeapon().get_name_() == "Rocket");
     engine.ChangeWeapon(false);
@@ -333,10 +336,122 @@ TEST_CASE("Explode works accordingly") {
     REQUIRE(engine.get_enemies_().at(3).get_health_() == 20);
   }
 
-  SECTION("Explode damages player for 1/4 of the damage") {
+  SECTION("Explode damages player for 1/5 of the damage") {
     REQUIRE(engine.get_player_().get_health_() == 50.0f);
-    engine.Explode(glm::vec2(90,25), 10.0f, 40);
+    engine.Explode(glm::vec2(90,25), 10.0f, 50);
     REQUIRE(engine.get_player_().get_health_() == 40.0f);
   }
 
 }
+
+TEST_CASE("Restart works accordingly") {
+
+  Engine engine(200,50);
+  std::set<Direction> directions{Direction::right, Direction::down};
+  engine.update(directions);
+  ProjectileBlueprint blueprint(1.0f, 10, 1.0f, false, 0.0f);
+  engine.AddBullet(Bullet(glm::vec2(0,0), blueprint, glm::vec2(0,5)));
+  engine.AddBullet(Bullet(glm::vec2(0,0), blueprint, glm::vec2(5,0)));
+  engine.AddEnemy(Enemy(glm::vec2(5,25), 1.0f, 1, 1, 1.0f));
+  engine.AddEnemy(Enemy(glm::vec2(45,25), 1.0f, 1, 1, 1.0f));
+  engine.Restart();
+  std::chrono::system_clock::time_point test_now = std::chrono::system_clock::now();
+  REQUIRE(engine.get_player_().get_position_() == glm::vec2(100,25));
+  REQUIRE(engine.get_player_().get_health_() == 50);
+  REQUIRE(engine.get_enemies_().size() == 0);
+  REQUIRE(engine.get_bullets_().size() == 0);
+  REQUIRE(engine.get_score_() == 0);
+  REQUIRE(engine.get_explosions_().size() == 0);
+  std::chrono::milliseconds time_difference =
+      std::chrono::duration_cast<std::chrono::milliseconds>(engine.get_begin_time_()
+                                                            - test_now);
+  REQUIRE(time_difference.count()==0); // begin_time is reset
+  time_difference =
+      std::chrono::duration_cast<std::chrono::milliseconds>(
+          engine.get_last_enemy_wave_() - test_now);
+  REQUIRE(time_difference.count()==0); // last_enemy_wave is reset
+}
+
+TEST_CASE("PlayerIsDead works accordingly") {
+
+  SECTION("Returns true when player health == 0") {
+    Engine engine(200, 50);
+    engine.Explode(glm::vec2(100, 25), 1.0f, 250);
+    REQUIRE(engine.get_player_().get_health_() == 0);
+    REQUIRE(engine.PlayerIsDead());
+  }
+
+  SECTION("Returns true when player health < 0") {
+    Engine engine(200, 50);
+    engine.Explode(glm::vec2(100, 25), 1.0f, 300);
+    REQUIRE(engine.get_player_().get_health_() <= 0);
+    REQUIRE(engine.PlayerIsDead());
+  }
+
+  SECTION("Returns false when player health > 0") {
+    Engine engine(200, 50);
+    engine.Explode(glm::vec2(100, 25), 1.0f, 100);
+    REQUIRE(engine.get_player_().get_health_() > 0);
+    REQUIRE_FALSE(engine.PlayerIsDead());
+  }
+}
+
+TEST_CASE("Collides work correctly in detecting collisions") {
+
+  SECTION("Collides return true when two circles overlap") {
+    REQUIRE(Collides(glm::vec2(0,0), glm::vec2(3,0), 2, 2));
+    REQUIRE(Collides(glm::vec2(0,0), glm::vec2(2,2), 3, 2));
+  }
+
+  SECTION("Collides return true when two circles completely overlap") {
+    REQUIRE(Collides(glm::vec2(0,0), glm::vec2(0,0), 2, 3));
+  }
+
+  SECTION("Collides return true when two circles edges touch") {
+    REQUIRE(Collides(glm::vec2(0,0), glm::vec2(3,0), 2, 1));
+  }
+
+  SECTION("Collides return false when two circles do not touch") {
+    REQUIRE_FALSE(Collides(glm::vec2(0,0), glm::vec2(5,0), 2, 1));
+  }
+
+}
+
+TEST_CASE("IsOutOfBounds works accordingly") {
+
+  Engine engine(200, 50);
+
+  SECTION("IsOutOfBounds returns true if position is 500 pixels outside of map boundary"
+      "in the x axis") {
+    REQUIRE(engine.IsOutOfBounds(glm::vec2(800, 25)));
+    REQUIRE(engine.IsOutOfBounds(glm::vec2(-600, 25)));
+  }
+
+  SECTION("IsOutOfBounds returns true if position is 500 pixels outside of map boundary"
+      "in the y axis") {
+    REQUIRE(engine.IsOutOfBounds(glm::vec2(100, 600)));
+    REQUIRE(engine.IsOutOfBounds(glm::vec2(100, -600)));
+  }
+
+  SECTION("IsOutOfBounds returns true if position is 500 pixels outside of map boundary"
+      "diagonally") {
+    REQUIRE(engine.IsOutOfBounds(glm::vec2(-550, -550)));
+    REQUIRE(engine.IsOutOfBounds(glm::vec2(700, 560)));
+
+  }
+
+  SECTION("IsOutOfBounds returns false when player is in bounds") {
+    REQUIRE_FALSE(engine.IsOutOfBounds(glm::vec2(500, 25)));
+    REQUIRE_FALSE(engine.IsOutOfBounds(glm::vec2(-200, 25)));
+    REQUIRE_FALSE(engine.IsOutOfBounds(glm::vec2(100, 300)));
+    REQUIRE_FALSE(engine.IsOutOfBounds(glm::vec2(400, 200)));
+  }
+
+}
+
+
+
+
+
+
+
