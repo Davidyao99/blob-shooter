@@ -13,24 +13,24 @@ namespace shooter {
   extern const int kAdditionalEnemyDuration = 60000; // time interval when an additional enemy is spawned every wave
   extern const int kEnemyDifficultyDuration = 20000; // time interval when difficulty increases (enemy spawned are better)
 
-  extern const Weapon kSniper("Sniper", bullet, 0.0f, 1000,
-                      ProjectileBlueprint(10.0f, 120,
+  extern const Weapon kSniper("Sniper", kBullet, 0.0f,
+                              1000,        ProjectileBlueprint(10.0f, 120,
                                           30.0f, false, 0.0f));
 
-  extern const Weapon kMachineGun(std::string("Machine Gun"), bullet, 1.0f, 50,
+  extern const Weapon kMachineGun(std::string("Machine Gun"), kBullet, 1.0f, 50,
                     ProjectileBlueprint(10.0f, 5, 20.0f,
                                         false, 0.0f));
 
-  extern const Weapon kRifle("Rifle", bullet, 0.1f, 250,
+  extern const Weapon kRifle("Rifle", kBullet, 0.1f, 250,
              ProjectileBlueprint(15.0f, 25,
                                  25.0f, false, 0.0f));
 
-  extern const Weapon kLaser("Laser", beam, 0.0f, 300,
+  extern const Weapon kLaser("Laser", kBeam, 0.0f, 300,
              ProjectileBlueprint(5.0f, 10,
                                  0, false, 0.0f));
 
 
-  extern const Weapon kRocket("Rocket", bullet, 0.01f, 1000,
+  extern const Weapon kRocket("Rocket", kBullet, 0.01f, 1000,
               ProjectileBlueprint(15.0f, 80,
                                   20.0f, true, 100.0f));
 }

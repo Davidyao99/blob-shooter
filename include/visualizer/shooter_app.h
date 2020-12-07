@@ -13,8 +13,18 @@ namespace shooter {
 
     namespace visualizer {
 
+        /**
+         * Cinder app to handle user input and connection between engine and
+         * screen
+         */
+
         class ShooterApp : public ci::app::App {
         public:
+
+            /**
+             * Constructor
+             */
+
             ShooterApp();
 
             void draw() override;
@@ -44,6 +54,19 @@ namespace shooter {
             ci::audio::VoiceRef bullet_sound_;
             ci::audio::VoiceRef laser_sound_;
             ci::audio::VoiceRef explosion_sound_;
+
+            /**
+             * Helper function to handle firing visuals and call to engine when
+             * user fires
+             */
+
+            void HandleFiring();
+
+            /**
+             * Helper function to handle explosion visuals
+             */
+
+            void HandleExplosions();
         };
 
     }  // namespace visualizer

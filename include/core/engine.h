@@ -26,12 +26,14 @@ namespace shooter {
     class Engine {
 
     public:
+
      /**
       * Constructor, spawns player in middle of playing field. Creates
       * enemies spawns on the boundaries of the field.
-      * @param length length of field, best to set in multiples of 20
-      * @param height height of field, best to set in multiples of 20
+      * @param length length of game map
+      * @param height height of game map
       */
+
      Engine(float length, float height);
 
      /**
@@ -44,7 +46,7 @@ namespace shooter {
 
       Engine(float length, float height, glm::vec2 player_position);
 
-      // getters
+      // basic getters
 
       const std::vector<Bullet>& get_bullets_() const;
 
@@ -61,7 +63,7 @@ namespace shooter {
       const std::chrono::system_clock::time_point get_last_enemy_wave_() const;
 
       /**
-       * Gets a copy of explosions and deleted current vector of explosions
+       * Gets a copy of explosions for drawing and deletes current vector of explosions
        * @return copy vector of explosions
        */
 
@@ -70,40 +72,43 @@ namespace shooter {
       /**
        * method called iteratively by cinder draw(), does moving of player,
        * moving of bullets, moving of enemies, spawning of enemies, collision
-       * handling through private helper methods
-       * @param moves
+       * handling, death handling through private helper methods
+       * @param moves set of moves from userinput
        */
+
       void update(std::set<Direction> moves);
 
       /**
-       * Checks if bullet is long out of bound
+       * Checks if bullet is out of bound. Used to delete bullets that
+       * go way off screen to save memory.
        * @param bullet
-       * @return true if bullet is out of bounds more than 500 pixels
+       * @return true if bullet is out of bounds by more than 500 pixels
        */
 
-      bool IsOutOfBounds(const glm::vec2& position) const;
+      bool IsOutOfBounds(const glm::vec2 &position) const;
 
       /**
-       * Handles collision interaction by calling HandleEnemyBulletCollision
+       * Handles collision interaction by calling HandleEnemyBulletCollision()
        * and HandleEnemyPlayerCollision()
        */
+
       void HandleCollisions();
 
       /**
-       * Creates an explosion at explosion_position
-       * @param explosion_position
+       * Creates a circular explosion at explosion_position
+       * @param explosion_position location of explosion
        * @param explosion_radius radius of explosion
-       * @param damage
+       * @param damage damage dealt to enemies, player only receives 1/5 of damage
        */
 
       void Explode(glm::vec2 explosion_position, float explosion_radius, int damage);
 
       /**
        * Handle shooting
-       * @param cursor takes in position of cursor so that bullet is spawn
-       * with velocity heading towards cursor
+       * @param cursor relative position of cursor from player
        */
-      ProjectileType Engine::HandleShoot(glm::vec2 cursor);
+
+      ProjectileType Engine::HandleShoot(const glm::vec2 &cursor);
 
       /**
        * deals damage to all enemies in a line from player position to cursor
@@ -112,14 +117,15 @@ namespace shooter {
        * @param damage
        */
 
-      void ShootBeam(glm::vec2 cursor, int damage);
+      void ShootBeam(const glm::vec2 &cursor, int damage);
 
       /**
        * Instantiates Enemy object and adds it to enemies_. Made public for
        * easier testing
        * @param enemy Enemy to be added into enemies_
        */
-      void AddEnemy(Enemy enemy);
+
+      void AddEnemy(const Enemy &enemy);
 
       /**
        * Instantiates Bullet object and adds it to bullets_. Made public for
@@ -129,7 +135,8 @@ namespace shooter {
        * @param hitpoints hitpoints of bullet
        * @param cursor cursor location for bullet to head to
        */
-      void AddBullet(Bullet bullet);
+
+      void AddBullet(const Bullet &bullet);
 
       /**
        * Checks if current weapon is reloaded
@@ -175,7 +182,8 @@ namespace shooter {
        * Moves all entities
        * @param moves set of directions for player movement
        */
-      void MoveAllEntities(std::set<Direction> moves);
+
+      void MoveAllEntities(const std::set<Direction> &moves);
 
      private:
 
@@ -202,6 +210,7 @@ namespace shooter {
       /**
        * Spawns enemy randomly at one of the locations in enemy_spawns
        */
+
       void SpawnEnemy();
 
 

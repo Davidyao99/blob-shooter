@@ -12,7 +12,6 @@ namespace shooter {
   name_(name),
   projectile_type_(projectile_type),
   firing_angle_(firing_angle),
-  unlocked_(true),
   projectile_blueprint_(projectile_blueprint){
   }
 
@@ -31,14 +30,11 @@ namespace shooter {
     last_fire_ = std::chrono::system_clock::now();
   }
 
-  bool Weapon::get_unlocked_() const {
-    return unlocked_;
-  }
-
   bool Weapon::operator==(const Weapon rhs) const {
-    return (rhs.name_ == name_ && rhs.unlocked_ == unlocked_ &&
-              rhs.reload_rate == reload_rate && rhs.last_fire_ == last_fire_ &&
-              rhs.firing_angle_ == firing_angle_);
+    bool same_firing_angle = abs(firing_angle_ - rhs.firing_angle_) < 0.001f;
+    return (rhs.name_ == name_  && rhs.reload_rate == reload_rate &&
+            same_firing_angle && rhs.projectile_blueprint_ == projectile_blueprint_ &&
+            rhs.projectile_type_ == projectile_type_);
   }
 
   std::chrono::system_clock::time_point Weapon::get_last_fire_() const {
@@ -64,6 +60,5 @@ namespace shooter {
   int Weapon::get_reload_rate_() const {
     return reload_rate;
   }
-
 
   }

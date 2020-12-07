@@ -10,29 +10,29 @@ namespace shooter {
     Player player(glm::vec2(0, 5), 1.0f, 2);
 
     SECTION("Accelerate works for left") {
-      player.Accelerate(Direction::left);
+      player.Accelerate(Direction::kLeft);
       REQUIRE(player.get_velocity_() == glm::vec2(-1, 0));
     }
 
     SECTION("Accelerate works for right") {
-      player.Accelerate(Direction::right);
+      player.Accelerate(Direction::kRight);
       REQUIRE(player.get_velocity_() == glm::vec2(1, 0));
     }
 
     SECTION("Accelerate works for up") {
-      player.Accelerate(Direction::up);
+      player.Accelerate(Direction::kUp);
       REQUIRE(player.get_velocity_() == glm::vec2(0, -1));
     }
 
     SECTION("Accelerate works for down") {
-      player.Accelerate(Direction::down);
+      player.Accelerate(Direction::kDown);
       REQUIRE(player.get_velocity_() == glm::vec2(0, 1));
     }
   }
 
   TEST_CASE("Player Move works accordingly") {
     Player player(glm::vec2(0, 5), 1.0f, 2);
-    player.Accelerate(Direction::right);
+    player.Accelerate(Direction::kRight);
 
     SECTION("Player Move adds velocity to position") {
       player.Move();
@@ -55,16 +55,16 @@ namespace shooter {
 
   TEST_CASE("ZeroXVelocity works accordingly and zeros x velocity") {
     Player player(glm::vec2(0, 5), 1.0f, 2);
-    player.Accelerate(Direction::right);
-    player.Accelerate(Direction::down);
+    player.Accelerate(Direction::kRight);
+    player.Accelerate(Direction::kDown);
     player.ZeroXVelocity();
     REQUIRE(glm::vec2(0, 1) == player.get_velocity_());
   }
 
   TEST_CASE("ZeroYVelocity works accordingly and zeros x velocity") {
     Player player(glm::vec2(0, 5), 1.0f, 2);
-    player.Accelerate(Direction::right);
-    player.Accelerate(Direction::down);
+    player.Accelerate(Direction::kRight);
+    player.Accelerate(Direction::kDown);
     player.ZeroYVelocity();
     REQUIRE(glm::vec2(1, 0) == player.get_velocity_());
   }
@@ -72,7 +72,7 @@ namespace shooter {
   TEST_CASE("Reload Weapon sets last reload to now") {
     Player player(glm::vec2(0, 5), 1.0f, 2);
     player.AddWeapon(Weapon(std::string("Pistol"),
-                            ProjectileType::bullet, 0.0f,
+                            ProjectileType::kBullet, 0.0f,
                             1000,
                             ProjectileBlueprint(10.0f, 1,
                                      10.0f, false, 0.0f)));
@@ -93,7 +93,7 @@ namespace shooter {
     SECTION("GetWeaponReloadStatus returns right reload status") {
       Player player(glm::vec2(0, 5), 1.0f, 2);
       player.AddWeapon(
-          Weapon(std::string("Pistol"), ProjectileType::bullet, 0.0f, 1000,
+          Weapon(std::string("Pistol"), ProjectileType::kBullet, 0.0f, 1000,
                  ProjectileBlueprint(10.0f, 1, 10.0f, false, 0.0f)));
       REQUIRE(player.GetWeaponReloadStatus() == 0.0f);
       std::chrono::milliseconds dura(500);
@@ -106,7 +106,7 @@ namespace shooter {
     SECTION("GetWeaponReloadStatus returns reload status as 1 once fully reloaded") {
     Player player(glm::vec2(0, 5), 1.0f, 2);
     player.AddWeapon(
-        Weapon(std::string("Pistol"), ProjectileType::bullet,0.0f, 1000,
+        Weapon(std::string("Pistol"), ProjectileType::kBullet,0.0f, 1000,
                ProjectileBlueprint(10.0f, 1, 10.0f, false, 0.0f)));
     REQUIRE(player.GetWeaponReloadStatus() == 0.0f);
     std::chrono::seconds dura(1);
@@ -121,7 +121,7 @@ namespace shooter {
     Player player(glm::vec2(0, 5), 1.0f, 2);
     ProjectileBlueprint blue_print(10.0f, 1, 10.0f, false, 0.0f);
     player.AddWeapon(
-        Weapon(std::string("Pistol"), ProjectileType::bullet, 0.0f, 1000,
+        Weapon(std::string("Pistol"), ProjectileType::kBullet, 0.0f, 1000,
                blue_print));
     Bullet bullet1 = player.FireBullet(glm::vec2(2,0));
     Bullet bullet_test(glm::ivec2(0,5), blue_print, glm::ivec2(2,0));
@@ -131,15 +131,15 @@ namespace shooter {
   TEST_CASE("ChangeNextWeapon works accordingly") {
     Player player(glm::vec2(0, 5), 1.0f, 2);
     player.AddWeapon(
-        Weapon(std::string("Pistol"), bullet, 0.0f, 1000,
+        Weapon(std::string("Pistol"), kBullet, 0.0f, 1000,
                        ProjectileBlueprint(10.0f, 1, 10.0f,
                                            false, 0.0f)));
     player.AddWeapon(
-        Weapon("Sniper", bullet, 0.0f, 400,
+        Weapon("Sniper", kBullet, 0.0f, 400,
                       ProjectileBlueprint(10.0f, 100,
                                           30.0f, false, 0.0f)));
     player.AddWeapon(
-        Weapon("Laser", beam, 0.0f, 300,
+        Weapon("Laser", kBeam, 0.0f, 300,
                      ProjectileBlueprint(5.0f, 10,
                                          0, false, 0.0f)));
     REQUIRE(player.GetCurrentWeapon().get_name_() == "Pistol");
@@ -154,15 +154,15 @@ namespace shooter {
   TEST_CASE("ChangePrevWeapon works accordingly") {
     Player player(glm::vec2(0, 5), 1.0f, 2);
     player.AddWeapon(
-        Weapon(std::string("Pistol"), bullet, 0.0f, 1000,
+        Weapon(std::string("Pistol"), kBullet, 0.0f, 1000,
                ProjectileBlueprint(10.0f, 1, 10.0f,
                                    false, 0.0f)));
     player.AddWeapon(
-        Weapon("Sniper", bullet, 0.0f, 400,
+        Weapon("Sniper", kBullet, 0.0f, 400,
                ProjectileBlueprint(10.0f, 100,
                                    30.0f, false, 0.0f)));
     player.AddWeapon(
-        Weapon("Laser", beam, 0.0f, 300,
+        Weapon("Laser", kBeam, 0.0f, 300,
                ProjectileBlueprint(5.0f, 10,
                                    0, false, 0.0f)));
     REQUIRE(player.GetCurrentWeapon().get_name_() == "Pistol");

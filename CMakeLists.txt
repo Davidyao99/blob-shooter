@@ -68,7 +68,8 @@ list(APPEND TEST_FILES tests/entity_test.cpp
         tests/enemy_test.cpp
         tests/player_test.cpp
         tests/engine_test.cpp
-        tests/enemy_spawner_test.cpp)
+        tests/enemy_spawner_test.cpp
+        tests/weapon_test.cpp)
 
 
 ci_make_app(

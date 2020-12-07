@@ -7,11 +7,15 @@
 
 namespace shooter {
 
+    /**
+     * Enum to represent the directions pressed by user
+     */
+
     enum Direction {
-        left,
-        up,
-        right,
-        down
+        kLeft,
+        kUp,
+        kRight,
+        kDown
     };
 
     /**
@@ -22,6 +26,13 @@ namespace shooter {
 
     public:
 
+     /**
+      * Constructor for player
+      * @param position position of player
+      * @param radius radius of player
+      * @param health health of player
+      */
+
       Player(glm::vec2 position, float radius,
              int health);
 
@@ -30,7 +41,7 @@ namespace shooter {
        * multiplying 0.9 to velocity every call
        */
 
-      void Move();
+      void Move() override;
 
       /**
        * Accelerates in direction
@@ -80,13 +91,13 @@ namespace shooter {
        * @return bullet
        */
 
-      Bullet FireBullet(glm::vec2 cursor);
+      Bullet FireBullet(const glm::vec2 &cursor);
 
       /**
        * Adds weapon to weapons
        */
 
-      void AddWeapon(Weapon weapon);
+      void AddWeapon(const Weapon &weapon);
 
       /**
        * Switches to next weapon
@@ -100,12 +111,18 @@ namespace shooter {
 
       void ChangePrevWeapon();
 
-      void Reset(glm::vec2 position, int health);
+      /**
+       * Resets the player position and health
+       * @param position position of player to be reset to
+       * @param health health of player to be reset to
+       */
+
+      void Reset(const glm::vec2 &position, int health);
 
     private:
 
      std::vector<Weapon> weapons_;
-     int curr_weapon_index_;
+     size_t curr_weapon_index_;
 
     };
 }

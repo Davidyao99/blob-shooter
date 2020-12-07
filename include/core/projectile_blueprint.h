@@ -19,13 +19,24 @@ namespace shooter {
      * @param explosion_radius
      */
 
-    ProjectileBlueprint(float projectile_radius, int damage, float speed,
+    ProjectileBlueprint(float projectile_radius, size_t damage, float speed,
                         bool isExplosive, float explosion_radius);
 
+    /**
+     * == operator to be used for testing equality between ProjectileBlueprints
+     * @param rhs
+     * @return true if same, false otherwise
+     */
+    bool operator==(const ProjectileBlueprint rhs) const;
+
     float projectile_radius_;
-    int damage_;
+
+    size_t damage_;
+
     float speed_;
+
     bool isExplosive_;
+
     float explosion_radius_;
   };
 }

@@ -18,7 +18,7 @@ namespace shooter {
         return radius_;
     }
 
-    const int Entity::get_damage_() const {
+    const size_t Entity::get_damage_() const {
       return damage_;
     }
 

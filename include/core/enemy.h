@@ -11,6 +11,7 @@ namespace shooter{
     */
 
     class Enemy : public Entity {
+
     public:
 
      /**

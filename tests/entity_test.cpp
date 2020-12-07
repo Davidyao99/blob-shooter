@@ -72,7 +72,7 @@ TEST_CASE("Hit works accordingly") {
 
 }
 
-TEST_CASE("== operator works accordingly") {
+TEST_CASE("entity == operator works accordingly") {
 
   SECTION("== returns true when all member variables are the same") {
     Entity entity1(glm::vec2(0,5), 2.0f,10,

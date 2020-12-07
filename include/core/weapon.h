@@ -13,9 +13,9 @@ namespace shooter {
    */
 
   enum ProjectileType {
-    beam, // for beam projectile_blueprint, firing angle, radius and
+    kBeam, // for beam projectile_blueprint, firing angle, radius and
          // speed is irrelevant
-    bullet
+    kBullet
   };
 
   /**
@@ -43,11 +43,15 @@ namespace shooter {
     // getters
 
     std::chrono::system_clock::time_point get_last_fire_() const;
+
     const std::string get_name_() const;
+
     ProjectileType get_projectile_type_() const;
-    bool get_unlocked_() const;
+
     int get_reload_rate_() const;
+
     ProjectileBlueprint get_projectile_blueprint_() const;
+
     float get_firing_angle_() const;
 
     /**
@@ -72,12 +76,17 @@ namespace shooter {
     void Reload();
 
    private:
+
     std::chrono::system_clock::time_point last_fire_;
+
     std::string name_;
+
     ProjectileType projectile_type_;
-    bool unlocked_;
+
     int reload_rate;
-    float firing_angle_;
+
+    float firing_angle_; // spread of bullet
+
     ProjectileBlueprint projectile_blueprint_;
   };
 }

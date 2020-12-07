@@ -20,14 +20,17 @@ namespace shooter {
       * @param blueprint
       * @param cursor_relative_location relative location of cursor from parameter position
       */
+
      Bullet(glm::vec2 position, ProjectileBlueprint blueprint,
             glm::vec2 cursor_relative_location);
 
      // getters
      bool get_is_explosive_() const;
+
      float get_explosion_radius_() const;
 
      private:
+
       bool is_explosive_;
       float explosive_radius_;
 

@@ -12,12 +12,23 @@ namespace shooter {
 
     namespace visualizer {
 
+        /**
+         * Main drawing class that draws all the visual elements to the screen
+         */
+
         class Screen {
 
           public:
 
+           /**
+            * Constructor of screen
+            * @param screen_length length of canvas to draw on
+            * @param screen_height height of canvas to draw on
+            * @param board_dimensions dimensions of actual game map
+            */
+
            Screen(int screen_length,
-                  int screen_height, const glm::ivec2 board_dimensions);
+                  int screen_height, const glm::ivec2 &board_dimensions);
 
            /**
             * Main drawing function that calls other helper drawing functions
@@ -31,9 +42,9 @@ namespace shooter {
 
            void Draw(const Player& player,
                      const std::vector<Enemy> &enemies,
-                     const std::vector<Bullet>& bullets,
+                     const std::vector<Bullet> &bullets,
                      const std::vector<std::pair<glm::vec2,float>> &explosions,
-                     int score);
+                     int score) const;
 
            /**
             * Draws a beam
@@ -41,7 +52,7 @@ namespace shooter {
             * @param radius 0.5 the width of beam
             */
 
-           void DrawBeam(glm::vec2 cursor_position);
+           void DrawBeam(const glm::vec2 &cursor_position) const;
 
             /**
              * Checks if position within bound, if outside, stop drawing item
@@ -49,7 +60,7 @@ namespace shooter {
              * @return true if in-bound, false otherwise
              */
 
-            bool PositionInBound(const glm::ivec2 position, int radius) const;
+            bool PositionInBound(const glm::ivec2 &position, int radius) const;
 
             /**
              * converts corner positions from actual game to positions relative to player
@@ -58,60 +69,69 @@ namespace shooter {
              * @param player actual position of player
              * @return returns relative position from player
              */
-            glm::ivec2 GetScreenPosition(const glm::vec2 target_position,
-                                                  const glm::vec2 player) const;
 
+            glm::ivec2 GetScreenPosition(const glm::vec2 &target_position,
+                                                  const glm::vec2 &player) const;
+
+            /**
+             * Shows lose text and click to restart
+             */
 
             void DrawLoseScene() const;
 
-            // getters
+            // basic getters
+
             const glm::ivec2 get_kTopLeft() const;
+
             const glm::ivec2 Screen::get_kCenter_() const;
 
 
           private:
 
-
            const glm::ivec2 kTopLeft;
+
            const glm::ivec2 kCenter; // always center of screen
+
            const glm::ivec2 kEngineDimensions;
+
            const int kLength;
+
            const int kHeight;
 
            /**
             * Draw player and reload bar
             * @param player
             */
-           void DrawPlayer(const Player& player) const;
+           void DrawPlayer(const Player &player) const;
 
            /**
             * Draw enemies
             * @param enemies
             */
            void DrawEnemies(const std::vector<Enemy> &enemies,
-                            const glm::vec2 player) const;
+                            const glm::vec2 &player) const;
 
            /**
             * Draws bullets
             * @param bullets
             */
            void DrawBullets(const std::vector<Bullet> &bullets,
-                            const glm::vec2 player) const;
+                            const glm::vec2 &player) const;
 
            /**
             * Draw boundary lines
             * @param player
             */
-           void DrawBoundaries(const Player& player) const;
+           void DrawBoundaries(const Player &player) const;
 
            /**
             * Draws explosions
-            * @param explosions
-            * @param player_position
+            * @param explosions vector of explosion location and radius
+            * @param player_position player position
             */
 
           void DrawExplosions(const std::vector<std::pair<glm::vec2,float>> &explosions,
-                               const glm::vec2 player_position);
+                               const glm::vec2 &player_position) const;
 
 
           /**
@@ -124,7 +144,7 @@ namespace shooter {
            * Draws the main criss-cross grids in the background
            * @param player
            */
-          void DrawGrid(const glm::ivec2 player) const;
+          void DrawGrid(const glm::ivec2 &player) const;
 
 
         };

@@ -11,16 +11,16 @@ namespace shooter {
 
     void Player::Accelerate(Direction direction) {
       switch (direction) {
-          case left:
+          case kLeft:
             velocity_ += glm::vec2(-1,0);
             break;
-          case up:
+          case kUp:
             velocity_ += glm::vec2(0, -1);
             break;
-          case right:
+          case kRight:
             velocity_ += glm::vec2(1,0);
             break;
-          case down:
+          case kDown:
             velocity_ += glm::vec2(0,1);
             break;
       }
@@ -34,7 +34,7 @@ namespace shooter {
       }
     }
 
-    void Player::Reset(glm::vec2 position, int health) {
+    void Player::Reset(const glm::vec2 &position, int health) {
       position_ = position;
       health_ = health;
     }
@@ -51,7 +51,7 @@ namespace shooter {
       return weapons_.at(curr_weapon_index_);
     }
 
-    Bullet Player::FireBullet(glm::vec2 cursor) {
+    Bullet Player::FireBullet(const glm::vec2 &cursor) {
       Weapon weapon = GetCurrentWeapon();
       float r = glm::length(cursor);
       float tita = atan2(cursor.y,cursor.x); // change to polar coordinates
@@ -63,46 +63,22 @@ namespace shooter {
     }
 
     void Player::ChangeNextWeapon() {
-      size_t curr_idx = curr_weapon_index_ + 1;
-      while (curr_idx < weapons_.size()) {
-        if (weapons_.at(curr_idx).get_unlocked_()) {
-          curr_weapon_index_ = curr_idx;
-          std::cout << curr_weapon_index_ << std::endl;
-          return;
-        }
-        curr_idx++;
+      if (curr_weapon_index_ == weapons_.size() - 1) {
+        curr_weapon_index_ = 0;
+        return;
       }
-      curr_idx = 0;
-      while (curr_idx != curr_weapon_index_) {
-        if (weapons_.at(curr_idx).get_unlocked_()) {
-          curr_weapon_index_ = curr_idx;
-          std::cout<<curr_weapon_index_<<std::endl;
-          return;
-        }
-        curr_idx++;
-      }
+      curr_weapon_index_++;
     }
 
     void Player::ChangePrevWeapon() {
-      size_t curr_idx = curr_weapon_index_ - 1;
-      while (curr_idx < weapons_.size()) {
-        if (weapons_.at(curr_idx).get_unlocked_()) {
-          curr_weapon_index_ = curr_idx;
-          return;
-        }
-        curr_idx--;
+      if (curr_weapon_index_ == 0) {
+        curr_weapon_index_ = weapons_.size() - 1;
+        return;
       }
-      curr_idx = weapons_.size() - 1;
-      while (curr_idx != curr_weapon_index_) {
-        if (weapons_.at(curr_idx).get_unlocked_()) {
-          curr_weapon_index_ = curr_idx;
-          return;
-        }
-        curr_idx--;
-      }
+      curr_weapon_index_--;
     }
 
-    void Player::AddWeapon(Weapon weapon) {
+    void Player::AddWeapon(const Weapon &weapon) {
       weapons_.push_back(weapon);
     }
 

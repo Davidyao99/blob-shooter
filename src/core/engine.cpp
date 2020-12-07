@@ -35,17 +35,19 @@ namespace shooter {
 
   void Engine::update(std::set<Direction> moves) {
     MoveAllEntities(moves);
-    HandlePlayerAtBoundary();
     HandleCollisions();
     SpawnEnemy();
     HandleDeaths();
   }
 
-  void Engine::MoveAllEntities(std::set<Direction> moves) {
+  void Engine::MoveAllEntities(const std::set<Direction> &moves) {
     glm::vec2 player_pos = player_.get_position_();
     for (Direction direction : moves) {
       player_.Accelerate(direction);
     }
+
+    HandlePlayerAtBoundary();
+
     player_.Move();
     for (Bullet& bullet : bullets_) {
       bullet.Move();
@@ -91,7 +93,7 @@ namespace shooter {
           Explode(explosion_position,
                   explosion_radius,
                   bullets_.at(bullet_idx).get_damage_());
-          explosions_.push_back(std::pair<glm::ivec2, float>(explosion_position,
+          explosions_.emplace_back(std::pair<glm::ivec2, float>(explosion_position,
                                                             explosion_radius));
         }
         bullets_.erase(bullets_.begin() + bullet_idx);
@@ -115,27 +117,24 @@ namespace shooter {
            position.y < -500;
   }
 
-  ProjectileType Engine::HandleShoot(glm::vec2 cursor_relative_to_player_pos) {
+  ProjectileType Engine::HandleShoot(const glm::vec2& cursor) {
     if (!Reloaded()) {
-      return bullet; // nothing happens
+      return kBullet; // nothing happens
     }
     const Weapon& weapon = player_.GetCurrentWeapon();
     ProjectileType type = weapon.get_projectile_type_();
-    if (type != beam) {
-      Bullet bullet = player_.FireBullet(cursor_relative_to_player_pos);
+    if (type != kBeam) {
+      Bullet bullet = player_.FireBullet(cursor);
       AddBullet(bullet);
     } else {
-      ShootBeam(cursor_relative_to_player_pos,
-                weapon.get_projectile_blueprint_().damage_);
+      ShootBeam(cursor,  weapon.get_projectile_blueprint_().damage_);
     }
     player_.ReloadWeapon();  // reset reload timing
     return type;
   }
 
-  void Engine::ShootBeam(glm::vec2 cursor_relative_to_player_pos,
-                         int damage) {
-    glm::vec2 laser_unit_vector = cursor_relative_to_player_pos /
-                                  glm::length(cursor_relative_to_player_pos);
+  void Engine::ShootBeam(const glm::vec2 &cursor, int damage) {
+    glm::vec2 laser_unit_vector = cursor / glm::length(cursor);
     for (auto& enemy : enemies_) {
       glm::vec2 player_to_enemy = enemy.get_position_() - player_.get_position_();
       float player_to_enemy_dist = glm::length(player_to_enemy);
@@ -156,11 +155,11 @@ namespace shooter {
     return player_.GetWeaponReloadStatus() == 1.0f;
   }
 
-  void Engine::AddBullet(Bullet bullet) {
-    bullets_.emplace_back(bullet);
+  void Engine::AddBullet(const Bullet &bullet) {
+    bullets_.push_back(bullet);
   }
 
-  void Engine::AddEnemy(Enemy enemy) {
+  void Engine::AddEnemy(const Enemy &enemy) {
     enemies_.push_back(enemy);
   }
 
@@ -222,14 +221,10 @@ namespace shooter {
   }
 
   const std::vector<std::pair<glm::vec2,float>> Engine::get_explosions_() {
-    std::vector<std::pair<glm::vec2,float>> explosions = explosions_;
+    std::vector<std::pair<glm::vec2, float>> explosions = explosions_;
     explosions_.clear();
     return explosions;
   }
-
-//  void Engine::ClearExplosions() {
-//    explosions_.clear();
-//  }
 
   void Engine::HandleCollisions() {
     HandleEnemyBulletCollision();

@@ -33,11 +33,11 @@ namespace shooter {
                              explosions_,
                        engine_.get_score_());
 
-          if (!running_) {
+          if (!running_) { // check if game is running
             screen_.DrawLoseScene();
           }
 
-          if (is_beam_ != 0) {
+          if (is_beam_ != 0) { // check if beam is fired
             screen_.DrawBeam(beam_cursor_location_);
             is_beam_ --;
           }
@@ -46,53 +46,68 @@ namespace shooter {
         }
 
         void ShooterApp::update() {
+
           if (engine_.PlayerIsDead()) {
             running_ = false;
             return;
           }
+
           running_ = true;
 
-          if (engine_.Reloaded() && firing_) {
-            // gets cursor relative pos to player
-            glm::vec2 cursor_relative_to_player_pos =
-                getMousePos() - getWindowPos() - screen_.get_kCenter_();
-              ProjectileType type =
-                  engine_.HandleShoot(cursor_relative_to_player_pos);
-              if (type == beam) {
-                is_beam_ = 2;
-                beam_cursor_location_ = getMousePos()-getWindowPos();
-              }
-              if (!is_beam_) {
-                bullet_sound_->stop();
-                bullet_sound_->start();
-              } else {
-                laser_sound_->stop();
-                laser_sound_->start();
-              }
-          }
-
-          if(get_new_explosions_) {
-            explosions_ = engine_.get_explosions_();
-            for (auto explosion : explosions_) {
-              explosion_sound_->stop();
-              explosion_sound_->start();
-            }
-          }
+          HandleFiring();
+          HandleExplosions();
 
           engine_.update(moves_);
 
         }
 
+        void ShooterApp::HandleFiring() {
+          if (!engine_.Reloaded() || !firing_) {
+            return;
+          }
+
+          // gets cursor relative pos to player
+          glm::vec2 cursor_relative_to_player_pos =
+              getMousePos() - getWindowPos() - screen_.get_kCenter_();
+
+          ProjectileType type =
+              engine_.HandleShoot(cursor_relative_to_player_pos);
+          if (type == kBeam) {
+            is_beam_ = 2; // draws beam for 2 frames
+            beam_cursor_location_ = getMousePos()-getWindowPos();
+          }
+          if (!is_beam_) {
+            bullet_sound_->stop();
+            bullet_sound_->start();
+          } else {
+            laser_sound_->stop();
+            laser_sound_->start();
+          }
+
+        }
+
+        void ShooterApp::HandleExplosions() {
+          if (!get_new_explosions_) {
+            return;
+          }
+
+          explosions_ = engine_.get_explosions_();
+          for (auto explosion : explosions_) {
+            explosion_sound_->stop();
+            explosion_sound_->start();
+          }
+        }
+
         void ShooterApp::setup(){
 
           try {
-//            ci::app::addAssetDirectory("../../../assets/");
             ci::audio::SourceFileRef bullet_source_file = audio::load(
                 loadAsset("audio/bullet_sound.wav"));
             ci::audio::SourceFileRef laser_source_file = audio::load(
                 loadAsset("audio/laser_sound.wav"));
             ci::audio::SourceFileRef explosion_source_file = audio::load(
                 loadAsset("audio/explosion_sound.wav"));
+
             bullet_sound_ = audio::Voice::create(bullet_source_file);
             laser_sound_ = audio::Voice::create(laser_source_file);
             explosion_sound_ = audio::Voice::create(explosion_source_file);
@@ -109,16 +124,16 @@ namespace shooter {
         void ShooterApp::keyDown(ci::app::KeyEvent event) {
             switch (event.getChar()) {
                 case ci::app::KeyEvent::KEY_w:
-                    moves_.insert(up);
+                    moves_.insert(kUp);
                     break;
                 case ci::app::KeyEvent::KEY_s:
-                    moves_.insert(down);
+                    moves_.insert(kDown);
                     break;
                 case ci::app::KeyEvent::KEY_d:
-                    moves_.insert(right);
+                    moves_.insert(kRight);
                     break;
                 case ci::app::KeyEvent::KEY_a:
-                    moves_.insert(left);
+                    moves_.insert(kLeft);
                     break;
                 case ci::app::KeyEvent::KEY_q:
                   engine_.ChangeWeapon(true);
@@ -132,22 +147,22 @@ namespace shooter {
         void ShooterApp::keyUp(ci::app::KeyEvent event) {
             switch (event.getChar()) {
                 case ci::app::KeyEvent::KEY_w:
-                    moves_.erase(up);
+                    moves_.erase(kUp);
                     break;
                 case ci::app::KeyEvent::KEY_s:
-                    moves_.erase(down);
+                    moves_.erase(kDown);
                     break;
                 case ci::app::KeyEvent::KEY_d:
-                    moves_.erase(right);
+                    moves_.erase(kRight);
                     break;
                 case ci::app::KeyEvent::KEY_a:
-                    moves_.erase(left);
+                    moves_.erase(kLeft);
                     break;
             }
         }
         void ShooterApp::mouseDown(ci::app::MouseEvent event) {
           firing_ = true;
-          if (running_ == false){
+          if (!running_){
             engine_.Restart();
           }
         }

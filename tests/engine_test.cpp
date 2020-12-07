@@ -22,7 +22,7 @@ TEST_CASE("MoveAllEntities works accordingly") {
 
   SECTION("MoveAllEntities moves player in single direction") {
     const Player &player = engine.get_player_();
-    std::set<Direction> directions{Direction::right};
+    std::set<Direction> directions{Direction::kRight};
     engine.MoveAllEntities(directions);
 
     Entity entity_test(glm::vec2(26,25), 10.0f, 50,
@@ -33,7 +33,7 @@ TEST_CASE("MoveAllEntities works accordingly") {
 
   SECTION("MoveAllEntities moves player accordingly to moves in multiple directions") {
     const Player &player = engine.get_player_();
-    std::set<Direction> directions{Direction::right, Direction::down};
+    std::set<Direction> directions{Direction::kRight, Direction::kDown};
     engine.MoveAllEntities(directions);
 
     Entity entity_test(glm::vec2(26,26), 10.0f, 50,
@@ -44,7 +44,7 @@ TEST_CASE("MoveAllEntities works accordingly") {
 
   SECTION("MoveAllEntities does not move player if both opposing directions are pressed") {
     const Player &player = engine.get_player_();
-    std::set<Direction> directions{Direction::right, Direction::left};
+    std::set<Direction> directions{Direction::kRight, Direction::kLeft};
     engine.MoveAllEntities(directions);
 
     Entity entity_test(glm::vec2(25,25), 10.0f, 50,
@@ -106,7 +106,7 @@ TEST_CASE("HandlePlayerAtBoundary works accordingly") {
 
     Engine engine(50,50, glm::vec2(25,1));
     const Player &player = engine.get_player_();
-    std::set<Direction> directions{Direction::right, Direction::up};
+    std::set<Direction> directions{Direction::kRight, Direction::kUp};
 
     engine.MoveAllEntities(directions); // set player in motion
     engine.HandlePlayerAtBoundary();
@@ -121,7 +121,7 @@ TEST_CASE("HandlePlayerAtBoundary works accordingly") {
 
     Engine engine(50,50, glm::vec2(25,0));
     const Player &player = engine.get_player_();
-    std::set<Direction> directions{Direction::right, Direction::down};
+    std::set<Direction> directions{Direction::kRight, Direction::kDown};
 
     engine.MoveAllEntities(directions); // set player in motion
     engine.HandlePlayerAtBoundary();
@@ -136,7 +136,7 @@ TEST_CASE("HandlePlayerAtBoundary works accordingly") {
           " out of south boundary") {
     Engine engine(50,50, glm::vec2(25,50));
     const Player &player = engine.get_player_();
-    std::set<Direction> directions{Direction::right, Direction::down};
+    std::set<Direction> directions{Direction::kRight, Direction::kDown};
 
     engine.MoveAllEntities(directions); // set player in motion
     engine.HandlePlayerAtBoundary();
@@ -151,7 +151,7 @@ TEST_CASE("HandlePlayerAtBoundary works accordingly") {
       "south boundary but moving away from boundary") {
     Engine engine(50,50, glm::vec2(25,50));
     const Player &player = engine.get_player_();
-    std::set<Direction> directions{Direction::right, Direction::up};
+    std::set<Direction> directions{Direction::kRight, Direction::kUp};
 
     engine.MoveAllEntities(directions); // set player in motion
     engine.HandlePlayerAtBoundary();
@@ -166,7 +166,7 @@ TEST_CASE("HandlePlayerAtBoundary works accordingly") {
           " out of east boundary") {
     Engine engine(50,50, glm::vec2(50,25));
     const Player &player = engine.get_player_();
-    std::set<Direction> directions{Direction::right, Direction::down};
+    std::set<Direction> directions{Direction::kRight, Direction::kDown};
 
     engine.MoveAllEntities(directions); // set player in motion
     engine.HandlePlayerAtBoundary();
@@ -181,7 +181,7 @@ TEST_CASE("HandlePlayerAtBoundary works accordingly") {
           " east boundary and moving away from boundary") {
     Engine engine(50,50, glm::vec2(50,25));
     const Player &player = engine.get_player_();
-    std::set<Direction> directions{Direction::left, Direction::down};
+    std::set<Direction> directions{Direction::kLeft, Direction::kDown};
 
     engine.MoveAllEntities(directions); // set player in motion
     engine.HandlePlayerAtBoundary();
@@ -196,7 +196,7 @@ TEST_CASE("HandlePlayerAtBoundary works accordingly") {
           " out of west boundary") {
     Engine engine(50,50, glm::vec2(0,25));
     const Player &player = engine.get_player_();
-    std::set<Direction> directions{Direction::left, Direction::down};
+    std::set<Direction> directions{Direction::kLeft, Direction::kDown};
 
     engine.MoveAllEntities(directions); // set player in motion
     engine.HandlePlayerAtBoundary();
@@ -211,7 +211,7 @@ TEST_CASE("HandlePlayerAtBoundary works accordingly") {
           " west boundary but moving away from boundary") {
     Engine engine(50,50, glm::vec2(0,25));
     const Player &player = engine.get_player_();
-    std::set<Direction> directions{Direction::right, Direction::down};
+    std::set<Direction> directions{Direction::kRight, Direction::kDown};
 
     engine.MoveAllEntities(directions); // set player in motion
     engine.HandlePlayerAtBoundary();
@@ -415,9 +415,9 @@ TEST_CASE("Handle Shoot works accordingly") {
 
     ProjectileType projectile_type_3 = engine.HandleShoot(glm::vec2(2,0));
 
-    REQUIRE(projectile_type_1 == shooter::bullet);
-    REQUIRE(projectile_type_2 == shooter::beam);
-    REQUIRE(projectile_type_3 == shooter::bullet);
+    REQUIRE(projectile_type_1 == shooter::kBullet);
+    REQUIRE(projectile_type_2 == shooter::kBeam);
+    REQUIRE(projectile_type_3 == shooter::kBullet);
   }
 
   SECTION("Handle Shoot resets the weapon reload timing when fired") {
@@ -599,7 +599,7 @@ TEST_CASE("Restart works accordingly") {
 
   Engine engine(200,50);
 
-  std::set<Direction> directions{Direction::right, Direction::down};
+  std::set<Direction> directions{Direction::kRight, Direction::kDown};
   engine.update(directions);
 
   ProjectileBlueprint blueprint(1.0f, 10, 1.0f, false, 0.0f);
@@ -706,10 +706,3 @@ TEST_CASE("IsOutOfBounds works accordingly") {
   }
 
 }
-
-
-
-
-
-
-
