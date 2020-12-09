@@ -1,12 +1,9 @@
-Fill this in before the final project deadline. Someone who has _no familiarity_ with your project should be able to read this and understand:
-* what your project does
-* how to set it up and run it
 
 **Shooter**
 
 Blobs are spawning everywhere to get you! Survive as long as possible! Enjoy ;)
 
-![](showcase.gif)
+![](https://github.com/uiuc-fa20-cs126/final-project-Davidyao99/tree/week2/assets/gif)
 
 **Dependencies**
 - [cmake](https://cmake.org/)

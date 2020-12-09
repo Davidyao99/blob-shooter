@@ -14,7 +14,7 @@ namespace shooter {
   extern const int kEnemyDifficultyDuration = 20000; // time interval when difficulty increases (enemy spawned are better)
 
   extern const Weapon kSniper("Sniper", kBullet, 0.0f,
-                              1000,        ProjectileBlueprint(10.0f, 120,
+                              1000,ProjectileBlueprint(10.0f, 120,
                                           30.0f, false, 0.0f));
 
   extern const Weapon kMachineGun(std::string("Machine Gun"), kBullet, 1.0f, 50,

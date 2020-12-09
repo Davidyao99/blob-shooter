@@ -16,7 +16,7 @@ namespace shooter {
                   firing_(false),
                   is_beam_(0),
                   running_(true),
-                  get_new_explosions_(true),
+                  get_new_explosions_counter_(5),
                   explosions_(){
 
             ci::app::setWindowSize( kWindowLength, kWindowHeight);
@@ -41,8 +41,6 @@ namespace shooter {
             screen_.DrawBeam(beam_cursor_location_);
             is_beam_ --;
           }
-
-          get_new_explosions_ = !get_new_explosions_; // flip to only retrieve every 2 frames
         }
 
         void ShooterApp::update() {
@@ -73,7 +71,7 @@ namespace shooter {
           ProjectileType type =
               engine_.HandleShoot(cursor_relative_to_player_pos);
           if (type == kBeam) {
-            is_beam_ = 2; // draws beam for 2 frames
+            is_beam_ = 3; // draws beam for 3 frames
             beam_cursor_location_ = getMousePos()-getWindowPos();
           }
           if (!is_beam_) {
@@ -87,12 +85,20 @@ namespace shooter {
         }
 
         void ShooterApp::HandleExplosions() {
-          if (!get_new_explosions_) {
+
+          get_new_explosions_counter_--; // only get new explosions every 5 frame
+
+          if (get_new_explosions_counter_ == 0) {
+            explosions_ = engine_.get_explosions_();
+            get_new_explosions_counter_ = 3;
             return;
           }
 
-          explosions_ = engine_.get_explosions_();
-          for (auto explosion : explosions_) {
+          if (get_new_explosions_counter_ !=2) {
+            return;
+          }
+
+          for (auto explosion : explosions_) { // only play sound for first frame
             explosion_sound_->stop();
             explosion_sound_->start();
           }

@@ -45,7 +45,7 @@ namespace shooter {
             bool firing_;
             bool running_;
 
-            bool get_new_explosions_;
+            int get_new_explosions_counter_;
             std::vector<std::pair<glm::vec2,float>> explosions_;
 
             int is_beam_;
