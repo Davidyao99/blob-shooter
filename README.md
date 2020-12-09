@@ -3,7 +3,7 @@
 
 Blobs are spawning everywhere to get you! Survive as long as possible! Enjoy ;)
 
-![](assets/git/showcase.gif)
+![](./assets/git/showcase.gif)
 
 **Dependencies**
 - [cmake](https://cmake.org/)
