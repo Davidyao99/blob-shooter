@@ -104,7 +104,7 @@ TEST_CASE("HandlePlayerAtBoundary works accordingly") {
   SECTION("HandlePlayerAtBoundary zeroes y axis velocity when player moving"
       " out of north boundary") {
 
-    Engine engine(50,50, glm::vec2(25,1));
+    Engine engine(50,50, glm::vec2(25,0));
     const Player &player = engine.get_player_();
     std::set<Direction> directions{Direction::kRight, Direction::kUp};
 
@@ -141,7 +141,7 @@ TEST_CASE("HandlePlayerAtBoundary works accordingly") {
     engine.MoveAllEntities(directions); // set player in motion
     engine.HandlePlayerAtBoundary();
 
-    Entity entity_test(glm::vec2(26,51), 10.0f, 50,
+    Entity entity_test(glm::vec2(26,50), 10.0f, 50,
                        10, glm::vec2(0.9,0));
 
     REQUIRE((Entity)player == entity_test);
@@ -171,7 +171,7 @@ TEST_CASE("HandlePlayerAtBoundary works accordingly") {
     engine.MoveAllEntities(directions); // set player in motion
     engine.HandlePlayerAtBoundary();
 
-    Entity entity_test(glm::vec2(51,26), 10.0f, 50,
+    Entity entity_test(glm::vec2(50,26), 10.0f, 50,
                        10, glm::vec2(0,0.9));
 
     REQUIRE((Entity)player == entity_test);
@@ -201,7 +201,7 @@ TEST_CASE("HandlePlayerAtBoundary works accordingly") {
     engine.MoveAllEntities(directions); // set player in motion
     engine.HandlePlayerAtBoundary();
 
-    Entity entity_test(glm::vec2(-1,26), 10.0f, 50,
+    Entity entity_test(glm::vec2(0,26), 10.0f, 50,
                        10, glm::vec2(0,0.9));
 
     REQUIRE((Entity)player == entity_test);

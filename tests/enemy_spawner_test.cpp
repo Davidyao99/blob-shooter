@@ -4,20 +4,20 @@
 
 namespace shooter {
 
-  TEST_CASE("EnemySpawner Constructor creates board_dimensions correctly") {
-    EnemySpawner enemy_spawner (glm::ivec2(20, 20));
-    REQUIRE(enemy_spawner.get_spawns_().size() == 80);
+TEST_CASE("EnemySpawner Constructor creates board_dimensions correctly") {
+  EnemySpawner enemy_spawner (glm::ivec2(20, 20));
+  REQUIRE(enemy_spawner.get_spawns_().size() == 80);
+}
+
+TEST_CASE("SpawnEnemies works accordingly") {
+
+  EnemySpawner enemy_spawner (glm::ivec2(20, 20));
+
+  SECTION("SpawnEnemies does not spawn waves when time_from_last_wave less than 5 secs") {
+    std::vector<Enemy> enemies_test = enemy_spawner.SpawnEnemies(4000,
+                                                                 4000);
+    REQUIRE(enemies_test.size() == 0);
   }
-
-  TEST_CASE("SpawnEnemies works accordingly") {
-
-    EnemySpawner enemy_spawner (glm::ivec2(20, 20));
-
-    SECTION("SpawnEnemies does not spawn waves when time_from_last_wave less than 5 secs") {
-      std::vector<Enemy> enemies_test = enemy_spawner.SpawnEnemies(4000,
-                                                                   4000);
-      REQUIRE(enemies_test.size() == 0);
-    }
 
   SECTION("SpawnEnemies spawn wave when time_from_last_wave more than 5 secs") {
     std::vector<Enemy> enemies_test = enemy_spawner.SpawnEnemies(2000,
@@ -33,5 +33,6 @@ namespace shooter {
     enemies_test = enemy_spawner.SpawnEnemies(190000,6000);
     REQUIRE(enemies_test.size() == 8); // extra 6 enemies
   }
-  }
-}
+}  
+
+} // namespace shooter

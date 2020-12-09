@@ -33,4 +33,4 @@ namespace shooter {
   extern const Weapon kRocket("Rocket", kBullet, 0.01f, 1000,
               ProjectileBlueprint(15.0f, 80,
                                   20.0f, true, 100.0f));
-}
+} // namespace shooter

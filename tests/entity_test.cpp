@@ -63,7 +63,7 @@ TEST_CASE("Hit works accordingly") {
 
   SECTION("Hit reduces health to below 0") {
     entity1.Hit(10, glm::vec2(0,0));
-    REQUIRE(entity1.get_health_() == -6);
+    REQUIRE(entity1.get_health_() == -4);
   }
 
   SECTION("Rebound velocity added accordingly") {

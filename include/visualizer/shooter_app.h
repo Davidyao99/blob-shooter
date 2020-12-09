@@ -9,67 +9,107 @@
 #include <cinder/audio/audio.h>
 
 namespace shooter {
-    using namespace ci;
+using namespace ci;
 
-    namespace visualizer {
+namespace visualizer {
 
-        /**
-         * Cinder app to handle user input and connection between engine and
-         * screen
-         */
+/**
+ * Cinder app to handle user input and connection between engine and
+ * screen
+ */
 
-        class ShooterApp : public ci::app::App {
-        public:
+class ShooterApp : public ci::app::App {
 
-            /**
-             * Constructor
-             */
+ public:
 
-            ShooterApp();
+  /**
+   * Constructor
+   */
 
-            void draw() override;
-            void update() override;
-            void setup() override;
-            void keyDown(ci::app::KeyEvent event) override;
-            void keyUp(ci::app::KeyEvent event) override;
-            void mouseDown(ci::app::MouseEvent event) override;
-            void mouseUp(ci::app::MouseEvent event) override;
+  ShooterApp();
 
-         private:
-            const int kWindowLength = kScreenLength;
-            const int kWindowHeight = kScreenHeight;
+   /**
+    * main draw function that is called every frame
+    */
 
-            std::set<Direction> moves_;
-            Engine engine_;
-            Screen screen_;
-            bool firing_;
-            bool running_;
+  void draw() override;
 
-            int get_new_explosions_counter_;
-            std::vector<std::pair<glm::vec2,float>> explosions_;
+  /**
+    * update function called every frame to update variables
+    */
 
-            int is_beam_;
-            glm::vec2 beam_cursor_location_;
+  void update() override;
 
-            ci::audio::VoiceRef bullet_sound_;
-            ci::audio::VoiceRef laser_sound_;
-            ci::audio::VoiceRef explosion_sound_;
+  /**
+   * setup function called at beginning
+   */
 
-            /**
-             * Helper function to handle firing visuals and call to engine when
-             * user fires
-             */
+  void setup() override;
 
-            void HandleFiring();
+  /**
+   * Method to track keys that are pressed down
+   * @param event
+   */
 
-            /**
-             * Helper function to handle explosion visuals
-             */
+  void keyDown(ci::app::KeyEvent event) override;
 
-            void HandleExplosions();
-        };
+  /**
+   * Method to track keys that are released
+   * @param event
+   */
 
-    }  // namespace visualizer
+  void keyUp(ci::app::KeyEvent event) override;
+
+  /**
+   * Method to track mouse buttons that are pressed down
+   * @param event
+   */
+  void mouseDown(ci::app::MouseEvent event) override;
+
+  /**
+   * Method to track mouse buttons that are released
+   * @param event
+   */
+  void mouseUp(ci::app::MouseEvent event) override;
+
+ private:
+
+  const int kWindowLength = kScreenLength;
+  const int kWindowHeight = kScreenHeight;
+
+  std::set<Direction> moves_;
+  Engine engine_;
+  Screen screen_;
+  bool firing_;
+  bool running_;
+
+  int get_new_explosions_counter_;
+  std::vector<std::pair<glm::vec2,float>> explosions_;
+
+  int is_beam_;
+  glm::vec2 beam_cursor_location_;
+
+  // audio
+
+  ci::audio::VoiceRef bullet_sound_;
+  ci::audio::VoiceRef laser_sound_;
+  ci::audio::VoiceRef explosion_sound_;
+
+  /**
+   * Helper function to handle firing visuals and call to engine when
+   * user fires
+   */
+
+  void HandleFiring();
+
+  /**
+   * Helper function to handle explosion visuals
+   */
+
+  void HandleExplosions();
+};
+
+}  // namespace visualizer
 
 }  // namespace idealgas
 

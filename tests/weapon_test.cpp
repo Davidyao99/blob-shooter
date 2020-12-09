@@ -120,5 +120,4 @@ TEST_CASE("Reload works accordingly to set last_fire") {
                                               std::chrono::system_clock::now());
 
   REQUIRE(time_difference.count() == 0); // begin_time is reset
-
 }

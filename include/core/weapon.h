@@ -7,86 +7,87 @@
 
 namespace shooter {
 
-  /**
+/**
    * To differentiate the 2 types of firables. Firing a beam will not actually
    * create any object whereas firing a bullet will create a Bullet.
    */
 
-  enum ProjectileType {
-    kBeam, // for beam projectile_blueprint, firing angle, radius and
-         // speed is irrelevant
-    kBullet
-  };
+enum ProjectileType {
+  kBeam, // for beam projectile_blueprint, firing angle, radius and
+  // speed is irrelevant
+  kBullet
+};
+
+/**
+ * Weapon class to represent the different types of weapons and their
+ * attributes
+ */
+
+class Weapon {
+
+ public:
 
   /**
-   * Weapon class to represent the different types of weapons and their
-   * attributes
+   * Constructor for weapon
+   * @param name
+   * @param projectile_type
+   * @param firing_angle angle in radians of the spread of bullets
+   * @param reload_rate
+   * @param projectile_blueprint
    */
 
-  class Weapon {
+  Weapon(std::string name, ProjectileType projectile_type,
+         float firing_angle, int reload_rate,
+         ProjectileBlueprint projectile_blueprint);
 
-   public:
+  // getters
 
-    /**
-     * Constructor for weapon
-     * @param name
-     * @param projectile_type
-     * @param firing_angle angle in radians of the spread of bullets
-     * @param reload_rate
-     * @param projectile_blueprint
-     */
+  std::chrono::system_clock::time_point get_last_fire_() const;
 
-    Weapon(std::string name, ProjectileType projectile_type,
-           float firing_angle, int reload_rate,
-           ProjectileBlueprint projectile_blueprint);
+  const std::string get_name_() const;
 
-    // getters
+  ProjectileType get_projectile_type_() const;
 
-    std::chrono::system_clock::time_point get_last_fire_() const;
+  int get_reload_rate_() const;
 
-    const std::string get_name_() const;
+  ProjectileBlueprint get_projectile_blueprint_() const;
 
-    ProjectileType get_projectile_type_() const;
+  float get_firing_angle_() const;
 
-    int get_reload_rate_() const;
+  /**
+   * equality operator to be used for testing
+   * @param rhs
+   * @return true if rhs weapon is same as this weapon object
+   */
 
-    ProjectileBlueprint get_projectile_blueprint_() const;
+  bool operator==(const Weapon rhs) const;
 
-    float get_firing_angle_() const;
+  /**
+   * Retrieves the reload status of current weapon
+   * @return float from 0 - 1.0f with 1.0f meaning reloaded
+   */
 
-    /**
-     * equality operator to be used for testing
-     * @param rhs
-     * @return true if rhs weapon is same as this weapon object
-     */
+  float GetReloadStatus() const;
 
-    bool operator==(const Weapon rhs) const;
+  /**
+   * Reload current weapon by resetting last_fire_
+   */
 
-    /**
-     * Retrieves the reload status of current weapon
-     * @return float from 0 - 1.0f with 1.0f meaning reloaded
-     */
+  void Reload();
 
-    float GetReloadStatus() const;
+ private:
 
-    /**
-     * Reload current weapon by resetting last_fire_
-     */
+  std::chrono::system_clock::time_point last_fire_;
 
-    void Reload();
+  std::string name_;
 
-   private:
+  ProjectileType projectile_type_;
 
-    std::chrono::system_clock::time_point last_fire_;
+  int reload_rate;
 
-    std::string name_;
+  float firing_angle_; // spread of bullet
 
-    ProjectileType projectile_type_;
+  ProjectileBlueprint projectile_blueprint_;
+};
 
-    int reload_rate;
-
-    float firing_angle_; // spread of bullet
-
-    ProjectileBlueprint projectile_blueprint_;
-  };
-}
+} // namespace shooter

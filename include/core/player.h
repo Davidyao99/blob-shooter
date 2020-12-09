@@ -7,122 +7,123 @@
 
 namespace shooter {
 
-    /**
+/**
      * Enum to represent the directions pressed by user
      */
 
-    enum Direction {
-        kLeft,
-        kUp,
-        kRight,
-        kDown
-    };
+enum Direction {
+  kLeft,
+  kUp,
+  kRight,
+  kDown
+};
 
-    /**
-     * Player class
-     */
+/**
+ * Player class
+ */
 
-    class Player : public Entity {
+class Player : public Entity {
 
-    public:
+ public:
 
-     /**
-      * Constructor for player
-      * @param position position of player
-      * @param radius radius of player
-      * @param health health of player
-      */
+  /**
+   * Constructor for player
+   * @param position position of player
+   * @param radius radius of player
+   * @param health health of player
+   */
 
-      Player(glm::vec2 position, float radius,
-             int health);
+  Player(glm::vec2 position, float radius,
+         int health);
 
-      /**
-       * Override Move method from Entity to simulate friction by
-       * multiplying 0.9 to velocity every call
-       */
+  /**
+   * Override Move method from Entity to simulate friction by
+   * multiplying 0.9 to velocity every call
+   */
 
-      void Move() override;
+  void Move() override;
 
-      /**
-       * Accelerates in direction
-       * @param direction direction to accelerate towards
-       */
+  /**
+   * Accelerates in direction
+   * @param direction direction to accelerate towards
+   */
 
-      void Accelerate(Direction direction);
+  void Accelerate(Direction direction);
 
-      /**
-       * Returns a const reference to current weapon
-       * @return const reference of current weapon
-       */
+  /**
+   * Returns a const reference to current weapon
+   * @return const reference of current weapon
+   */
 
-      const Weapon& GetCurrentWeapon() const;
+  const Weapon& GetCurrentWeapon() const;
 
-      /**
-       * Zero X component of Velocity, to be called when player at right
-       * or left boundary
-       */
+  /**
+   * Zero X component of Velocity, to be called when player at right
+   * or left boundary
+   */
 
-      void ZeroXVelocity();
+  void ZeroXVelocity();
 
-      /**
-       * Reloads the weapon by resetting the last_fire variable
-       */
+  /**
+   * Reloads the weapon by resetting the last_fire variable
+   */
 
-      void ReloadWeapon();
+  void ReloadWeapon();
 
-      /**
-       * Zero Y component of velocity, to be called when player at top or
-       * bottom boundary
-       */
+  /**
+   * Zero Y component of velocity, to be called when player at top or
+   * bottom boundary
+   */
 
-      void ZeroYVelocity();
+  void ZeroYVelocity();
 
-      /**
-       * Get duration in percentage out of 1 sec from last_fire. If more than
-       * 1 sec ago, return 1
-       * @return
-       */
+  /**
+   * Get duration in percentage out of 1 sec from last_fire. If more than
+   * 1 sec ago, return 1
+   * @return
+   */
 
-      float GetWeaponReloadStatus() const;
+  float GetWeaponReloadStatus() const;
 
-      /**
-       * Creates a bullet using current weapon towards cursor direction
-       * @param cursor relative position of cursor to player
-       * @return bullet
-       */
+  /**
+   * Creates a bullet using current weapon towards cursor direction
+   * @param cursor relative position of cursor to player
+   * @return bullet
+   */
 
-      Bullet FireBullet(const glm::vec2 &cursor);
+  Bullet FireBullet(const glm::vec2 &cursor);
 
-      /**
-       * Adds weapon to weapons
-       */
+  /**
+   * Adds weapon to weapons
+   */
 
-      void AddWeapon(const Weapon &weapon);
+  void AddWeapon(const Weapon &weapon);
 
-      /**
-       * Switches to next weapon
-       */
+  /**
+   * Switches to next weapon
+   */
 
-      void ChangeNextWeapon();
+  void ChangeNextWeapon();
 
-      /**
-       * Switches to prev weapon
-       */
+  /**
+   * Switches to prev weapon
+   */
 
-      void ChangePrevWeapon();
+  void ChangePrevWeapon();
 
-      /**
-       * Resets the player position and health
-       * @param position position of player to be reset to
-       * @param health health of player to be reset to
-       */
+  /**
+   * Resets the player position and health
+   * @param position position of player to be reset to
+   * @param health health of player to be reset to
+   */
 
-      void Reset(const glm::vec2 &position, int health);
+  void Reset(const glm::vec2 &position, int health);
 
-    private:
+ private:
 
-     std::vector<Weapon> weapons_;
-     size_t curr_weapon_index_;
+  std::vector<Weapon> weapons_;
+  size_t curr_weapon_index_;
 
-    };
+};
+
 }
