@@ -3,7 +3,7 @@
 
 Blobs are spawning everywhere to get you! Survive as long as possible! Enjoy ;)
 
-![](https://github.com/uiuc-fa20-cs126/final-project-Davidyao99/tree/week2/assets/gif)
+![](assets/git/showcase.gif)
 
 **Dependencies**
 - [cmake](https://cmake.org/)
