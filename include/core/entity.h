@@ -5,10 +5,10 @@
 namespace shooter{
 
 /**
-     * Parent class for enemy, player and bullet. Basic object with
-     * common methods such as moving, collision, isDead and common
-     * variables such as position, velocity and radius
-     */
+ * Parent class for enemy, player and bullet. Basic object with
+ * common methods such as moving, collision, isDead and common
+ * variables such as position, velocity and radius
+ */
 
 class Entity{
 

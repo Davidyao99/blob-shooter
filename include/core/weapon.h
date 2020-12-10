@@ -8,9 +8,9 @@
 namespace shooter {
 
 /**
-   * To differentiate the 2 types of firables. Firing a beam will not actually
-   * create any object whereas firing a bullet will create a Bullet.
-   */
+ * To differentiate the 2 types of firables. Firing a beam will not actually
+ * create any object whereas firing a bullet will create a Bullet.
+ */
 
 enum ProjectileType {
   kBeam, // for beam projectile_blueprint, firing angle, radius and

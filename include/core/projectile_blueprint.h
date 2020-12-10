@@ -3,9 +3,9 @@
 namespace shooter {
 
 /**
-   * Projectile blueprint that is connected with each weapon. Used as a template
-   * to create bullets of the right attributes for each weapon
-   */
+ * Projectile blueprint that is connected with each weapon. Used as a template
+ * to create bullets of the right attributes for each weapon
+ */
 
 struct ProjectileBlueprint {
 
