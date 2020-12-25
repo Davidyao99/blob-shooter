@@ -6,6 +6,7 @@
 #include "core/engine.h"
 #include "cinder/gl/Texture.h"
 #include "visualizer/screen.h"
+#include <cinder/audio/audio.h>
 
 namespace shooter {
     using namespace ci;
@@ -22,18 +23,23 @@ namespace shooter {
             void keyDown(ci::app::KeyEvent event) override;
             void keyUp(ci::app::KeyEvent event) override;
             void mouseDown(ci::app::MouseEvent event) override;
+            void mouseUp(ci::app::MouseEvent event) override;
 
-        private:
-            const int kWindowLength = 875;
-            const int kWindowHeight = 875;
-            const int kMargin = 50;
+         private:
+            const int kWindowLength = 1200;
+            const int kWindowHeight = 1000;
 
-            const int kScreenLength = 700;
-            const int kScreenHeight = 700;
+            const int kScreenLength = 1200;
+            const int kScreenHeight = 1000;
 
             std::set<Direction> moves_;
             Engine engine_;
             Screen screen_;
+            bool firing_;
+            bool is_beam_;
+
+            ci::audio::VoiceRef bullet_sound_;
+            ci::audio::VoiceRef laser_sound_;
         };
 
     }  // namespace visualizer

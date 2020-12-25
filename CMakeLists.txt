@@ -54,7 +54,10 @@ list(APPEND CORE_SOURCE_FILES
         src/core/player.cpp
         src/core/bullet.cpp
         src/core/enemy.cpp
-        src/core/entity.cpp)
+        src/core/entity.cpp
+        src/core/weapon.cpp
+        src/core/projectile_blueprint.cpp
+        src/core/enemy_spawner.cpp)
 
 list(APPEND SOURCE_FILES    ${CORE_SOURCE_FILES}
         src/visualizer/shooter_app.cpp

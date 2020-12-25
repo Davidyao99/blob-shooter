@@ -2,6 +2,7 @@
 
 #include "cinder/gl/gl.h"
 #include "entity.h"
+#include "projectile_blueprint.h"
 
 namespace shooter {
 
@@ -10,14 +11,26 @@ namespace shooter {
      */
 
     class Bullet : public Entity{
+
     public:
+
      /**
-      * Constructor for Bullet class
-      * @param position position of bullet to be spawned at
-      * @param radius radius of bullet
-      * @param hit_points hit points of bullet
-      * @param cursor cursor position so bullet will be spawned heading towards it
+      * Bullet constructor
+      * @param position
+      * @param blueprint
+      * @param cursor_relative_location relative location of cursor from parameter position
       */
-     Bullet(glm::vec2 position, float radius, int hit_points, glm::vec2 cursor);
+     Bullet(glm::vec2 position, ProjectileBlueprint blueprint,
+            glm::vec2 cursor_relative_location);
+
+     // getters
+     bool get_is_explosive_() const;
+     float get_explosion_radius_() const;
+
+     private:
+      bool is_explosive_;
+      float explosive_radius_;
+
     };
+
 }

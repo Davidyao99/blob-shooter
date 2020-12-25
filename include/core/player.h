@@ -1,7 +1,9 @@
 #pragma once
 
+#include "bullet.h"
 #include "cinder/gl/gl.h"
 #include "entity.h"
+#include "weapon.h"
 
 namespace shooter {
 
@@ -19,7 +21,8 @@ namespace shooter {
     class Player : public Entity {
 
     public:
-      Player(glm::vec2 position, float radius, int hit_points);
+      Player(glm::vec2 position, float radius,
+             int health);
 
       /**
        * Override Move method from Entity to simulate friction by
@@ -34,16 +37,23 @@ namespace shooter {
       void Accelerate(Direction direction);
 
       /**
-       * Checks if last_fire_ is > 1 sec ago
-       * @return true if last_fire_ > 1 sec ago, false otherwise
+       * Returns a const reference to current weapon
+       * @return const reference of current weapon
        */
-      bool Shoot();
+
+      const Weapon& GetCurrentWeapon() const;
 
       /**
        * Zero X component of Velocity, to be called when player at right
        * or left boundary
        */
       void ZeroXVelocity();
+
+      /**
+       * Reloads the weapon by resetting the last_fire variable
+       */
+
+      void ReloadWeapon();
 
       /**
        * Zero Y component of velocity, to be called when player at top or
@@ -56,9 +66,36 @@ namespace shooter {
        * 1 sec ago, return 1
        * @return
        */
-      float GetReloadStatus() const;
+      float GetWeaponReloadStatus() const;
+
+      /**
+       * Creates a bullet using current weapon towards cursor direction
+       * @param cursor relative position of cursor to player
+       * @return bullet
+       */
+
+      Bullet FireBullet(glm::vec2 cursor);
+
+      /**
+       * Adds weapon to weapons
+       */
+      void AddWeapon(Weapon weapon);
+
+      /**
+       * Switches to next weapon
+       */
+
+      void ChangeNextWeapon();
+
+      /**
+       * Switches to prev weapon
+       */
+
+      void ChangePrevWeapon();
 
     private:
-        std::chrono::system_clock::time_point last_fire_;
+        std::vector<Weapon> weapons_;
+        int curr_weapon_index_;
+
     };
 }

@@ -2,9 +2,11 @@
 
 namespace shooter {
 
-    Player::Player(glm::vec2 position, float radius, int hit_points) :
-            Entity(position, radius, hit_points), last_fire_(std::chrono::system_clock::now())
-    {
+    Player::Player(glm::vec2 position, float radius,
+    int health) :
+            Entity(position, radius, health, 10),
+            weapons_(),
+            curr_weapon_index_(0) {
     }
 
     void Player::Accelerate(Direction direction) {
@@ -32,26 +34,73 @@ namespace shooter {
       }
     }
 
-    float Player::GetReloadStatus() const {
-      std::chrono::milliseconds duration =
-          std::chrono::duration_cast<std::chrono::milliseconds>(
-              std::chrono::system_clock::now() - last_fire_);
-      float status = duration.count() / 1000.0f;
-      if (status >= 1.0f) {
-        status = 1.0f;
-      }
-      return status;
+    void Player::ReloadWeapon() {
+      weapons_.at(curr_weapon_index_).Reload();
     }
 
-    bool Player::Shoot() {
-        std::chrono::milliseconds duration =
-          std::chrono::duration_cast<std::chrono::milliseconds>(
-              std::chrono::system_clock::now() - last_fire_);
-        if ( duration.count() >= 1000) {
-            last_fire_ = std::chrono::system_clock::now();
-            return true;
+    float Player::GetWeaponReloadStatus() const {
+      return weapons_.at(curr_weapon_index_).GetReloadStatus();
+    }
+
+    const Weapon& Player::GetCurrentWeapon() const{
+      return weapons_.at(curr_weapon_index_);
+    }
+
+    Bullet Player::FireBullet(glm::vec2 cursor) {
+      Weapon weapon = GetCurrentWeapon();
+      float r = glm::length(cursor);
+      float tita = atan2(cursor.y,cursor.x); // change to polar coordinates
+      float firing_angle = weapon.get_firing_angle_();
+      float random_deviation = (static_cast<float>(rand())/RAND_MAX - 0.5f)*firing_angle;
+      glm::vec2 new_cursor(r*cos(tita+random_deviation),
+                           r*sin(tita+random_deviation));
+      return Bullet(position_, weapon.get_projectile_blueprint_(), new_cursor);
+    }
+
+    void Player::ChangeNextWeapon() {
+      size_t curr_idx = curr_weapon_index_ + 1;
+      while (curr_idx < weapons_.size()) {
+        if (weapons_.at(curr_idx).get_unlocked_()) {
+          curr_weapon_index_ = curr_idx;
+          std::cout << curr_weapon_index_ << std::endl;
+          return;
         }
-        return false;
+        curr_idx++;
+      }
+      curr_idx = 0;
+      while (curr_idx != curr_weapon_index_) {
+        if (weapons_.at(curr_idx).get_unlocked_()) {
+          curr_weapon_index_ = curr_idx;
+          std::cout<<curr_weapon_index_<<std::endl;
+          return;
+        }
+        curr_idx++;
+      }
+    }
+
+    void Player::ChangePrevWeapon() {
+      size_t curr_idx = curr_weapon_index_ - 1;
+      while (curr_idx < weapons_.size()) {
+        if (weapons_.at(curr_idx).get_unlocked_()) {
+          curr_weapon_index_ = curr_idx;
+          std::cout << curr_weapon_index_ << std::endl;
+          return;
+        }
+        curr_idx--;
+      }
+      curr_idx = weapons_.size() - 1;
+      while (curr_idx != curr_weapon_index_) {
+        if (weapons_.at(curr_idx).get_unlocked_()) {
+          curr_weapon_index_ = curr_idx;
+          std::cout<<curr_weapon_index_<<std::endl;
+          return;
+        }
+        curr_idx--;
+      }
+    }
+
+    void Player::AddWeapon(Weapon weapon) {
+      weapons_.push_back(weapon);
     }
 
     void Player::ZeroXVelocity() {
