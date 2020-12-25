@@ -7,95 +7,123 @@
 
 namespace shooter {
 
-    enum Direction {
-        left,
-        up,
-        right,
-        down
-    };
-
-    /**
-     * Player class
+/**
+     * Enum to represent the directions pressed by user
      */
 
-    class Player : public Entity {
+enum Direction {
+  kLeft,
+  kUp,
+  kRight,
+  kDown
+};
 
-    public:
-      Player(glm::vec2 position, float radius,
-             int health);
+/**
+ * Player class
+ */
 
-      /**
-       * Override Move method from Entity to simulate friction by
-       * multiplying 0.9 to velocity every call
-       */
-      void Move();
+class Player : public Entity {
 
-      /**
-       * Accelerates in direction
-       * @param direction direction to accelerate towards
-       */
-      void Accelerate(Direction direction);
+ public:
 
-      /**
-       * Returns a const reference to current weapon
-       * @return const reference of current weapon
-       */
+  /**
+   * Constructor for player
+   * @param position position of player
+   * @param radius radius of player
+   * @param health health of player
+   */
 
-      const Weapon& GetCurrentWeapon() const;
+  Player(glm::vec2 position, float radius,
+         int health);
 
-      /**
-       * Zero X component of Velocity, to be called when player at right
-       * or left boundary
-       */
-      void ZeroXVelocity();
+  /**
+   * Override Move method from Entity to simulate friction by
+   * multiplying 0.9 to velocity every call
+   */
 
-      /**
-       * Reloads the weapon by resetting the last_fire variable
-       */
+  void Move() override;
 
-      void ReloadWeapon();
+  /**
+   * Accelerates in direction
+   * @param direction direction to accelerate towards
+   */
 
-      /**
-       * Zero Y component of velocity, to be called when player at top or
-       * bottom boundary
-       */
-      void ZeroYVelocity();
+  void Accelerate(Direction direction);
 
-      /**
-       * Get duration in percentage out of 1 sec from last_fire. If more than
-       * 1 sec ago, return 1
-       * @return
-       */
-      float GetWeaponReloadStatus() const;
+  /**
+   * Returns a const reference to current weapon
+   * @return const reference of current weapon
+   */
 
-      /**
-       * Creates a bullet using current weapon towards cursor direction
-       * @param cursor relative position of cursor to player
-       * @return bullet
-       */
+  const Weapon& GetCurrentWeapon() const;
 
-      Bullet FireBullet(glm::vec2 cursor);
+  /**
+   * Zero X component of Velocity, to be called when player at right
+   * or left boundary
+   */
 
-      /**
-       * Adds weapon to weapons
-       */
-      void AddWeapon(Weapon weapon);
+  void ZeroXVelocity();
 
-      /**
-       * Switches to next weapon
-       */
+  /**
+   * Reloads the weapon by resetting the last_fire variable
+   */
 
-      void ChangeNextWeapon();
+  void ReloadWeapon();
 
-      /**
-       * Switches to prev weapon
-       */
+  /**
+   * Zero Y component of velocity, to be called when player at top or
+   * bottom boundary
+   */
 
-      void ChangePrevWeapon();
+  void ZeroYVelocity();
 
-    private:
-        std::vector<Weapon> weapons_;
-        int curr_weapon_index_;
+  /**
+   * Get duration in percentage out of 1 sec from last_fire. If more than
+   * 1 sec ago, return 1
+   * @return
+   */
 
-    };
+  float GetWeaponReloadStatus() const;
+
+  /**
+   * Creates a bullet using current weapon towards cursor direction
+   * @param cursor relative position of cursor to player
+   * @return bullet
+   */
+
+  Bullet FireBullet(const glm::vec2 &cursor);
+
+  /**
+   * Adds weapon to weapons
+   */
+
+  void AddWeapon(const Weapon &weapon);
+
+  /**
+   * Switches to next weapon
+   */
+
+  void ChangeNextWeapon();
+
+  /**
+   * Switches to prev weapon
+   */
+
+  void ChangePrevWeapon();
+
+  /**
+   * Resets the player position and health
+   * @param position position of player to be reset to
+   * @param health health of player to be reset to
+   */
+
+  void Reset(const glm::vec2 &position, int health);
+
+ private:
+
+  std::vector<Weapon> weapons_;
+  size_t curr_weapon_index_;
+
+};
+
 }

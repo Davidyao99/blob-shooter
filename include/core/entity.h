@@ -4,77 +4,92 @@
 
 namespace shooter{
 
-    /**
-     * Parent class for enemy, player and bullet. Basic object with
-     * common methods such as moving, collision, isDead and common
-     * variables such as position, velocity and radius
-     */
+/**
+ * Parent class for enemy, player and bullet. Basic object with
+ * common methods such as moving, collision, isDead and common
+ * variables such as position, velocity and radius
+ */
 
-    class Entity{
+class Entity{
 
-    public:
+ public:
 
-     /**
-      * Constructors for Entity class
-      * @param position
-      * @param radius
-      * @param health
-      * @param damage
-      * @param velocity
-      */
+  /**
+   * Testing constructor for entity
+   * @param position position of entity
+   * @param radius radius of entity
+   * @param health health of entity
+   * @param damage damage of entity
+   * @param velocity velocity of entity
+   */
 
-      Entity(glm::vec2 position, float radius, int health, int damage, glm::vec2 velocity);
+  Entity(glm::vec2 position, float radius, int health, int damage, glm::vec2 velocity);
 
-      Entity(glm::vec2 position, float radius, int health, int damage);
+  /**
+   * Constructor for entity
+   * @param position position of entity
+   * @param radius radius of entity
+   * @param health health of entity
+   * @param damage damage of entity
+   */
 
-      // getters
-      const float get_radius_() const;
-      const glm::vec2 get_position_() const;
-      const glm::vec2 get_velocity_() const;
-      const int get_health_() const;
-      const int get_damage_() const;
+  Entity(glm::vec2 position, float radius, int health, int damage);
 
-      /**
-       * Move method that adds velocity to position to move entity
-       */
-      void Move();
+  // basic getters
+  const float get_radius_() const;
 
-      /**
-       * Collides entity with other entity. Minus hitpoints from both entity
-       * and adds rebound to this entity
-       * @param entity other entity that is colliding into this entity
-       */
-      void Collide(Entity& entity);
+  const glm::vec2 get_position_() const;
 
-      /**
-       * boolean to check if hitpoints <= 0
-       * @return true if hitpoints <= 0, false otherwise
-       */
-      bool IsDead() const;
+  const glm::vec2 get_velocity_() const;
 
-      /**
-       * Minus hit_point from entity health and adds rebound velocity
-       * to entity velocity
-       * @param hit_point amount to deduct from entity health
-       * @param impact_position position of impact
-       */
+  const int get_health_() const;
 
-      void Hit(int hit_point, glm::vec2 impact_position);
+  const size_t get_damage_() const;
 
-      /**
-       * overloaded == operator to be used for testing
-       * @param other
-       * @return true if member variables of other and this are the same
-       */
+  /**
+   * Move method that adds velocity to position to move entity
+   */
 
-      bool operator==(const Entity& other) const;
+  virtual void Move();
 
-    protected:
+  /**
+   * Collides entity with other entity. calls hit() on both entities
+   * @param entity other entity that is colliding into this entity
+   */
 
-      glm::vec2 position_;
-      glm::vec2 velocity_;
-      float radius_;
-      int health_;
-      int damage_;
-  };
-}
+  void Collide(Entity& entity);
+
+  /**
+   * boolean to check if hitpoints <= 0
+   * @return true if hitpoints <= 0, false otherwise
+   */
+
+  bool IsDead() const;
+
+  /**
+   * Minus hit_point from entity health and adds rebound velocity
+   * to entity velocity
+   * @param hit_point amount to deduct from entity health
+   * @param impact_position position of impact to calculate rebound velocity
+   */
+
+  void Hit(int hit_point, glm::vec2 impact_position);
+
+  /**
+   * overloaded == operator to be used for testing
+   * @param other
+   * @return true if member variables of other and this are the same
+   */
+
+  bool operator==(const Entity& other) const;
+
+ protected:
+
+  glm::vec2 position_;
+  glm::vec2 velocity_;
+  float radius_;
+  int health_;
+  size_t damage_;
+};
+
+} // namespace shooter

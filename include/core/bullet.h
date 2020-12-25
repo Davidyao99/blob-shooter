@@ -6,31 +6,34 @@
 
 namespace shooter {
 
-    /**
+/**
      * Bullet class to represent bullets fired by player, extends from Entity
      */
 
-    class Bullet : public Entity{
+class Bullet : public Entity {
 
-    public:
+ public:
 
-     /**
-      * Bullet constructor
-      * @param position
-      * @param blueprint
-      * @param cursor_relative_location relative location of cursor from parameter position
-      */
-     Bullet(glm::vec2 position, ProjectileBlueprint blueprint,
-            glm::vec2 cursor_relative_location);
+  /**
+   * Bullet constructor
+   * @param position
+   * @param blueprint
+   * @param cursor_relative_location relative location of cursor from parameter position
+   */
 
-     // getters
-     bool get_is_explosive_() const;
-     float get_explosion_radius_() const;
+  Bullet(glm::vec2 position, ProjectileBlueprint blueprint,
+         glm::vec2 cursor_relative_location);
 
-     private:
-      bool is_explosive_;
-      float explosive_radius_;
+  // getters
+  bool get_is_explosive_() const;
 
-    };
+  float get_explosion_radius_() const;
 
-}
+ private:
+
+  bool is_explosive_;
+  float explosive_radius_;
+
+};
+
+} // namespace shooter

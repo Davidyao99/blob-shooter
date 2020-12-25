@@ -57,7 +57,8 @@ list(APPEND CORE_SOURCE_FILES
         src/core/entity.cpp
         src/core/weapon.cpp
         src/core/projectile_blueprint.cpp
-        src/core/enemy_spawner.cpp)
+        src/core/enemy_spawner.cpp
+        src/core/game_config_constants.cpp)
 
 list(APPEND SOURCE_FILES    ${CORE_SOURCE_FILES}
         src/visualizer/shooter_app.cpp
@@ -66,7 +67,9 @@ list(APPEND SOURCE_FILES    ${CORE_SOURCE_FILES}
 list(APPEND TEST_FILES tests/entity_test.cpp
         tests/enemy_test.cpp
         tests/player_test.cpp
-        tests/engine_test.cpp)
+        tests/engine_test.cpp
+        tests/enemy_spawner_test.cpp
+        tests/weapon_test.cpp)
 
 
 ci_make_app(

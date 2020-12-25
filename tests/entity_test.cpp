@@ -63,7 +63,7 @@ TEST_CASE("Hit works accordingly") {
 
   SECTION("Hit reduces health to below 0") {
     entity1.Hit(10, glm::vec2(0,0));
-    REQUIRE(entity1.get_health_() == -6);
+    REQUIRE(entity1.get_health_() == -4);
   }
 
   SECTION("Rebound velocity added accordingly") {
@@ -72,7 +72,7 @@ TEST_CASE("Hit works accordingly") {
 
 }
 
-TEST_CASE("== operator works accordingly") {
+TEST_CASE("entity == operator works accordingly") {
 
   SECTION("== returns true when all member variables are the same") {
     Entity entity1(glm::vec2(0,5), 2.0f,10,
